@@ -156,6 +156,31 @@ export function createGrid() {
     return gridWithProximities;
 }
 
+// This is getting complicated and ill be honest i'm stuck
+// Let's break this problem down into tiny pieces and tackle each piece. 
+// 1. When a tile is selected it needs to be revealed
+// 2.   Then we need to get that tiles perimeters
+            // foreach perimeter we need to reveal it if
+            // it's not a meow
+                // Then we need to get each perimeter tile
+
+export function collectChanges() {
+    const targetPerimeters = reducePerimeter({
+        previousTotal: [],
+        currentPerimeterLength: perimeterSize * perimeterSize,
+        currentColumn: columnIndex + offset,
+        currentRow: rowIndex + offset,
+        origArray: originalGrid,
+        perimeterSize,
+        reducerCallback: (currentRow, currentColumn, previousValue, origArray) => {
+            return [...previousValue, {...origArray[currentRow][currentColumn]}];
+        },
+        targetColumn: columnIndex,
+        targetRow: rowIndex
+    });
+    const newTarge
+    collectChanges(targetPerimeters, newTarget);
+}
 
 export function updateTile(params) { 
     const {
@@ -169,14 +194,14 @@ export function updateTile(params) {
     const tile = originalGrid[rowIndex][columnIndex];
 
     // We just reveal this tile if it's a meow or has proximities
-    if (tile.isMeow || tile.proximities > 0) {
-        return originalGrid.map((row, rIndex) => row.map((column, cIndex) => {
-            if (cIndex != columnIndex || rIndex != rowIndex) {
-                return {...column}
-            }
-            return {...column, isRevealed: true};
-        }));
-    }
+    // if (tile.isMeow || tile.proximities > 0) {
+    //     return originalGrid.map((row, rIndex) => row.map((column, cIndex) => {
+    //         if (cIndex != columnIndex || rIndex != rowIndex) {
+    //             return {...column}
+    //         }
+    //         return {...column, isRevealed: true};
+    //     }));
+    // }
 
     // If it's a blank tile then we need to proces each perimeter
     // and check each status and repeat until no perimeters are blank.
@@ -193,9 +218,9 @@ export function updateTile(params) {
         targetColumn: columnIndex,
         targetRow: rowIndex
     });
-
-    targetPerimeters.map((proximityTile) => {
-
+    
+    targetPerimeters.forEach(element => {
+        
     });
 
     console.log(targetPerimeters);
