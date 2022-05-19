@@ -163,8 +163,57 @@ export function createGrid() {
             // foreach perimeter we need to reveal it if
             // it's not a meow
                 // Then we need to get each perimeter tile
+const perimeterSize = 3;
+function recursePerimeters(params) {
+    const {
+        origArray,
+        currentIndex = perimArray.length,
+        lastArray
+    } = params;
 
-export function collectChanges() {
+    if (currentIndex < 0) {
+        return lastArray;
+    }
+
+    const currentTile = origArray[currentIndex];
+    const isDeadend = !currentTile.isMeow && currentTile.proximities > 0;
+    const newArray = [...lastArray, {...currentTile, isRevealed: true}];
+
+    if (isDeadend) {
+        return recursePerimeters({
+            origArray,
+            currentIndex: currentIndex - 1,
+            newArray
+        });
+    }
+
+    const targetPerimeters = reducePerimeter({
+        previousTotal: [],
+        currentPerimeterLength: perimeterSize * perimeterSize,
+        currentColumn: currentTile.column + offset,
+        currentRow: currentTile.row + offset,
+        origArray,
+        perimeterSize,
+        reducerCallback: (currentRow, currentColumn, previousValue, origArray) => {
+            return [...previousValue, {...origArray[currentRow][currentColumn]}];
+        },
+        targetColumn: columnIndex,
+        targetRow: rowIndex
+    });
+
+    const newArrayWithPerimeters = [...lastArray, ...targetPerimeters];
+    return recursePerimeters({
+        origArray,
+        currentIndex: currentIndex - 1,
+        newArrayWithPerimeters
+    });
+}
+
+export function collectChanges(params) {
+    const {
+        perimeters
+    } = params;
+
     const targetPerimeters = reducePerimeter({
         previousTotal: [],
         currentPerimeterLength: perimeterSize * perimeterSize,
@@ -219,8 +268,8 @@ export function updateTile(params) {
         targetRow: rowIndex
     });
     
-    targetPerimeters.forEach(element => {
-        
+    const changes = collectChanges({
+        perimeters: targetPerimeters
     });
 
     console.log(targetPerimeters);
