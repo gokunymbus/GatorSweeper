@@ -164,29 +164,35 @@ export function createGrid() {
             // it's not a meow
                 // Then we need to get each perimeter tile
 const perimeterSize = 3;
+const offset = Math.floor(perimeterSize/2);
 function recursePerimeters(params) {
     const {
         origArray,
-        currentIndex = perimArray.length,
-        lastArray
+        perimsArray,
+        currentIndex = perimsArray.length -1,
+        lastArray = []
     } = params;
 
     if (currentIndex < 0) {
         return lastArray;
     }
 
-    const currentTile = origArray[currentIndex];
+    const currentTile = perimsArray[currentIndex];
     const isDeadend = !currentTile.isMeow && currentTile.proximities > 0;
     const newArray = [...lastArray, {...currentTile, isRevealed: true}];
 
+    // If this doesn't have perimeters to check
+    // we just continue to the next call in recursion.
     if (isDeadend) {
         return recursePerimeters({
             origArray,
+            perimsArray,
             currentIndex: currentIndex - 1,
             newArray
         });
     }
 
+    //This has perimeters to check
     const targetPerimeters = reducePerimeter({
         previousTotal: [],
         currentPerimeterLength: perimeterSize * perimeterSize,
@@ -195,40 +201,20 @@ function recursePerimeters(params) {
         origArray,
         perimeterSize,
         reducerCallback: (currentRow, currentColumn, previousValue, origArray) => {
-            return [...previousValue, {...origArray[currentRow][currentColumn]}];
+            const foundValue = origArray[currentRow] && origArray[currentRow][currentColumn];
+            return (foundValue) ? [...previousValue, {...foundValue}] : [...previousValue];
         },
-        targetColumn: columnIndex,
-        targetRow: rowIndex
+        targetColumn: -1,
+        targetRow: -1
     });
 
     const newArrayWithPerimeters = [...lastArray, ...targetPerimeters];
     return recursePerimeters({
         origArray,
+        perimsArray,
         currentIndex: currentIndex - 1,
         newArrayWithPerimeters
     });
-}
-
-export function collectChanges(params) {
-    const {
-        perimeters
-    } = params;
-
-    const targetPerimeters = reducePerimeter({
-        previousTotal: [],
-        currentPerimeterLength: perimeterSize * perimeterSize,
-        currentColumn: columnIndex + offset,
-        currentRow: rowIndex + offset,
-        origArray: originalGrid,
-        perimeterSize,
-        reducerCallback: (currentRow, currentColumn, previousValue, origArray) => {
-            return [...previousValue, {...origArray[currentRow][currentColumn]}];
-        },
-        targetColumn: columnIndex,
-        targetRow: rowIndex
-    });
-    const newTarge
-    collectChanges(targetPerimeters, newTarget);
 }
 
 export function updateTile(params) { 
@@ -268,8 +254,9 @@ export function updateTile(params) {
         targetRow: rowIndex
     });
     
-    const changes = collectChanges({
-        perimeters: targetPerimeters
+    const changes = recursePerimeters({
+        origArray: originalGrid,
+        perimsArray: targetPerimeters
     });
 
     console.log(targetPerimeters);
