@@ -54,7 +54,8 @@ export default class Tile extends React.Component {
         const {isRevealed} = this.props;
         return(
             <div className="Tile" ref={this.tileRef} tabIndex={0}>
-                {   isRevealed ?
+                {   
+                    isRevealed ?
                     this.renderRevealed()
                     :
                     this.renderCovered()

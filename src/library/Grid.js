@@ -125,6 +125,7 @@ export function addProximities(gridArray, perimeterSize) {
         });
     });
 }
+
 export function createGrid() {
     const gridSize = 10;
     const minRandomValue = 1;
@@ -163,60 +164,90 @@ export function createGrid() {
             // foreach perimeter we need to reveal it if
             // it's not a meow
                 // Then we need to get each perimeter tile
+
 const perimeterSize = 3;
 const offset = Math.floor(perimeterSize/2);
-function recursePerimeters(params) {
+
+function recurseTwo (params) {
     const {
         origArray,
-        perimsArray,
-        currentIndex = perimsArray.length -1,
-        lastArray = []
+        targetColumn,
+        targetRow,
+        accumulator = []
     } = params;
 
-    if (currentIndex < 0) {
-        return lastArray;
-    }
+    // Create new array with previous accumulator
+    // value and our target value.
+    // Add our blank target and then iterate through proximities.
+    let accumulatorWithTarget = [
+        ...accumulator,
+        {...origArray[targetRow][targetColumn]}
+    ]; 
 
-    const currentTile = perimsArray[currentIndex];
-    const isDeadend = !currentTile.isMeow && currentTile.proximities > 0;
-    const newArray = [...lastArray, {...currentTile, isRevealed: true}];
-
-    // If this doesn't have perimeters to check
-    // we just continue to the next call in recursion.
-    if (isDeadend) {
-        return recursePerimeters({
-            origArray,
-            perimsArray,
-            currentIndex: currentIndex - 1,
-            newArray
-        });
-    }
-
-    //This has perimeters to check
     const targetPerimeters = reducePerimeter({
         previousTotal: [],
         currentPerimeterLength: perimeterSize * perimeterSize,
-        currentColumn: currentTile.column + offset,
-        currentRow: currentTile.row + offset,
+        currentColumn: targetColumn + offset,
+        currentRow: targetRow + offset,
         origArray,
         perimeterSize,
         reducerCallback: (currentRow, currentColumn, previousValue, origArray) => {
             const foundValue = origArray[currentRow] && origArray[currentRow][currentColumn];
-            return (foundValue) ? [...previousValue, {...foundValue}] : [...previousValue];
+            const inAccumulator = accumulatorWithTarget.find((tile) => tile.column == currentColumn && tile.row == currentRow);
+            return (foundValue && !inAccumulator) ? [...previousValue, {...foundValue}] : [...previousValue];
         },
-        targetColumn: -1,
-        targetRow: -1
+        targetColumn: targetColumn,
+        targetRow: targetRow
     });
 
-    const newArrayWithPerimeters = [...lastArray, ...targetPerimeters];
-    return recursePerimeters({
-        origArray,
-        perimsArray,
-        currentIndex: currentIndex - 1,
-        newArrayWithPerimeters
+    targetPerimeters.forEach((perimeter) => {
+        if (perimeter.isMeow || perimeter.proximities > 0) {
+            accumulatorWithTarget.push({...perimeter});
+            return;
+        }
+
+        const predicate = (tile) => tile.column == perimeter.colum && tile.row == perimeter.tile;
+        const foundTile = accumulatorWithTarget.find(predicate);
+        if (foundTile) {
+            return
+        }
+
+        const newPerimeters = recurseTwo({
+            origArray,
+            targetColumn: perimeter.column,
+            targetRow: perimeter.row,
+            accumulator: accumulatorWithTarget
+        });
+
+        accumulatorWithTarget = [...accumulatorWithTarget, ...newPerimeters];
+        console.log(accumulator);   
+        
+    });
+
+    return accumulatorWithTarget;
+}
+
+function mapChanges(grid, changes) {
+    return grid.map((row, rowIndex) => {
+        return row.map((column, columnIndex) => {
+            const findChange = changes.find(
+                tile => tile.row == rowIndex && tile.column == columnIndex
+            );
+            if (findChange) {
+                return {...column, isRevealed: true}
+            }
+
+            return {...column};
+        })
     });
 }
 
+/**
+ * Function that determines which tiles need to be updated
+ * 
+ * @param {*} params 
+ * @returns {array} An array of tiles to be updated.
+ */
 export function updateTile(params) { 
     const {
         rowIndex,
@@ -224,41 +255,23 @@ export function updateTile(params) {
         originalGrid
     } = params;
 
-    const perimeterSize = 3;
-    const offset = Math.floor(perimeterSize/2);
     const tile = originalGrid[rowIndex][columnIndex];
 
-    // We just reveal this tile if it's a meow or has proximities
-    // if (tile.isMeow || tile.proximities > 0) {
-    //     return originalGrid.map((row, rIndex) => row.map((column, cIndex) => {
-    //         if (cIndex != columnIndex || rIndex != rowIndex) {
-    //             return {...column}
-    //         }
-    //         return {...column, isRevealed: true};
-    //     }));
-    // }
+    // Tile will be uncovered but the game
+    // may be over or a single tile will be updated.
+    if (tile.isMeow || tile.proximities > 0) {
+        return mapChanges(originalGrid, [{...tile}]);
+    }
 
-    // If it's a blank tile then we need to proces each perimeter
-    // and check each status and repeat until no perimeters are blank.
-    const targetPerimeters = reducePerimeter({
-        previousTotal: [],
-        currentPerimeterLength: perimeterSize * perimeterSize,
-        currentColumn: columnIndex + offset,
-        currentRow: rowIndex + offset,
+    const perims = recurseTwo({
         origArray: originalGrid,
-        perimeterSize,
-        reducerCallback: (currentRow, currentColumn, previousValue, origArray) => {
-            return [...previousValue, {...origArray[currentRow][currentColumn]}];
-        },
         targetColumn: columnIndex,
         targetRow: rowIndex
     });
-    
-    const changes = recursePerimeters({
-        origArray: originalGrid,
-        perimsArray: targetPerimeters
-    });
 
-    console.log(targetPerimeters);
+    const mappedChanges = mapChanges(originalGrid, perims)
+    console.log(mappedChanges);
+    console.log(perims);
 
+    return mappedChanges;
 }

@@ -15,7 +15,14 @@ export default class Meowsweeper extends React.Component {
 
     onTileSelected = (e, props) => {
         const {row, column} = props;
+        const {grid} = this.state;
         console.log("hello from the top", props.row, props.column);
+
+        if (grid[row][column].isMeow) {
+            console.log("GAME OVER");
+            return;
+        }
+
         const newGrid = updateTile({
             rowIndex: row,
             columnIndex: column,
