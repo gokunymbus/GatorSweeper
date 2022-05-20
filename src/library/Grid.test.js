@@ -37,4 +37,9 @@ describe('Grid', () => {
         });
         expect(expectedTotal).toBe(2);
     });
+
+
+    test('correclty calculates 2 moews in proximity', () => {
+        
+    });
 });
