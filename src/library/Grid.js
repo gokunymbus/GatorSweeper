@@ -157,18 +157,10 @@ export function createGrid() {
     return gridWithProximities;
 }
 
-// This is getting complicated and ill be honest i'm stuck
-// Let's break this problem down into tiny pieces and tackle each piece. 
-// 1. When a tile is selected it needs to be revealed
-// 2.   Then we need to get that tiles perimeters
-            // foreach perimeter we need to reveal it if
-            // it's not a meow
-                // Then we need to get each perimeter tile
-
 const perimeterSize = 3;
 const offset = Math.floor(perimeterSize/2);
 
-function recurseTwo (params) {
+export function buildPerimeters(params) {
     const {
         origArray,
         targetColumn,
@@ -176,15 +168,13 @@ function recurseTwo (params) {
         accumulator = []
     } = params;
 
-    // Create new array with previous accumulator
-    // value and our target value.
-    // Add our blank target and then iterate through proximities.
-    let accumulatorWithTarget = [
-        ...accumulator,
-        {...origArray[targetRow][targetColumn]}
-    ]; 
+    const doesTargetExist = accumulator.find(tile => targetColumn == tile.column && targetRow == tile.row);
+    if (doesTargetExist) {
+        return accumulator;
+    }
 
-    const targetPerimeters = reducePerimeter({
+    const target = origArray[targetRow][targetColumn];
+    const targetPerimeters = !target.isMeow && target.proximities == 0 ? reducePerimeter({
         previousTotal: [],
         currentPerimeterLength: perimeterSize * perimeterSize,
         currentColumn: targetColumn + offset,
@@ -193,38 +183,48 @@ function recurseTwo (params) {
         perimeterSize,
         reducerCallback: (currentRow, currentColumn, previousValue, origArray) => {
             const foundValue = origArray[currentRow] && origArray[currentRow][currentColumn];
-            const inAccumulator = accumulatorWithTarget.find((tile) => tile.column == currentColumn && tile.row == currentRow);
-            return (foundValue && !inAccumulator) ? [...previousValue, {...foundValue}] : [...previousValue];
+            //const inAccumulator = accumulatorWithTarget.find((tile) => tile.column == currentColumn && tile.row == currentRow);
+            return (foundValue) ? [...previousValue, {...foundValue}] : [...previousValue];
         },
         targetColumn: targetColumn,
         targetRow: targetRow
+    }) : [];
+
+    const newAccumulator = [...accumulator, {...target}];
+    return recursePerimeters({
+        perimeters: targetPerimeters,
+        origArray,
+        targetAccumulator: newAccumulator
+    });
+}
+
+function recursePerimeters(params) {
+    const {
+        perimeters,
+        currentIndex = perimeters.length -1,
+        targetAccumulator,
+        origArray
+    } = params;
+
+    if (currentIndex == -1) {
+        return targetAccumulator;
+    }
+
+    const currentPerimeter = perimeters[currentIndex];
+    
+    const newTargetAccumulator = recursePerimeters({
+        perimeters,
+        currentIndex: currentIndex -1,
+        targetAccumulator,
+        origArray
     });
 
-    targetPerimeters.forEach((perimeter) => {
-        if (perimeter.isMeow || perimeter.proximities > 0) {
-            accumulatorWithTarget.push({...perimeter});
-            return;
-        }
-
-        const predicate = (tile) => tile.column == perimeter.colum && tile.row == perimeter.tile;
-        const foundTile = accumulatorWithTarget.find(predicate);
-        if (foundTile) {
-            return
-        }
-
-        const newPerimeters = recurseTwo({
-            origArray,
-            targetColumn: perimeter.column,
-            targetRow: perimeter.row,
-            accumulator: accumulatorWithTarget
-        });
-
-        accumulatorWithTarget = [...accumulatorWithTarget, ...newPerimeters];
-        console.log(accumulator);   
-        
+    return buildPerimeters({
+        origArray,
+        targetColumn: currentPerimeter.column,
+        targetRow: currentPerimeter.row,
+        accumulator: newTargetAccumulator
     });
-
-    return accumulatorWithTarget;
 }
 
 function mapChanges(grid, changes) {
@@ -263,15 +263,13 @@ export function updateTile(params) {
         return mapChanges(originalGrid, [{...tile}]);
     }
 
-    const perims = recurseTwo({
+    const perims = buildPerimeters({
         origArray: originalGrid,
         targetColumn: columnIndex,
         targetRow: rowIndex
     });
 
     const mappedChanges = mapChanges(originalGrid, perims)
-    console.log(mappedChanges);
-    console.log(perims);
 
     return mappedChanges;
 }

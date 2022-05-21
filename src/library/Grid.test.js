@@ -1,5 +1,9 @@
-import {reducePerimeter, reduceMeowCallback} from './Grid';
-import {testData} from './Grid.testdata';
+import {
+    reducePerimeter,
+    reduceMeowCallback,
+    buildPerimeters
+} from './Grid';
+import {testData, testDataTwo} from './Grid.testdata';
 
 const perimeterLength = 3;
 const offset = Math.floor(perimeterLength / 2);
@@ -39,7 +43,15 @@ describe('Grid', () => {
     });
 
 
-    test('correclty calculates 2 moews in proximity', () => {
-        
+    test('testing perimeter recursion', () => {
+        const targetColumn = 0;
+        const targetRow = 0;
+        const stuff = buildPerimeters({
+            origArray: testDataTwo,
+            targetColumn,
+            targetRow
+        });
+        console.log(stuff)
+        expect(stuff.length).toBe(15)
     });
 });
