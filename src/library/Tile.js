@@ -1,8 +1,6 @@
 import RandomMinMax from "./RandomMinMax";
-export default function TileFactory(params) {
+export function TileFactory(params) {
     const {
-        row,
-        column,
         min,
         max,
         isMeow =  RandomMinMax(min, max) == 1 ? true : false,
@@ -13,8 +11,20 @@ export default function TileFactory(params) {
     return {
         isMeow,
         isRevealed,
-        proximities,
+        proximities
+    }
+}
+
+export function TileChangeFactory(params) {
+    const {
+        row,
+        column,
+        tileParams
+    } = params;
+
+    return {
+        ...TileFactory(tileParams),
         row,
         column
     }
-}
+};

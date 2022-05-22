@@ -1,4 +1,4 @@
-import TileFactory from "./TileFactory";
+import { TileFactory, TileChangeFactory } from "./Tile";
 
 const perimeterSize = 3;
 const offset = Math.floor(perimeterSize/2);
@@ -36,38 +36,57 @@ export function createGrid(params) {
         randomMax
     } = params;
 
-    function buildColumns(columnLength, accumulator, rowIndex, columnIndex = 0) {
-        if (columnLength == 0) {
+    function buildColumns(params) {
+        const {
+            columnIndex,
+            accumulator = [],
+            rowIndex,
+        } = params;
+
+        if (columnIndex == -1) {
             return accumulator;
         }
 
-        const newAccumulator = accumulator.concat(
-            TileFactory({
-                row: rowIndex,
-                column: columnIndex,
-                min: randomMin,
-                max: randomMax
-            })
-        );
-
-        const newColumnLength = columnLength - 1;
-        const newRowIndex = rowIndex;
-        const newColumnIndex = accumulator.length;
-        return buildColumns(newColumnLength, newAccumulator, newRowIndex, newColumnIndex);
+        return buildColumns({
+            columnIndex: columnIndex - 1,
+            rowIndex,
+            accumulator: accumulator.concat(
+                TileFactory({
+                    min: randomMin,
+                    max: randomMax
+                })
+            )
+        });
     }
 
-    function buildRows(currentRowLength, currentArray, currentRowIndex = 0) {
-        if (currentRowLength == 0) {
-            return currentArray;
+    function buildRows(params) {
+        const {
+            rowIndex,
+            accumulator
+        } = params;
+
+        if (rowIndex == -1) {
+            return accumulator;
         }
 
-        // @TODO Still could be some nested objects that are not being cloned.
-        const newRowsArray = [...currentArray, buildColumns(gridSize, [], currentRowIndex)];
-        const newRowLength = currentRowLength - 1; 
-        return buildRows(newRowLength, newRowsArray, newRowsArray.length);
+        const columns = buildColumns({
+            columnIndex: gridSize -1,
+            accumulator: [],
+            rowIndex: rowIndex
+        });
+
+        return buildRows({
+            rowIndex: rowIndex -1,
+            accumulator: [...accumulator, columns]
+        });
     }
-    
-   return buildRows(gridSize, []);
+
+    const grid = buildRows({
+        rowIndex: gridSize - 1,
+        accumulator: []
+    });
+
+    return grid;
 };
 
 /**
@@ -150,7 +169,7 @@ export function addProximities(gridArray) {
                     currentRow: rowIndex + offset,
                     origArray,
                     perimeterSize,
-                    reducerCallback: proximiterReducer,
+                    reducerCallback: proximityReducer,
                     targetColumn: columnIndex,
                     targetRow: rowIndex
                 }
@@ -190,37 +209,37 @@ export function processTarget(params) {
     const target = grid[targetRow][targetColumn];
     const {
         isMeow,
-        proximities,
-        column,
-        row
+        proximities
     } = target;
-
+    const newTarget = TileChangeFactory({tileParams: {...target}, row: targetRow, column: targetColumn});
     const isBlank = !isMeow && proximities == 0;
     // IF it's not blank then it has a mine or
     // it has mines in proximity so let's return it
     // and not try to recurse it's perimeters.
     if (!isBlank) {
-        return [...accumulator, TileFactory({...target})]
+        return [...accumulator, newTarget];
     }
 
     return recursePerimeters({
         perimeters: reducePerimeter({
             previousTotal: [],
             currentPerimeterLength: perimeterSize * perimeterSize,
-            currentColumn: column + offset,
-            currentRow: row + offset,
+            currentColumn: targetColumn + offset,
+            currentRow: targetRow + offset,
             origArray: grid,
             perimeterSize,
             reducerCallback: (currentRow, currentColumn, previousValue, originalGrid) => {
-                const foundValue = originalGrid[currentRow] && originalGrid[currentRow][currentColumn];
-                //const inAccumulator = accumulatorWithTarget.find((tile) => tile.column == currentColumn && tile.row == currentRow);
-                return (foundValue) ? [...previousValue, {...foundValue}] : [...previousValue];
+                const tile = originalGrid[currentRow] && originalGrid[currentRow][currentColumn];
+                return (tile) ? 
+                    [...previousValue, TileChangeFactory({tileParams: {...tile}, row: currentRow, column: currentColumn})] 
+                        :
+                    [...previousValue];
             },
-            targetColumn: column,
-            targetRow: row
+            targetColumn,
+            targetRow,
         }),
         grid,
-        targetAccumulator: [...accumulator, TileFactory({...target})]
+        targetAccumulator: [...accumulator, newTarget]
     });
 }
 
@@ -276,10 +295,10 @@ function mapChanges(grid, changes) {
                 tile => tile.row == rowIndex && tile.column == columnIndex
             );
             if (findChange) {
-                return {...column, isRevealed: true}
+                return TileFactory({...column, isRevealed: true})
             }
 
-            return {...column};
+            return TileFactory(column);
         })
     });
 }

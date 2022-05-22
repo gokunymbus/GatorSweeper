@@ -4,6 +4,7 @@ import {
     processTarget,
     updateGridFromTarget
 } from './Grid';
+
 import {
     testData,
     testDataThreeRevealed,

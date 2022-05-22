@@ -3,7 +3,7 @@ import React from 'react';
 import Grid from './Grid';
 
 import {
-    createGrid,
+    createGridWithProximites,
     updateGridFromTarget
 } from '../library/Grid';
 
@@ -12,17 +12,17 @@ export default class Meowsweeper extends React.Component {
     constructor(props) {
         super(props);
         const defaultGridSize = 10;
-        this.state = {grid: createGrid({
+        const newGrid = createGridWithProximites({
             gridSize: defaultGridSize,
             randomMin: 1,
             randomMax: 10
-        })};
+        });
+        this.state = {grid: newGrid};
     }
 
     onTileSelected = (e, props) => {
         const {row, column} = props;
         const {grid} = this.state;
-        console.log("hello from the top", props.row, props.column);
 
         if (grid[row][column].isMeow) {
             console.log("GAME OVER");
@@ -32,7 +32,7 @@ export default class Meowsweeper extends React.Component {
         const newGrid = updateGridFromTarget({
             targetRowIndex: row,
             targetColumnIndex: column,
-            grid: this.state.grid
+            grid
         });
 
         this.setState({grid: newGrid});
