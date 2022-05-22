@@ -2,7 +2,8 @@ import {
     reducePerimeter,
     proximityReducer,
     processTarget,
-    updateGridFromTarget
+    updateGridFromTarget,
+    createGridWithProximites
 } from './Grid';
 
 import {
@@ -17,6 +18,31 @@ const perimeterLength = 3;
 const offset = Math.floor(perimeterLength / 2);
 
 describe('Grid', () => {
+    test('createGridWithProximites - properly creates grid with proximities', () => {
+        const size = 100;
+        const grid = createGridWithProximites({
+            gridSize: size,
+            randomMin: 1,
+            randomMax: 5
+        });
+        
+        expect(grid).toBeDefined();
+        expect(grid[size -1][size -1]).toBeDefined();
+        expect(grid.length).toBe(size);
+        expect(grid[0].length).toBe(size);
+
+        const proximitiesCount = grid.reduce((previousValue, currentValue) => {
+            return currentValue.reduce((secondPreviousValue, secondCurrentValue) => {
+                if (secondCurrentValue.proximities > 0) {
+                    return secondPreviousValue + 1;
+                }
+                return secondPreviousValue;
+            }, 0);
+        }, 0)
+
+        expect(proximitiesCount).toBeGreaterThan(0);
+    });
+
     test('reducePerimeter - correctly calculates 8 meows in proximity', () => {
         const testStartingColumn = 1;
         const testStartingRow = 2;
