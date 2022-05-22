@@ -1,21 +1,59 @@
-export function generateGrid(rowLength, columnLength, getTileData = (row, column) => {}) {
+import TileFactory from "./TileFactory";
 
-    function buildColumns(currentColumnLength, colArray, currentRowIndex, currentColumnIndex = 0) {
-        if (currentColumnLength == 0) {
-            return colArray;
+const perimeterSize = 3;
+const offset = Math.floor(perimeterSize/2);
+
+/**
+ * The entry point function for creating the grid, creates the grid and 
+ * adds proximities to the grid. 
+ * 
+ * @param {object} params params object
+ * @param {number} params.gridSize The size of the grid (gridsize * 2)
+ * @param {number} params.randomMin The minimum value in random number generation.
+ * @param {number} params.randomMax The maximum value in number generation.
+ * @returns new Grid with proximity information included.
+ */
+export function createGridWithProximites(params) {
+    const {
+        gridSize,
+        randomMin,
+        randomMax
+    } = params;
+
+    return addProximities(
+        createGrid({
+            gridSize,
+            randomMin,
+            randomMax
+        })
+    );
+}
+
+export function createGrid(params) {
+    const {
+        gridSize,
+        randomMin,
+        randomMax
+    } = params;
+
+    function buildColumns(columnLength, accumulator, rowIndex, columnIndex = 0) {
+        if (columnLength == 0) {
+            return accumulator;
         }
 
-        const columnArray = colArray.concat(
-            getTileData(
-                currentRowIndex,
-                currentColumnIndex
-            )
+        const newAccumulator = accumulator.concat(
+            TileFactory({
+                row: rowIndex,
+                column: columnIndex,
+                min: randomMin,
+                max: randomMax
+            })
         );
 
-        const newColumnLength = currentColumnLength - 1;
-        const newRowIndex = currentRowIndex;
-        const newColumnIndex = columnArray.length;
-        return buildColumns(newColumnLength, columnArray, newRowIndex, newColumnIndex);
+        const newColumnLength = columnLength - 1;
+        const newRowIndex = rowIndex;
+        const newColumnIndex = accumulator.length;
+        return buildColumns(newColumnLength, newAccumulator, newRowIndex, newColumnIndex);
     }
 
     function buildRows(currentRowLength, currentArray, currentRowIndex = 0) {
@@ -24,12 +62,12 @@ export function generateGrid(rowLength, columnLength, getTileData = (row, column
         }
 
         // @TODO Still could be some nested objects that are not being cloned.
-        const newRowsArray = [...currentArray, buildColumns(columnLength, [], currentRowIndex)];
+        const newRowsArray = [...currentArray, buildColumns(gridSize, [], currentRowIndex)];
         const newRowLength = currentRowLength - 1; 
         return buildRows(newRowLength, newRowsArray, newRowsArray.length);
     }
     
-   return buildRows(rowLength, []);
+   return buildRows(gridSize, []);
 };
 
 /**
@@ -57,8 +95,7 @@ export function reducePerimeter(params) {
         targetRow,
         targetColumn,
         reducerCallback,
-        origArray,
-        perimeterSize
+        origArray
     } = params;
 
     if (currentPerimeterLength == 0) {
@@ -87,7 +124,6 @@ export function reducePerimeter(params) {
             startingRow,
             startingColumn,
             origArray,
-            perimeterSize,
             reducerCallback,
             targetRow,
             targetColumn
@@ -95,19 +131,17 @@ export function reducePerimeter(params) {
     );
 }
 
-export const reduceMeowCallback = (currentRow, currentColumn, previousTotal, origArray) => {
+export const proximityReducer = function(currentRow, currentColumn, previousTotal, origArray)  {
     const foundValue = origArray[currentRow] && origArray[currentRow][currentColumn];
     return (foundValue && foundValue.isMeow) ? previousTotal + 1 : previousTotal;
 }
 
-export function addProximities(gridArray, perimeterSize) {
+export function addProximities(gridArray) {
     return gridArray.map((row, rowIndex, origArray) => {
         return row.map((column, columnIndex) => {
             if (column.isMeow) {
-                return {...column};
+                return TileFactory({...column});
             }
-
-            const offset = Math.floor(perimeterSize/2);
             const meowsInPerimeter = reducePerimeter(
                 {
                     previousTotal: 0,
@@ -116,95 +150,89 @@ export function addProximities(gridArray, perimeterSize) {
                     currentRow: rowIndex + offset,
                     origArray,
                     perimeterSize,
-                    reducerCallback: reduceMeowCallback,
+                    reducerCallback: proximiterReducer,
                     targetColumn: columnIndex,
                     targetRow: rowIndex
                 }
             );
-            return {...column, "proximities": meowsInPerimeter};
+            return TileFactory({...column, proximities: meowsInPerimeter});
         });
     });
 }
 
-export function createGrid() {
-    const gridSize = 10;
-    const minRandomValue = 1;
-    const maxRandomValue = 10;
-    const perimeterSize = 3; // The wxh of the square around a target should be odd.
-    // const propability = (gridSize * gridSize) / maxRandomValue;
-
-    function randomMinMax(min, max) { // min and max included 
-        return Math.floor(Math.random() * (max - min + 1) + min)
-    }
-
-    function tileData(row, column) {
-        const isMeow = randomMinMax(minRandomValue, maxRandomValue) == 1 ? true : false;
-        return {
-            // proximities: 0, To be added later
-            isMeow: isMeow,
-            isRevealed: false,
-            row,
-            column
-        }
-    }
-
-    const getTileData = (row, column) => {
-        return tileData(row, column);
-    };
-
-    const grid = generateGrid(gridSize, gridSize, getTileData);
-    const gridWithProximities = addProximities(grid, perimeterSize);
-    return gridWithProximities;
-}
-
-const perimeterSize = 3;
-const offset = Math.floor(perimeterSize/2);
-
+/**
+ * The first function in a series of mutual recursion calls that adds
+ * the target value to an accumulator value and calls recursePerimeters
+ * which in turn calls this function again until all base conditions
+ * are met. 
+ * 
+ * @param {object} params The main params object
+ * @param {Grid} params.grid The grid matrix.
+ * @param {number} params.targetColumn The column index of the target to process.
+ * @param {number} params.targetRow The row index of the target to process.
+ * @param {array} params.accumulator The accumulating array
+ */
 export function processTarget(params) {
     const {
-        origArray,
+        grid,
         targetColumn,
         targetRow,
         accumulator = []
     } = params;
 
+    // If the target is already in our list of changes
+    // we have completed the base condition of this recursive call.
     const doesTargetExist = accumulator.find(tile => targetColumn == tile.column && targetRow == tile.row);
     if (doesTargetExist) {
         return accumulator;
     }
 
-    const target = origArray[targetRow][targetColumn];
-    const targetPerimeters = !target.isMeow && target.proximities == 0 ? reducePerimeter({
-        previousTotal: [],
-        currentPerimeterLength: perimeterSize * perimeterSize,
-        currentColumn: targetColumn + offset,
-        currentRow: targetRow + offset,
-        origArray,
-        perimeterSize,
-        reducerCallback: (currentRow, currentColumn, previousValue, origArray) => {
-            const foundValue = origArray[currentRow] && origArray[currentRow][currentColumn];
-            //const inAccumulator = accumulatorWithTarget.find((tile) => tile.column == currentColumn && tile.row == currentRow);
-            return (foundValue) ? [...previousValue, {...foundValue}] : [...previousValue];
-        },
-        targetColumn: targetColumn,
-        targetRow: targetRow
-    }) : [];
+    const target = grid[targetRow][targetColumn];
+    const {
+        isMeow,
+        proximities,
+        column,
+        row
+    } = target;
 
-    const newAccumulator = [...accumulator, {...target}];
+    const isBlank = !isMeow && proximities == 0;
+    // IF it's not blank then it has a mine or
+    // it has mines in proximity so let's return it
+    // and not try to recurse it's perimeters.
+    if (!isBlank) {
+        return [...accumulator, TileFactory({...target})]
+    }
+
     return recursePerimeters({
-        perimeters: targetPerimeters,
-        origArray,
-        targetAccumulator: newAccumulator
+        perimeters: reducePerimeter({
+            previousTotal: [],
+            currentPerimeterLength: perimeterSize * perimeterSize,
+            currentColumn: column + offset,
+            currentRow: row + offset,
+            origArray: grid,
+            perimeterSize,
+            reducerCallback: (currentRow, currentColumn, previousValue, originalGrid) => {
+                const foundValue = originalGrid[currentRow] && originalGrid[currentRow][currentColumn];
+                //const inAccumulator = accumulatorWithTarget.find((tile) => tile.column == currentColumn && tile.row == currentRow);
+                return (foundValue) ? [...previousValue, {...foundValue}] : [...previousValue];
+            },
+            targetColumn: column,
+            targetRow: row
+        }),
+        grid,
+        targetAccumulator: [...accumulator, TileFactory({...target})]
     });
 }
 
 /**
+ * A function used in Mutual Recursion with processTarget that recurses perimeters
+ * and calls processTarget on each one.
  * 
  * @param {object}  params Perimeters
  * @param {Array}   params.perimeters The perimeters reduced from previous call.
  * @param {number}  params.currentIndex The index this call is currently on.
  * @param {Array}   params.targetAccumulator The property that all targets accumulate too.
- * @param {array}   params.origArray The original Grid array. 
+ * @param {array}   params.grid The original Grid array. 
  * @returns 
  */
 function recursePerimeters(params) {
@@ -212,27 +240,25 @@ function recursePerimeters(params) {
         perimeters,
         currentIndex = perimeters.length -1,
         targetAccumulator,
-        origArray
+        grid
     } = params;
 
+    // Base condition
     if (currentIndex == -1) {
         return targetAccumulator;
     }
-
-    const currentPerimeter = perimeters[currentIndex];
     
-    const newTargetAccumulator = recursePerimeters({
-        perimeters,
-        currentIndex: currentIndex -1,
-        targetAccumulator,
-        origArray
-    });
-
+    const perimeter = perimeters[currentIndex];
     return processTarget({
-        origArray,
-        targetColumn: currentPerimeter.column,
-        targetRow: currentPerimeter.row,
-        accumulator: newTargetAccumulator
+        grid,
+        targetColumn: perimeter.column,
+        targetRow: perimeter.row,
+        accumulator: recursePerimeters({
+            perimeters,
+            currentIndex: currentIndex -1,
+            targetAccumulator,
+            grid
+        })
     });
 }
 
@@ -277,7 +303,7 @@ export function updateGridFromTarget(params) {
     return mapChanges(
         grid,
         processTarget({
-            origArray: grid,
+            grid,
             targetRow: targetRowIndex,
             targetColumn: targetColumnIndex
         })

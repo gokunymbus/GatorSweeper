@@ -1,6 +1,6 @@
 import {
     reducePerimeter,
-    reduceMeowCallback,
+    proximityReducer,
     processTarget,
     updateGridFromTarget
 } from './Grid';
@@ -26,7 +26,7 @@ describe('Grid', () => {
             currentRow: testStartingRow + offset,
             origArray: testData,
             perimeterSize: perimeterLength,
-            reducerCallback: reduceMeowCallback,
+            reducerCallback: proximityReducer,
             targetRow: testStartingRow,
             targetColumn: testStartingColumn
         });
@@ -44,7 +44,7 @@ describe('Grid', () => {
             currentRow: testStartingRow + offset,
             origArray: testData,
             perimeterSize: perimeterLength,
-            reducerCallback: reduceMeowCallback
+            reducerCallback: proximityReducer
         });
         expect(expectedTotal).toBe(2);
     });
@@ -53,7 +53,7 @@ describe('Grid', () => {
         const targetColumn = 0;
         const targetRow = 0;
         const changes = processTarget({
-            origArray: testDataTwo,
+            grid: testDataTwo,
             targetColumn,
             targetRow
         });

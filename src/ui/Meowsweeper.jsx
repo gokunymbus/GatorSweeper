@@ -8,9 +8,15 @@ import {
 } from '../library/Grid';
 
 export default class Meowsweeper extends React.Component {
+    
     constructor(props) {
         super(props);
-        this.state = {grid: createGrid()};
+        const defaultGridSize = 10;
+        this.state = {grid: createGrid({
+            gridSize: defaultGridSize,
+            randomMin: 1,
+            randomMax: 10
+        })};
     }
 
     onTileSelected = (e, props) => {
