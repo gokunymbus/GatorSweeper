@@ -160,7 +160,7 @@ export function createGrid() {
 const perimeterSize = 3;
 const offset = Math.floor(perimeterSize/2);
 
-export function buildPerimeters(params) {
+export function processTarget(params) {
     const {
         origArray,
         targetColumn,
@@ -198,6 +198,15 @@ export function buildPerimeters(params) {
     });
 }
 
+/**
+ * 
+ * @param {object}  params Perimeters
+ * @param {Array}   params.perimeters The perimeters reduced from previous call.
+ * @param {number}  params.currentIndex The index this call is currently on.
+ * @param {Array}   params.targetAccumulator The property that all targets accumulate too.
+ * @param {array}   params.origArray The original Grid array. 
+ * @returns 
+ */
 function recursePerimeters(params) {
     const {
         perimeters,
@@ -219,7 +228,7 @@ function recursePerimeters(params) {
         origArray
     });
 
-    return buildPerimeters({
+    return processTarget({
         origArray,
         targetColumn: currentPerimeter.column,
         targetRow: currentPerimeter.row,
@@ -227,6 +236,13 @@ function recursePerimeters(params) {
     });
 }
 
+/**
+ * Maps an array of objects to update to the original Grid
+ * 
+ * @param {Array} grid The matrix of tiles
+ * @param {Array} changes An array of tile objects to be applied back to the grid. 
+ * @returns New array with changes mapped.
+ */
 function mapChanges(grid, changes) {
     return grid.map((row, rowIndex) => {
         return row.map((column, columnIndex) => {
@@ -243,33 +259,27 @@ function mapChanges(grid, changes) {
 }
 
 /**
- * Function that determines which tiles need to be updated
- * 
- * @param {*} params 
- * @returns {array} An array of tiles to be updated.
+ * A function that starts the process of collecting changes
+ * and mapping them back to a new version of the Grid.
+ * @param {object} param Object containing all params.
+ * @param {number} params.targetRowIndex The index of the target row
+ * @param {number} params.targetColumnIndex The index of the target column.
+ * @param {Array<Array>} params.grid The current grid or "Matrix" to perform updates on.
+ * @returns {array} A new and updated version of grid "matrix"
  */
-export function updateTile(params) { 
+export function updateGridFromTarget(params) { 
     const {
-        rowIndex,
-        columnIndex,
-        originalGrid
+        targetRowIndex,
+        targetColumnIndex,
+        grid
     } = params;
 
-    const tile = originalGrid[rowIndex][columnIndex];
-
-    // Tile will be uncovered but the game
-    // may be over or a single tile will be updated.
-    if (tile.isMeow || tile.proximities > 0) {
-        return mapChanges(originalGrid, [{...tile}]);
-    }
-
-    const perims = buildPerimeters({
-        origArray: originalGrid,
-        targetColumn: columnIndex,
-        targetRow: rowIndex
-    });
-
-    const mappedChanges = mapChanges(originalGrid, perims)
-
-    return mappedChanges;
+    return mapChanges(
+        grid,
+        processTarget({
+            origArray: grid,
+            targetRow: targetRowIndex,
+            targetColumn: targetColumnIndex
+        })
+    );
 }

@@ -4,7 +4,7 @@ import Grid from './Grid';
 
 import {
     createGrid,
-    updateTile
+    updateGridFromTarget
 } from '../library/Grid';
 
 export default class Meowsweeper extends React.Component {
@@ -23,10 +23,10 @@ export default class Meowsweeper extends React.Component {
             return;
         }
 
-        const newGrid = updateTile({
-            rowIndex: row,
-            columnIndex: column,
-            originalGrid: this.state.grid
+        const newGrid = updateGridFromTarget({
+            targetRowIndex: row,
+            targetColumnIndex: column,
+            grid: this.state.grid
         });
 
         this.setState({grid: newGrid});

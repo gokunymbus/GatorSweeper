@@ -105,7 +105,6 @@ export const testData = [
     ]
 ];
 
-
 export const testDataTwo = [
   [
     {
@@ -227,4 +226,361 @@ export const testDataTwo = [
       "proximities": 0
     }
   ]
-]
+];
+
+
+export const testDataTwoRevealed = [
+  [
+    {
+      "isMeow": false,
+      "isRevealed": true,
+      "row": 0,
+      "column": 0,
+      "proximities": 0
+    },
+    {
+      "isMeow": false,
+      "isRevealed": true,
+      "row": 0,
+      "column": 1,
+      "proximities": 0
+    },
+    {
+      "isMeow": false,
+      "isRevealed": true,
+      "row": 0,
+      "column": 2,
+      "proximities": 1
+    },
+    {
+      "isMeow": true,
+      "isRevealed": false,
+      "row": 0,
+      "column": 3,
+      "proximities": 0
+    }
+  ],
+  [
+    {
+      "isMeow": false,
+      "isRevealed": true,
+      "row": 1,
+      "column": 0,
+      "proximities": 0
+    },
+    {
+      "isMeow": false,
+      "isRevealed": true,
+      "row": 1,
+      "column": 1,
+      "proximities": 0
+    },
+    {
+      "isMeow": false,
+      "isRevealed": true,
+      "row": 1,
+      "column": 2,
+      "proximities": 1
+    },
+    {
+      "isMeow": false,
+      "isRevealed": true,
+      "row": 1,
+      "column": 3,
+      "proximities": 1
+    }
+  ],
+  [
+    {
+      "isMeow": false,
+      "isRevealed": true,
+      "row": 2,
+      "column": 0,
+      "proximities": 0
+    },
+    {
+      "isMeow": false,
+      "isRevealed": true,
+      "row": 2,
+      "column": 1,
+      "proximities": 0
+    },
+    {
+      "isMeow": false,
+      "isRevealed": true,
+      "row": 2,
+      "column": 2,
+      "proximities": 0
+    },
+    {
+      "isMeow": false,
+      "isRevealed": true,
+      "row": 2,
+      "column": 3,
+      "proximities": 0
+    }
+  ],
+  [
+    {
+      "isMeow": false,
+      "isRevealed": true,
+      "row": 3,
+      "column": 0,
+      "proximities": 0
+    },
+    {
+      "isMeow": false,
+      "isRevealed": true,
+      "row": 3,
+      "column": 1,
+      "proximities": 0
+    },
+    {
+      "isMeow": false,
+      "isRevealed": true,
+      "row": 3,
+      "column": 2,
+      "proximities": 0
+    },
+    {
+      "isMeow": false,
+      "isRevealed": true,
+      "row": 3,
+      "column": 3,
+      "proximities": 0
+    }
+  ]
+];
+
+export const testDataThreeRevealed = [
+  [
+    {
+      "isMeow": false,
+      "isRevealed": false,
+      "row": 0,
+      "column": 0,
+      "proximities": 0
+    },
+    {
+      "isMeow": false,
+      "isRevealed": false,
+      "row": 0,
+      "column": 1,
+      "proximities": 0
+    },
+    {
+      "isMeow": false,
+      "isRevealed": false,
+      "row": 0,
+      "column": 2,
+      "proximities": 1
+    },
+    {
+      "isMeow": true,
+      "isRevealed": true,
+      "row": 0,
+      "column": 3,
+      "proximities": 0
+    }
+  ],
+  [
+    {
+      "isMeow": false,
+      "isRevealed": false,
+      "row": 1,
+      "column": 0,
+      "proximities": 0
+    },
+    {
+      "isMeow": false,
+      "isRevealed": false,
+      "row": 1,
+      "column": 1,
+      "proximities": 0
+    },
+    {
+      "isMeow": false,
+      "isRevealed": false,
+      "row": 1,
+      "column": 2,
+      "proximities": 1
+    },
+    {
+      "isMeow": false,
+      "isRevealed": false,
+      "row": 1,
+      "column": 3,
+      "proximities": 1
+    }
+  ],
+  [
+    {
+      "isMeow": false,
+      "isRevealed": false,
+      "row": 2,
+      "column": 0,
+      "proximities": 0
+    },
+    {
+      "isMeow": false,
+      "isRevealed": false,
+      "row": 2,
+      "column": 1,
+      "proximities": 0
+    },
+    {
+      "isMeow": false,
+      "isRevealed": false,
+      "row": 2,
+      "column": 2,
+      "proximities": 0
+    },
+    {
+      "isMeow": false,
+      "isRevealed": false,
+      "row": 2,
+      "column": 3,
+      "proximities": 0
+    }
+  ],
+  [
+    {
+      "isMeow": false,
+      "isRevealed": false,
+      "row": 3,
+      "column": 0,
+      "proximities": 0
+    },
+    {
+      "isMeow": false,
+      "isRevealed": false,
+      "row": 3,
+      "column": 1,
+      "proximities": 0
+    },
+    {
+      "isMeow": false,
+      "isRevealed": false,
+      "row": 3,
+      "column": 2,
+      "proximities": 0
+    },
+    {
+      "isMeow": false,
+      "isRevealed": false,
+      "row": 3,
+      "column": 3,
+      "proximities": 0
+    }
+  ]
+];
+
+export const processTargetsResult = [
+  {
+     "isMeow":false,
+     "isRevealed":false,
+     "row":0,
+     "column":0,
+     "proximities":0
+  },
+  {
+     "isMeow":false,
+     "isRevealed":false,
+     "row":1,
+     "column":1,
+     "proximities":0
+  },
+  {
+     "isMeow":false,
+     "isRevealed":false,
+     "row":2,
+     "column":2,
+     "proximities":0
+  },
+  {
+     "isMeow":false,
+     "isRevealed":false,
+     "row":3,
+     "column":3,
+     "proximities":0
+  },
+  {
+     "isMeow":false,
+     "isRevealed":false,
+     "row":3,
+     "column":2,
+     "proximities":0
+  },
+  {
+     "isMeow":false,
+     "isRevealed":false,
+     "row":3,
+     "column":1,
+     "proximities":0
+  },
+  {
+     "isMeow":false,
+     "isRevealed":false,
+     "row":3,
+     "column":0,
+     "proximities":0
+  },
+  {
+     "isMeow":false,
+     "isRevealed":false,
+     "row":2,
+     "column":1,
+     "proximities":0
+  },
+  {
+     "isMeow":false,
+     "isRevealed":false,
+     "row":2,
+     "column":0,
+     "proximities":0
+  },
+  {
+     "isMeow":false,
+     "isRevealed":false,
+     "row":1,
+     "column":0,
+     "proximities":0
+  },
+  {
+     "isMeow":false,
+     "isRevealed":false,
+     "row":0,
+     "column":1,
+     "proximities":0
+  },
+  {
+     "isMeow":false,
+     "isRevealed":false,
+     "row":1,
+     "column":2,
+     "proximities":1
+  },
+  {
+     "isMeow":false,
+     "isRevealed":false,
+     "row":0,
+     "column":2,
+     "proximities":1
+  },
+  {
+     "isMeow":false,
+     "isRevealed":false,
+     "row":2,
+     "column":3,
+     "proximities":0
+  },
+  {
+     "isMeow":false,
+     "isRevealed":false,
+     "row":1,
+     "column":3,
+     "proximities":1
+  }
+];
+
+
