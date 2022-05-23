@@ -1,7 +1,5 @@
 import { TileFactory, TileChangeFactory } from "./Tile";
-
-const perimeterSize = 3;
-const offset = Math.floor(perimeterSize/2);
+import InRange from "./InRange";
 
 /**
  * The entry point function for creating the grid, creates the grid and 
@@ -29,6 +27,16 @@ export function createGridWithProximites(params) {
     );
 }
 
+/**
+ * Creates and returns a new multi-dimensional array with basic tile data from 
+ * a TileFactory call. 
+ * 
+ * @param {object} params params object
+ * @param {number} params.gridSize The size of the grid (gridsize * 2)
+ * @param {number} params.randomMin The minimum value in random number generation.
+ * @param {number} params.randomMax The maximum value in number generation.
+ * @returns 
+ */
 export function createGrid(params) {
     const {
         gridSize,
@@ -89,92 +97,81 @@ export function createGrid(params) {
     return grid;
 };
 
-/**
- * A recursive function that decrements a total length 
- * and decrements a "row" and "column" values allowing
- * a callback function to traverse the parimeter of a target
- * in a multi-demensional array of equal length columns across
- * any number of rows.
- * 
- * @param {Number} params.previousTotal The running total over each recursion call
- * @param {Number} params.currentPerimeterLength The entire length of the perimeter.
- * @param {Number} params.currentColumn The current index of the column in each recursive call.
- * @param {Number} params.currentRow The current index of the row in each recursive call.
- * @param {Number} 
- * @returns {Number} The total number of tiles in the perimeter of the target
- */
-export function reducePerimeter(params) {
+export function rangeFactory(params) {
     const {
-        previousTotal,
-        currentPerimeterLength,
-        currentColumn,
-        currentRow,
-        startingRow = currentRow,
-        startingColumn = currentColumn,
-        targetRow,
-        targetColumn,
-        reducerCallback,
-        origArray
+        perimeterSize = 3,
+        offset = Math.floor(perimeterSize/2),
+        targetRowIndex,
+        targetColumnIndex
     } = params;
 
-    if (currentPerimeterLength == 0) {
-        return previousTotal;
-    }
-
-    const isTarget = currentColumn == targetColumn && targetRow == currentRow;
-    const newTotal = !isTarget ? reducerCallback(
-        currentRow,
-        currentColumn,
-        previousTotal,
-        origArray
-    ) : previousTotal;
-
-    const newPerimLength = currentPerimeterLength -1;
-    const isNewRow = newPerimLength % perimeterSize == 0;
-    const newColumn = isNewRow ? startingColumn : currentColumn - 1;
-    const newRow = isNewRow ? currentRow - 1 : currentRow;
-   
-    return reducePerimeter(
-        {
-            previousTotal: newTotal,
-            currentPerimeterLength: newPerimLength,
-            currentColumn: newColumn,
-            currentRow: newRow,
-            startingRow,
-            startingColumn,
-            origArray,
-            reducerCallback,
-            targetRow,
-            targetColumn
+    return {
+        begin: {
+            row: targetRowIndex - offset,
+            column: targetColumnIndex - offset
+        },
+        end: {
+            row: targetRowIndex + offset,
+            column: targetColumnIndex + offset
+        },
+        target: {
+            row: targetRowIndex,
+            column: targetColumnIndex
         }
-    );
-}
+    }
+};
 
-export const proximityReducer = function(currentRow, currentColumn, previousTotal, origArray)  {
-    const foundValue = origArray[currentRow] && origArray[currentRow][currentColumn];
-    return (foundValue && foundValue.isMeow) ? previousTotal + 1 : previousTotal;
+export function getPerimeters(params) {
+    const {
+        range,
+        grid
+    } = params;
+
+    return grid.reduce((previousRow, currentRow, currentRowIndex) => {
+        return previousRow.concat(
+            currentRow.reduce((previousColumn, currentColumn, currentColumnIndex) => {
+                const { begin, end, target } = range;
+                const rowInRange = InRange(begin.row, end.row, currentRowIndex);
+                const columnInRange = InRange(begin.column, end.column, currentColumnIndex);
+                const isTarget = currentRowIndex == target.row && currentColumnIndex == target.column;
+
+                // indexs not in range
+                if (!rowInRange || !columnInRange || isTarget) {
+                    return previousColumn;
+                }
+
+                return previousColumn.concat(TileChangeFactory({
+                    tileParams: {...currentColumn},
+                    row: currentRowIndex,
+                    column: currentColumnIndex
+                }));
+            }, [])
+        )
+    }, []);
 }
 
 export function addProximities(gridArray) {
-    return gridArray.map((row, rowIndex, origArray) => {
+    return gridArray.map((row, rowIndex) => {
         return row.map((column, columnIndex) => {
             if (column.isMeow) {
                 return TileFactory({...column});
             }
-            const meowsInPerimeter = reducePerimeter(
-                {
-                    previousTotal: 0,
-                    currentPerimeterLength: perimeterSize * perimeterSize,
-                    currentColumn: columnIndex + offset,
-                    currentRow: rowIndex + offset,
-                    origArray,
-                    perimeterSize,
-                    reducerCallback: proximityReducer,
-                    targetColumn: columnIndex,
-                    targetRow: rowIndex
-                }
-            );
-            return TileFactory({...column, proximities: meowsInPerimeter});
+
+            const range = rangeFactory({
+                targetRowIndex: rowIndex,
+                targetColumnIndex: columnIndex
+            });
+
+            const proximities = getPerimeters({
+                range,
+                grid: gridArray
+            });
+
+            const totalMinesInRange = proximities.reduce((previousValue, currentValue) => {
+                return currentValue.isMeow ? previousValue + 1 : previousValue;
+            }, 0);
+
+            return TileFactory({...column, proximities: totalMinesInRange});
         });
     });
 }
@@ -220,24 +217,18 @@ export function processTarget(params) {
         return [...accumulator, newTarget];
     }
 
+    const range = rangeFactory({
+        targetRowIndex: targetRow,
+        targetColumnIndex: targetColumn
+    });
+
+    const targetProximities = getPerimeters({
+        range,
+        grid
+    });
+
     return recursePerimeters({
-        perimeters: reducePerimeter({
-            previousTotal: [],
-            currentPerimeterLength: perimeterSize * perimeterSize,
-            currentColumn: targetColumn + offset,
-            currentRow: targetRow + offset,
-            origArray: grid,
-            perimeterSize,
-            reducerCallback: (currentRow, currentColumn, previousValue, originalGrid) => {
-                const tile = originalGrid[currentRow] && originalGrid[currentRow][currentColumn];
-                return (tile) ? 
-                    [...previousValue, TileChangeFactory({tileParams: {...tile}, row: currentRow, column: currentColumn})] 
-                        :
-                    [...previousValue];
-            },
-            targetColumn,
-            targetRow,
-        }),
+        perimeters: targetProximities,
         grid,
         targetAccumulator: [...accumulator, newTarget]
     });

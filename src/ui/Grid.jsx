@@ -15,7 +15,7 @@ export default class Grid extends React.Component {
 
     renderColumn(column, rowIndex, columnIndex) {
        return (
-        <div className="Grid__column">
+        <div className="Grid__column" key={columnIndex}>
             <Tile {...column} onTileSelected={this.onTileSelected} row={rowIndex} column={columnIndex} />
         </div>
        )
@@ -23,7 +23,7 @@ export default class Grid extends React.Component {
 
     renderRow(columns, rowIndex) {
         return (
-            <div className="Grid__row">
+            <div className="Grid__row" key={rowIndex}>
                 {columns.map((column, columnIndex) => this.renderColumn(column, rowIndex, columnIndex))}
             </div>
         )
@@ -32,7 +32,7 @@ export default class Grid extends React.Component {
     render() {
         const { gridData } = this.props;
         return (
-            <div class="Grid">
+            <div className="Grid">
                 {
                     gridData.map((row, rowIndex) => this.renderRow(row, rowIndex))
                 }

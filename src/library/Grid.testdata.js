@@ -411,112 +411,110 @@ export const testDataThreeRevealed = [
   ]
 ];
 
-export const processTargetsResult = [
+export const processTargetsResult =  [
   {
-     "isMeow":false,
-     "isRevealed":false,
-     "row":0,
-     "column":0,
-     "proximities":0
+    isMeow: false,
+    isRevealed: false,
+    proximities: 0,
+    row: 0,
+    column: 0
   },
   {
-     "isMeow":false,
-     "isRevealed":false,
-     "row":1,
-     "column":1,
-     "proximities":0
+    isMeow: false,
+    isRevealed: false,
+    proximities: 0,
+    row: 0,
+    column: 1
   },
   {
-     "isMeow":false,
-     "isRevealed":false,
-     "row":2,
-     "column":2,
-     "proximities":0
+    isMeow: false,
+    isRevealed: false,
+    proximities: 1,
+    row: 0,
+    column: 2
   },
   {
-     "isMeow":false,
-     "isRevealed":false,
-     "row":3,
-     "column":3,
-     "proximities":0
+    isMeow: false,
+    isRevealed: false,
+    proximities: 0,
+    row: 1,
+    column: 0
   },
   {
-     "isMeow":false,
-     "isRevealed":false,
-     "row":3,
-     "column":2,
-     "proximities":0
+    isMeow: false,
+    isRevealed: false,
+    proximities: 0,
+    row: 1,
+    column: 1
   },
   {
-     "isMeow":false,
-     "isRevealed":false,
-     "row":3,
-     "column":1,
-     "proximities":0
+    isMeow: false,
+    isRevealed: false,
+    proximities: 1,
+    row: 1,
+    column: 2
   },
   {
-     "isMeow":false,
-     "isRevealed":false,
-     "row":3,
-     "column":0,
-     "proximities":0
+    isMeow: false,
+    isRevealed: false,
+    proximities: 0,
+    row: 2,
+    column: 0
   },
   {
-     "isMeow":false,
-     "isRevealed":false,
-     "row":2,
-     "column":1,
-     "proximities":0
+    isMeow: false,
+    isRevealed: false,
+    proximities: 0,
+    row: 2,
+    column: 1
   },
   {
-     "isMeow":false,
-     "isRevealed":false,
-     "row":2,
-     "column":0,
-     "proximities":0
+    isMeow: false,
+    isRevealed: false,
+    proximities: 0,
+    row: 2,
+    column: 2
   },
   {
-     "isMeow":false,
-     "isRevealed":false,
-     "row":1,
-     "column":0,
-     "proximities":0
+    isMeow: false,
+    isRevealed: false,
+    proximities: 1,
+    row: 1,
+    column: 3
   },
   {
-     "isMeow":false,
-     "isRevealed":false,
-     "row":0,
-     "column":1,
-     "proximities":0
+    isMeow: false,
+    isRevealed: false,
+    proximities: 0,
+    row: 2,
+    column: 3
   },
   {
-     "isMeow":false,
-     "isRevealed":false,
-     "row":1,
-     "column":2,
-     "proximities":1
+    isMeow: false,
+    isRevealed: false,
+    proximities: 0,
+    row: 3,
+    column: 2
   },
   {
-     "isMeow":false,
-     "isRevealed":false,
-     "row":0,
-     "column":2,
-     "proximities":1
+    isMeow: false,
+    isRevealed: false,
+    proximities: 0,
+    row: 3,
+    column: 1
   },
   {
-     "isMeow":false,
-     "isRevealed":false,
-     "row":2,
-     "column":3,
-     "proximities":0
+    isMeow: false,
+    isRevealed: false,
+    proximities: 0,
+    row: 3,
+    column: 0
   },
   {
-     "isMeow":false,
-     "isRevealed":false,
-     "row":1,
-     "column":3,
-     "proximities":1
+    isMeow: false,
+    isRevealed: false,
+    proximities: 0,
+    row: 3,
+    column: 3
   }
 ];
-
-
