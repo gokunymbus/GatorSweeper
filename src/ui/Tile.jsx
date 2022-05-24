@@ -10,8 +10,13 @@ export default class Tile extends React.Component {
 
     onClick = (e) => {
         const {onTileSelected} = this.props;
-        console.log("Tile selected", this.props.isMeow);
         onTileSelected(e, {...this.props});
+    }
+
+    onRightClick = (e) => {
+        const {onTileRightClicked} = this.props;
+        onTileRightClicked(e, {...this.props});
+        e.preventDefault();
     }
 
     renderMeow() {
@@ -27,7 +32,7 @@ export default class Tile extends React.Component {
     }
 
     renderRevealed() {
-        const {proximities, isMeow, isRevealed} = this.props;
+        const {proximities, isMeow} = this.props;
 
         if (isMeow) {
             return this.renderMeow();
@@ -41,12 +46,22 @@ export default class Tile extends React.Component {
     }
 
     renderCovered() {
-        return (<div class="Tile__covered"></div>);
+        const {isFlagged} = this.props;
+        return (
+            (isFlagged) ? 
+                <div className="Tile__covered Tile__covered--isFlagged"></div>
+                :
+                <div className="Tile__covered"></div>
+        );
     }
 
     componentDidMount() {
         this.tileRef.current.addEventListener('click', (e) => {
             this.onClick(e);
+        });
+
+        this.tileRef.current.addEventListener('contextmenu', (e) => {
+            this.onRightClick(e);
         });
     }
 

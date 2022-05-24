@@ -1,0 +1,29 @@
+.Controls {
+    display: flex;
+    min-height: 50px;
+    padding: 12px;
+    width: auto;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.Controls__flags,
+.Controls__timer {
+    width: 100px;
+    height: 75px;
+    background-color: #000000;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-family: var(--fontFamily);
+    font-size: 22px;
+}
+
+.Controls__action {
+    width: 100px;
+    height: 100px;
+    background-color: #000000;
+    border-radius: 50%;
+}

@@ -319,3 +319,27 @@ export function updateGridFromTarget(params) {
         })
     );
 }
+
+/**
+ * Updates the target tile with the isFlagged: true property
+ * and returns a new grid. 
+ * 
+ * @param {*} params 
+ * @param {number} params.targetRow The target row index
+ * @param {number} params.targetColumn The target column index
+ * @returns 
+ */
+export function updateFlagForTarget(params) {
+    const {
+        targetRow,
+        targetColumn,
+        grid
+    } = params;
+
+    return grid.map((row, rowIndex) => row.map((column, columnIndex) => {
+        if (targetRow == rowIndex && targetColumn == columnIndex) {
+            return TileFactory({...column, isFlagged: true });
+        }
+        return  TileFactory({...column});
+    }));
+}

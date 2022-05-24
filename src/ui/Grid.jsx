@@ -7,18 +7,15 @@ export default class Grid extends React.Component {
     constructor(props) {
         super(props);
     }
-    
-    onTileSelected = (e, tileProps) => {
-        const {onTileSelected} = this.props;
-        onTileSelected(e, tileProps);
-    }
 
     renderColumn(column, rowIndex, columnIndex) {
-       return (
-        <div className="Grid__column" key={columnIndex}>
-            <Tile {...column} onTileSelected={this.onTileSelected} row={rowIndex} column={columnIndex} />
-        </div>
-       )
+        const { onTileSelected, onTileRightClicked } = this.props;
+    
+        return (
+            <div className="Grid__column" key={columnIndex}>
+                <Tile {...column} onTileSelected={onTileSelected} onTileRightClicked={onTileRightClicked} row={rowIndex} column={columnIndex} />
+            </div>
+        )
     }
 
     renderRow(columns, rowIndex) {

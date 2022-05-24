@@ -1,6 +1,8 @@
 
 .Grid {
     width: 100%;
+    border-radius: 14px;
+    overflow: hidden;
 }
 
 .Grid__row {
@@ -11,7 +13,6 @@
 .Grid__column {
     box-sizing: border-box;
     flex-basis: 50px;
-    border: 1px solid red;
     width: 50px;
     height: 50px;
 }
