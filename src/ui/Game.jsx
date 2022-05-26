@@ -33,8 +33,9 @@ export default class Game extends React.Component {
     onTileRightClicked = (e, props) => {
         const {row, column} = props;
         const {grid, flags} = this.state;
+        const tile = grid[row][column];
         // If there are no flags left, don't place them
-        if (flags == 0) {
+        if (flags == 0 || tile.isRevealed) {
             return;
         }
 
@@ -43,6 +44,7 @@ export default class Game extends React.Component {
             targetColumn: column,
             grid
         });
+
         this.setState({
             grid: newGrid,
             flags: flags - 1

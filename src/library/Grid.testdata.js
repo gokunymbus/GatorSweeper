@@ -4,7 +4,8 @@ export const testData = [
         "isMeow": false,
         "isRevealed": false,
         "row": 0,
-        "column": 0
+        "column": 0,
+        "isFlagged": false
       },
       {
         "isMeow": false,
