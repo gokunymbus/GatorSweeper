@@ -261,7 +261,7 @@ function recursePerimeters(params) {
     const perimeter = perimeters[currentIndex];
     return processTarget({
         grid,
-        targetColumn: perimeter.column,
+        targetColumn: perimeter.column, 
         targetRow: perimeter.row,
         accumulator: recursePerimeters({
             perimeters,
@@ -327,18 +327,21 @@ export function updateGridFromTarget(params) {
  * @param {*} params 
  * @param {number} params.targetRow The target row index
  * @param {number} params.targetColumn The target column index
- * @returns 
+ * @param {Grid} params.grid The grid object
+ * @param {TileFactory} params.tileParams Paremeters for the TileFactory.
+ * @returns New Grid with updated tile
  */
-export function updateFlagForTarget(params) {
+export function updateTargetTile(params) {
     const {
         targetRow,
         targetColumn,
-        grid
+        grid,
+        tileParams
     } = params;
 
     return grid.map((row, rowIndex) => row.map((column, columnIndex) => {
         if (targetRow == rowIndex && targetColumn == columnIndex) {
-            return TileFactory({...column, isFlagged: true });
+            return TileFactory({...column, ...tileParams});
         }
         return  TileFactory({...column});
     }));
