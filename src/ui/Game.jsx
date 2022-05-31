@@ -6,20 +6,19 @@ import Controls from './Controls';
 import {
     createGridWithProximites,
     updateGridFromTarget,
-    updateFlagForTarget
-
+    updateTargetTile
 } from '../library/Grid';
 
 import './Game.css';
 import Defaults from '../library/Defaults';
 
 export default class Game extends React.Component {
+    defaultGridSize = 30;
     
     constructor(props) {
         super(props);
-        const defaultGridSize = 10;
         const newGrid = createGridWithProximites({
-            gridSize: defaultGridSize,
+            gridSize: this.defaultGridSize,
             randomMin: 1,
             randomMax: 10
         });
@@ -39,17 +38,21 @@ export default class Game extends React.Component {
             return;
         }
 
-        const newGrid = updateFlagForTarget({
+       const isFlagged = !tile.isFlagged;
+
+        const newGrid = updateTargetTile({
             targetRow: row,
             targetColumn: column,
-            grid
+            grid,
+            tileParams: {
+                isFlagged
+            }
         });
 
         this.setState({
             grid: newGrid,
-            flags: flags - 1
+            flags: isFlagged ?  flags - 1 : flags + 1
         });
-
     };
 
     onTileSelected = (e, props) => {
@@ -79,7 +82,12 @@ export default class Game extends React.Component {
         return (
             <div className="Game">
                 <Controls onActionSelected={this.onActionSelected} flags={flags}/>
-                <Grid gridData={grid} onTileSelected={this.onTileSelected} onTileRightClicked={this.onTileRightClicked}/>
+                <Grid
+                    gridData={grid}
+                    onTileSelected={this.onTileSelected}
+                    onTileRightClicked={this.onTileRightClicked}
+                    gridSize={this.defaultGridSize}
+                />
             </div>
         );
     }

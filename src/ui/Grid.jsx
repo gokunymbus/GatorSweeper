@@ -9,18 +9,37 @@ export default class Grid extends React.Component {
     }
 
     renderColumn(column, rowIndex, columnIndex) {
-        const { onTileSelected, onTileRightClicked } = this.props;
+        const { onTileSelected, onTileRightClicked, gridSize } = this.props;
     
         return (
-            <div className="Grid__column" key={columnIndex}>
-                <Tile {...column} onTileSelected={onTileSelected} onTileRightClicked={onTileRightClicked} row={rowIndex} column={columnIndex} />
+            <div
+                className="Grid__column"
+                key={columnIndex}
+                style={{
+                    width: (100/gridSize) + "%"
+                }}
+            >
+                <Tile
+                    {...column}
+                    onTileSelected={onTileSelected}
+                    onTileRightClicked={onTileRightClicked}
+                    row={rowIndex}
+                    column={columnIndex}
+                />
             </div>
         )
     }
 
     renderRow(columns, rowIndex) {
+        const {gridSize} = this.props;
         return (
-            <div className="Grid__row" key={rowIndex}>
+            <div
+                className="Grid__row"
+                key={rowIndex}
+                style={{
+                    height: (100/gridSize) + "%"
+                }}
+            >
                 {columns.map((column, columnIndex) => this.renderColumn(column, rowIndex, columnIndex))}
             </div>
         )

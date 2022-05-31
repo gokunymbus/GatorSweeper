@@ -229,25 +229,28 @@ export const testDataTwo = [
   ]
 ];
 
-
 export const testDataTwoRevealed = [
   [
     {
+      "isFlagged": false,
       "isMeow": false,
       "isRevealed": true,
       "proximities": 0
     },
     {
+      "isFlagged": false,
       "isMeow": false,
       "isRevealed": true,
       "proximities": 0
     },
     {
+      "isFlagged": false,
       "isMeow": false,
       "isRevealed": true,
       "proximities": 1
     },
     {
+      "isFlagged": false,
       "isMeow": true,
       "isRevealed": false,
       "proximities": 0
@@ -255,21 +258,25 @@ export const testDataTwoRevealed = [
   ],
   [
     {
+      "isFlagged": false,
       "isMeow": false,
       "isRevealed": true,
       "proximities": 0
     },
     {
+      "isFlagged": false,
       "isMeow": false,
       "isRevealed": true,
       "proximities": 0
     },
     {
+      "isFlagged": false,
       "isMeow": false,
       "isRevealed": true,
       "proximities": 1
     },
     {
+      "isFlagged": false,
       "isMeow": false,
       "isRevealed": true,
       "proximities": 1
@@ -277,21 +284,25 @@ export const testDataTwoRevealed = [
   ],
   [
     {
+      "isFlagged": false,
       "isMeow": false,
       "isRevealed": true,
       "proximities": 0
     },
     {
+      "isFlagged": false,
       "isMeow": false,
       "isRevealed": true,
       "proximities": 0
     },
     {
+      "isFlagged": false,
       "isMeow": false,
       "isRevealed": true,
       "proximities": 0
     },
     {
+      "isFlagged": false,
       "isMeow": false,
       "isRevealed": true,
       "proximities": 0
@@ -299,21 +310,25 @@ export const testDataTwoRevealed = [
   ],
   [
     {
+      "isFlagged": false,
       "isMeow": false,
       "isRevealed": true,
       "proximities": 0
     },
     {
+      "isFlagged": false,
       "isMeow": false,
       "isRevealed": true,
       "proximities": 0
     },
     {
+      "isFlagged": false,
       "isMeow": false,
       "isRevealed": true,
       "proximities": 0
     },
     {
+      "isFlagged": false,
       "isMeow": false,
       "isRevealed": true,
       "proximities": 0
@@ -324,21 +339,25 @@ export const testDataTwoRevealed = [
 export const testDataThreeRevealed = [
   [
     {
+      "isFlagged": false,
       "isMeow": false,
       "isRevealed": false,
       "proximities": 0
     },
     {
+      "isFlagged": false,
       "isMeow": false,
       "isRevealed": false,
       "proximities": 0
     },
     {
+      "isFlagged": false,
       "isMeow": false,
       "isRevealed": false,
       "proximities": 1
     },
     {
+      "isFlagged": false,
       "isMeow": true,
       "isRevealed": true,
       "proximities": 0
@@ -346,21 +365,25 @@ export const testDataThreeRevealed = [
   ],
   [
     {
+      "isFlagged": false,
       "isMeow": false,
       "isRevealed": false,
       "proximities": 0
     },
     {
+      "isFlagged": false,
       "isMeow": false,
       "isRevealed": false,
       "proximities": 0
     },
     {
+      "isFlagged": false,
       "isMeow": false,
       "isRevealed": false,
       "proximities": 1
     },
     {
+      "isFlagged": false,
       "isMeow": false,
       "isRevealed": false,
       "proximities": 1
@@ -368,21 +391,25 @@ export const testDataThreeRevealed = [
   ],
   [
     {
+      "isFlagged": false,
       "isMeow": false,
       "isRevealed": false,
       "proximities": 0
     },
     {
+      "isFlagged": false,
       "isMeow": false,
       "isRevealed": false,
       "proximities": 0
     },
     {
+      "isFlagged": false,
       "isMeow": false,
       "isRevealed": false,
       "proximities": 0
     },
     {
+      "isFlagged": false,
       "isMeow": false,
       "isRevealed": false,
       "proximities": 0
@@ -390,21 +417,25 @@ export const testDataThreeRevealed = [
   ],
   [
     {
+      "isFlagged": false,
       "isMeow": false,
       "isRevealed": false,
       "proximities": 0
     },
     {
+      "isFlagged": false,
       "isMeow": false,
       "isRevealed": false,
       "proximities": 0
     },
     {
+      "isFlagged": false,
       "isMeow": false,
       "isRevealed": false,
       "proximities": 0
     },
     {
+      "isFlagged": false,
       "isMeow": false,
       "isRevealed": false,
       "proximities": 0
@@ -414,6 +445,7 @@ export const testDataThreeRevealed = [
 
 export const processTargetsResult =  [
   {
+    isFlagged: false,
     isMeow: false,
     isRevealed: false,
     proximities: 0,
@@ -421,6 +453,7 @@ export const processTargetsResult =  [
     column: 0
   },
   {
+    isFlagged: false,
     isMeow: false,
     isRevealed: false,
     proximities: 0,
@@ -428,6 +461,7 @@ export const processTargetsResult =  [
     column: 1
   },
   {
+    isFlagged: false,
     isMeow: false,
     isRevealed: false,
     proximities: 1,
@@ -435,6 +469,7 @@ export const processTargetsResult =  [
     column: 2
   },
   {
+    isFlagged: false,
     isMeow: false,
     isRevealed: false,
     proximities: 0,
@@ -442,6 +477,7 @@ export const processTargetsResult =  [
     column: 0
   },
   {
+    isFlagged: false,
     isMeow: false,
     isRevealed: false,
     proximities: 0,
@@ -449,6 +485,7 @@ export const processTargetsResult =  [
     column: 1
   },
   {
+    isFlagged: false,
     isMeow: false,
     isRevealed: false,
     proximities: 1,
@@ -456,6 +493,7 @@ export const processTargetsResult =  [
     column: 2
   },
   {
+    isFlagged: false,
     isMeow: false,
     isRevealed: false,
     proximities: 0,
@@ -463,6 +501,7 @@ export const processTargetsResult =  [
     column: 0
   },
   {
+    isFlagged: false,
     isMeow: false,
     isRevealed: false,
     proximities: 0,
@@ -470,6 +509,7 @@ export const processTargetsResult =  [
     column: 1
   },
   {
+    isFlagged: false,
     isMeow: false,
     isRevealed: false,
     proximities: 0,
@@ -477,6 +517,7 @@ export const processTargetsResult =  [
     column: 2
   },
   {
+    isFlagged: false,
     isMeow: false,
     isRevealed: false,
     proximities: 1,
@@ -484,6 +525,7 @@ export const processTargetsResult =  [
     column: 3
   },
   {
+    isFlagged: false,
     isMeow: false,
     isRevealed: false,
     proximities: 0,
@@ -491,6 +533,7 @@ export const processTargetsResult =  [
     column: 3
   },
   {
+    isFlagged: false,
     isMeow: false,
     isRevealed: false,
     proximities: 0,
@@ -498,6 +541,7 @@ export const processTargetsResult =  [
     column: 2
   },
   {
+    isFlagged: false,
     isMeow: false,
     isRevealed: false,
     proximities: 0,
@@ -505,6 +549,7 @@ export const processTargetsResult =  [
     column: 1
   },
   {
+    isFlagged: false,
     isMeow: false,
     isRevealed: false,
     proximities: 0,
@@ -512,6 +557,7 @@ export const processTargetsResult =  [
     column: 0
   },
   {
+    isFlagged: false,
     isMeow: false,
     isRevealed: false,
     proximities: 0,
