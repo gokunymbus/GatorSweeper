@@ -132,6 +132,7 @@ Returns a new object with the following properties.
 - proximities
 
 The “isMeow” property is determined by a min/max random number generator function.
+
 ### TileChangeFactory()
 Similar to the TileFactory function except two additional properties are returned that indicate the row, and column of the tile in question. 
 

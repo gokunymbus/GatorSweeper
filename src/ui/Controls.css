@@ -11,19 +11,29 @@
 .Controls__timer {
     width: 100px;
     height: 75px;
-    background-color: #000000;
-    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #ffffff;
+    color: var(--tertiaryColor);
     font-family: var(--fontFamily);
-    font-size: 22px;
+    font-size: 80px;
 }
 
 .Controls__action {
-    width: 100px;
-    height: 100px;
-    background-color: #000000;
+    width: 120px;
+    height: 120px;
+    background-image: url('../media/gator.png');
+    background-repeat: no-repeat;
+    background-position: center;
     border-radius: 50%;
+    transition: filter 0.1s ease-out, transform 0.1s ease-out;
+}
+
+.Controls__action:active {
+    filter: grayscale(100%);
+    transform: scale3d(1.1, 1.1, 1.1);
+}
+
+.Controls__action:hover {
+    cursor: pointer;
 }

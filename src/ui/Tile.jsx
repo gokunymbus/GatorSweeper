@@ -48,10 +48,7 @@ export default class Tile extends React.Component {
     renderCovered() {
         const {isFlagged} = this.props;
         return (
-            (isFlagged) ? 
-                <div className="Tile__covered Tile__covered--isFlagged"></div>
-                :
-                <div className="Tile__covered"></div>
+            <div className={`Tile__covered ${(isFlagged) ? 'Tile__covered--isFlagged' : '' }`}></div>
         );
     }
 

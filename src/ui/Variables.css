@@ -1,3 +1,6 @@
 :root {
     --fontFamily: 'Koulen', cursive;
+    --primaryColor: #519548;
+    --secondaryColor: #88C425;
+    --tertiaryColor: #BEF202;
 }

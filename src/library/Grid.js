@@ -150,6 +150,12 @@ export function getPerimeters(params) {
     }, []);
 }
 
+/**
+ * Add's proximity values to a given Grid and returns a new Grid.
+ * 
+ * @param {Grid} gridArray The Grid[row][colun] array/object.
+ * @returns 
+ */
 export function addProximities(gridArray) {
     return gridArray.map((row, rowIndex) => {
         return row.map((column, columnIndex) => {
@@ -206,10 +212,11 @@ export function processTarget(params) {
     const target = grid[targetRow][targetColumn];
     const {
         isMeow,
-        proximities
+        proximities,
+        isFlagged
     } = target;
     const newTarget = TileChangeFactory({tileParams: {...target}, row: targetRow, column: targetColumn});
-    const isBlank = !isMeow && proximities == 0;
+    const isBlank = !isMeow && proximities == 0 && !isFlagged;
     // IF it's not blank then it has a mine or
     // it has mines in proximity so let's return it
     // and not try to recurse it's perimeters.
@@ -286,7 +293,7 @@ function mapChanges(grid, changes) {
                 tile => tile.row == rowIndex && tile.column == columnIndex
             );
             if (findChange) {
-                return TileFactory({...column, isRevealed: true})
+                return TileFactory({...column, isRevealed: findChange.isFlagged ? false: true})
             }
 
             return TileFactory(column);
@@ -297,6 +304,7 @@ function mapChanges(grid, changes) {
 /**
  * A function that starts the process of collecting changes
  * and mapping them back to a new version of the Grid.
+ * 
  * @param {object} param Object containing all params.
  * @param {number} params.targetRowIndex The index of the target row
  * @param {number} params.targetColumnIndex The index of the target column.
@@ -321,7 +329,7 @@ export function updateGridFromTarget(params) {
 }
 
 /**
- * Updates the target tile with the isFlagged: true property
+ * Updates the target tile with any tileParams
  * and returns a new grid. 
  * 
  * @param {*} params 

@@ -1,8 +1,6 @@
 
 .Grid {
     width: 100%;
-    border-radius: 14px;
-    overflow: hidden;
     height: 500px;
     width: 500px
 }
