@@ -2,6 +2,7 @@
 import React from 'react';
 import Grid from './Grid';
 import Controls from './Controls';
+import Language from '../library/Language';
 
 import {
     createGridWithProximites,
@@ -22,47 +23,51 @@ export default class Game extends React.Component {
     defaultMin = 1;
     defaultMax = 10;
     timerRef = null;
+    timeoutIDs = [];
 
     constructor(props) {
         super(props);
-        const newGrid = createGridWithProximites({
-            gridSize: this.defaultGridSize,
-            randomMin: this.defaultMin,
-            randomMax: this.defaultMax
-        });
+        this.state = this.getIntialGameState();
+    }
 
-        this.state = {
-            grid: newGrid,
+    getIntialGameState = () => {
+        return {
+            grid: createGridWithProximites({
+                gridSize: this.defaultGridSize,
+                randomMin: this.defaultMin,
+                randomMax: this.defaultMax
+            }),
             flags: Defaults.startingFlags,
             timer: 0,
             isGameRunning: false,
             isGameOver: false
-        };
+        }
     }
 
     createTimer = () => {
         this.timerRef = timer(this.onTimerUpdate);
     }
 
-    resetGame = () => {
+    clearTimer = () => {
         if (this.timerRef) {
             this.timerRef.stop();
             this.timerRef = null;
         }
+    }
 
-        const newGrid = createGridWithProximites({
-            gridSize: this.defaultGridSize,
-            randomMin: this.defaultMin,
-            randomMax: this.defaultMax
-        });
+    clearTimeouts = () => {
+        if (this.timeoutIDs.length > 0) {
+            this.timeoutIDs.forEach((tid) => {
+                clearTimeout(tid);
+            });
+        }
+    }
 
-        this.setState({
-            grid: newGrid,
-            timer: 0,
-            flags:  Defaults.startingFlags,
-            isGameRunning: false, 
-            isGameOver: false
-        });
+    resetGame = () => {
+        this.clearTimeouts();
+        this.clearTimer();
+
+        this.setState(this.getIntialGameState());
     }
 
     selectTile = (tileProps) => {
@@ -74,9 +79,12 @@ export default class Game extends React.Component {
         }
 
         if (isMeow) {
+            // Here we update one mine at a time
+            // by picking one out of the Grid and then
+            // delaying when it's set state is called
             const mines = reduceMines(grid);
             mines.forEach((mine) => {
-                setTimeout(() => {
+                const tid = setTimeout(() => {
                     this.setState((previousState) => {
                         const newGrid = updateTargetTile({
                             targetRow: mine.row,
@@ -90,7 +98,13 @@ export default class Game extends React.Component {
                         return {grid: newGrid}
                     });
                 }, RandomMinMax(300, 1200));
+                this.timeoutIDs = this.timeoutIDs.concat(tid);
             });
+        }
+
+        const isNowGameOver = isMeow ? true : false;
+        if (isNowGameOver) {
+           this.clearTimer();
         }
 
         const newGrid = updateGridFromTarget({
@@ -102,7 +116,7 @@ export default class Game extends React.Component {
         this.setState({
             grid: newGrid,
             isGameRunning: true,
-            isGameOver: isMeow ? true : false
+            isGameOver: isNowGameOver
         });
     }
 
@@ -121,7 +135,7 @@ export default class Game extends React.Component {
             return;
         }
 
-       const isFlagged = !tile.isFlagged;
+        const isFlagged = !tile.isFlagged;
 
         const newGrid = updateTargetTile({
             targetRow: row,

@@ -4,4 +4,11 @@
     --secondaryColor: #88C425;
     --tertiaryColor: #BEF202;
     --otherColor: #1B676B;
+
+    --mobile: 320px;
+    --tablets: 481px;
+    --smalldevice: 769px;
+    --desktop: 1025px;
+    --extraLarge: 1201px;
+    --veryLarge: 2000px;
 }

@@ -1,10 +1,10 @@
 .Controls {
     display: flex;
     min-height: 50px;
-    padding: 12px;
-    width: auto;
-    justify-content: space-between;
+    width: 100%;
+    justify-content: space-around;
     align-items: center;
+    margin-bottom: 20px;
 }
 
 .Controls__flags,
@@ -16,15 +16,16 @@
     justify-content: center;
     color: var(--tertiaryColor);
     font-family: var(--fontFamily);
-    font-size: 80px;
+    font-size: 48px;
 }
 
 .Controls__action {
-    width: 120px;
-    height: 120px;
-    background-image: url('../media/gator.png');
+    width: 80px;
+    height: 80px;
+    background-image: url('../media/gator.svg');
     background-repeat: no-repeat;
     background-position: center;
+    background-size: 90%;
     border-radius: 50%;
     transition: filter 0.1s ease-out, transform 0.1s ease-out;
 }
@@ -42,3 +43,14 @@
     cursor: pointer;
 }
 
+@media screen and (min-width: 1025px) {
+    .Controls__flags,
+    .Controls__timer {
+        font-size: 80px;
+    }
+
+    .Controls__action {
+        width: 120px;
+        height: 120px;
+    }
+}
