@@ -1,0 +1,35 @@
+.Modes {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    padding: 8px;
+}
+
+.Modes__easy,
+.Modes__hard,
+.Modes__extreme {
+    font-family: var(--fontFamily);
+    color: var(--tertiaryColor);
+    font-size: 16px;
+    transition: transform 0.1s ease-out;
+}
+
+.Modes__easy:hover,
+.Modes__hard:hover,
+.Modes__extreme:hover {
+    cursor: pointer;
+}
+
+.Modes__easy:active,
+.Modes__hard:active,
+.Modes__extreme:active {
+    transform: scale3d(1.2, 1.2, 1.2);
+}
+
+@media screen and (min-width: 1025px) {
+    .Modes__easy,
+    .Modes__hard,
+    .Modes__extreme {
+        font-size: 34px;
+    }
+}

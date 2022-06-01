@@ -3,14 +3,16 @@ export default function () {
     const lang = navigator.language;
     let foundCode;
 
-    switch (key) {
+    switch (true) {
         case /^en\b/.test(lang):
             foundCode = "en";
+            console.log("ayy1", foundCode);
             break;
 
         case /^es\b/.test(lang):
             foundCode = "es";
             break;
+
         case /^de\b/.test(lang):
             foundCode = "de";
             break;
@@ -46,8 +48,9 @@ export default function () {
         default:
             // Default to english
             foundCode = "en";
+            console.log("ayy2", foundCode);
             break;
     }
-}
 
-console.log(languages);
+    return languages[foundCode];
+}

@@ -2,7 +2,6 @@
 import React from 'react';
 import Grid from './Grid';
 import Controls from './Controls';
-import Language from '../library/Language';
 
 import {
     createGridWithProximites,
@@ -17,13 +16,12 @@ import './Game.css';
 import Defaults from '../library/Defaults';
 import Tile from './Tile';
 import RandomMinMax from '../library/RandomMinMax';
+import Modes from './Modes';
 
 export default class Game extends React.Component {
-    defaultGridSize = 10;
-    defaultMin = 1;
-    defaultMax = 10;
     timerRef = null;
     timeoutIDs = [];
+    difficulty = Defaults.easy;
 
     constructor(props) {
         super(props);
@@ -33,14 +31,15 @@ export default class Game extends React.Component {
     getIntialGameState = () => {
         return {
             grid: createGridWithProximites({
-                gridSize: this.defaultGridSize,
-                randomMin: this.defaultMin,
-                randomMax: this.defaultMax
+                gridSize: this.difficulty.size,
+                randomMin: this.difficulty.minMines,
+                randomMax: this.difficulty.maxMines
             }),
-            flags: Defaults.startingFlags,
+            flags: this.difficulty.flags,
             timer: 0,
             isGameRunning: false,
-            isGameOver: false
+            isGameOver: false,
+            difficulty: this.difficulty
         }
     }
 
@@ -171,12 +170,18 @@ export default class Game extends React.Component {
         }
     }
 
+    onDifficultySelected = (difficulty) => {
+        this.difficulty = Defaults[difficulty];
+        setTimeout(() => this.resetGame(), 4);
+    }
+
     render() {
         const {
             grid,
             flags,
             timer,
-            isGameOver
+            isGameOver,
+            difficulty
         } = this.state;
         return (
             <div className="Game">
@@ -188,7 +193,7 @@ export default class Game extends React.Component {
                 />
                 <Grid
                     gridData={grid}
-                    gridSize={this.defaultGridSize}
+                    gridSize={difficulty.size}
                 >
                     <Tile
                        onTileSelected={this.onTileSelected}
@@ -196,6 +201,7 @@ export default class Game extends React.Component {
                        onEnterKeyUp={this.onEnterKeyUp}
                     />
                 </Grid>
+                <Modes onDifficultySelected={this.onDifficultySelected} />
             </div>
         );
     }

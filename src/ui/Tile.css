@@ -18,10 +18,10 @@
     background-size: 66%;
     background-repeat: no-repeat;
     background-position: center;
-    animation: Tile__mine;
+    /* animation: Tile__mine;
     animation-duration: 1s;
     animation-timing-function: linear;
-    animation-iteration-count: infinite;
+    animation-iteration-count: 1; */
 }
 
 .Tile__covered {
@@ -52,18 +52,10 @@
 
 @keyframes Tile__mine {
     0% {
-        background-color: var(--otherColor);
+        opacity: 0.1;
     }
 
-    25% {
-        background-color: var(--primaryColor);
-    }
-
-    50% {
-        background-color: var(--secondaryColor);
-    }
-
-    75% {
-        background-color: var(--tertiaryColor);
+    100% {
+        opacity: 1;
     }
 }
