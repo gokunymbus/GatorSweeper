@@ -354,3 +354,22 @@ export function updateTargetTile(params) {
         return  TileFactory({...column});
     }));
 }
+
+export function reduceMines(grid) {
+    return grid.reduce((previousRow, currentRow, currentRowIndex) => {
+        return previousRow.concat(
+            currentRow.reduce((previousColumn, currentColumn, currentColumnIndex) => {
+                if (!currentColumn.isMeow) {
+                    return previousColumn;
+                }
+
+                return previousColumn.concat(TileChangeFactory({
+                    tileParams: {...currentColumn},
+                    row: currentRowIndex,
+                    column: currentColumnIndex
+                }));
+                
+            }, [])
+        )
+    }, [])
+}

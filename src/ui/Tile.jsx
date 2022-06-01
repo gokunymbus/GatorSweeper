@@ -19,8 +19,13 @@ export default class Tile extends React.Component {
         e.preventDefault();
     }
 
+    onEnterKeyUp = (e) => {
+        const {onEnterKeyUp} = this.props;
+        onEnterKeyUp(e, {...this.props});
+    }
+
     renderMeow() {
-        return (<div className="Tile__meow"></div>)
+        return (<div className="Tile__mine"></div>)
     }
 
     renderProximity(proximities) {
@@ -59,6 +64,12 @@ export default class Tile extends React.Component {
 
         this.tileRef.current.addEventListener('contextmenu', (e) => {
             this.onRightClick(e);
+        });
+
+        this.tileRef.current.addEventListener('keyup', (e) => {
+            if (e.key == "Enter") {
+                this.onEnterKeyUp(e);
+            }
         });
     }
 

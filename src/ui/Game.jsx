@@ -5,6 +5,7 @@ import Controls from './Controls';
 
 import {
     createGridWithProximites,
+    reduceMines,
     updateGridFromTarget,
     updateTargetTile
 } from '../library/Grid';
@@ -13,13 +14,15 @@ import timer from '../library/Timer';
 
 import './Game.css';
 import Defaults from '../library/Defaults';
+import Tile from './Tile';
+import RandomMinMax from '../library/RandomMinMax';
 
 export default class Game extends React.Component {
     defaultGridSize = 10;
     defaultMin = 1;
     defaultMax = 10;
-
     timerRef = null;
+
     constructor(props) {
         super(props);
         const newGrid = createGridWithProximites({
@@ -32,7 +35,8 @@ export default class Game extends React.Component {
             grid: newGrid,
             flags: Defaults.startingFlags,
             timer: 0,
-            isGameRunning: false
+            isGameRunning: false,
+            isGameOver: false
         };
     }
 
@@ -56,19 +60,60 @@ export default class Game extends React.Component {
             grid: newGrid,
             timer: 0,
             flags:  Defaults.startingFlags,
-            isGameRunning: false
+            isGameRunning: false, 
+            isGameOver: false
+        });
+    }
+
+    selectTile = (tileProps) => {
+        const {row, column, isMeow, isFlagged} = tileProps;
+        const {grid, isGameOver} = this.state;
+
+        if (isGameOver || isFlagged) {
+            return;
+        }
+
+        if (isMeow) {
+            const mines = reduceMines(grid);
+            mines.forEach((mine) => {
+                setTimeout(() => {
+                    this.setState((previousState) => {
+                        const newGrid = updateTargetTile({
+                            targetRow: mine.row,
+                            targetColumn: mine.column,
+                            grid: previousState.grid,
+                            tileParams: {
+                                isRevealed: true
+                            }
+                        });
+    
+                        return {grid: newGrid}
+                    });
+                }, RandomMinMax(300, 1200));
+            });
+        }
+
+        const newGrid = updateGridFromTarget({
+            targetRowIndex: row,
+            targetColumnIndex: column,
+            grid
+        });
+
+        this.setState({
+            grid: newGrid,
+            isGameRunning: true,
+            isGameOver: isMeow ? true : false
         });
     }
 
     onTimerUpdate = (seconds) => {
         this.setState({
-            ...this.state,
             timer: seconds
         });
     };
 
-    onTileRightClicked = (e, props) => {
-        const {row, column} = props;
+    onTileRightClicked = (e, tileProps) => {
+        const {row, column} = tileProps;
         const {grid, flags} = this.state;
         const tile = grid[row][column];
         // If there are no flags left, don't place them
@@ -93,28 +138,15 @@ export default class Game extends React.Component {
         });
     };
 
-    onTileSelected = (e, props) => {
-        const {row, column} = props;
-        const {grid} = this.state;
-
-        if (grid[row][column].isMeow) {
-            console.log("GAME OVER");
-            return;
-        }
-
-        const newGrid = updateGridFromTarget({
-            targetRowIndex: row,
-            targetColumnIndex: column,
-            grid
-        });
-
-        this.setState({
-            grid: newGrid,
-            isGameRunning: true
-        });
+    onEnterKeyUp = (e, tileProps) => {
+        this.selectTile(tileProps);
     };
 
-    onActionSelected = () => {
+    onTileSelected = (e, tileProps) => {
+        this.selectTile(tileProps);
+    };
+
+    onMainIconSelected = () => {
        this.resetGame();
     };
 
@@ -129,21 +161,27 @@ export default class Game extends React.Component {
         const {
             grid,
             flags,
-            timer
+            timer,
+            isGameOver
         } = this.state;
         return (
             <div className="Game">
                 <Controls
-                    onActionSelected={this.onActionSelected}
+                    onMainIconSelected={this.onMainIconSelected}
                     flags={flags}
                     timer={timer}
+                    isGameOver={isGameOver}
                 />
                 <Grid
                     gridData={grid}
-                    onTileSelected={this.onTileSelected}
-                    onTileRightClicked={this.onTileRightClicked}
                     gridSize={this.defaultGridSize}
-                />
+                >
+                    <Tile
+                       onTileSelected={this.onTileSelected}
+                       onTileRightClicked={this.onTileRightClicked}
+                       onEnterKeyUp={this.onEnterKeyUp}
+                    />
+                </Grid>
             </div>
         );
     }

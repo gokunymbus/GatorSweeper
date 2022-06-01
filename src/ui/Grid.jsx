@@ -9,8 +9,10 @@ export default class Grid extends React.Component {
     }
 
     renderColumn(column, rowIndex, columnIndex) {
-        const { onTileSelected, onTileRightClicked, gridSize } = this.props;
-    
+        const {
+            gridSize,
+            children
+        } = this.props;
         return (
             <div
                 className="Grid__column"
@@ -21,10 +23,9 @@ export default class Grid extends React.Component {
             >
                 <Tile
                     {...column}
-                    onTileSelected={onTileSelected}
-                    onTileRightClicked={onTileRightClicked}
                     row={rowIndex}
                     column={columnIndex}
+                    {...children.props}
                 />
             </div>
         )

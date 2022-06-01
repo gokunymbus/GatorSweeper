@@ -11,10 +11,17 @@
     transition: background-color 0.2s ease-in-out;
 }
 
-.Tile__meow {
-    background-color: red;
+.Tile__mine {
     width: 100%;
     height: 100%;
+    background-image: url('../media/gator-grid.svg');
+    background-size: 66%;
+    background-repeat: no-repeat;
+    background-position: center;
+    animation: Tile__mine;
+    animation-duration: 1s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
 }
 
 .Tile__covered {
@@ -41,4 +48,22 @@
     z-index: 1000;
     outline: solid;
     position: relative;
+}
+
+@keyframes Tile__mine {
+    0% {
+        background-color: var(--otherColor);
+    }
+
+    25% {
+        background-color: var(--primaryColor);
+    }
+
+    50% {
+        background-color: var(--secondaryColor);
+    }
+
+    75% {
+        background-color: var(--tertiaryColor);
+    }
 }

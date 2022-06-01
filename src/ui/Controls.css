@@ -30,10 +30,15 @@
 }
 
 .Controls__action:active {
-    filter: grayscale(100%);
+    filter: hue-rotate(120deg);
     transform: scale3d(1.1, 1.1, 1.1);
+}
+
+.Controls__action--gameover {
+    filter: grayscale(100%);
 }
 
 .Controls__action:hover {
     cursor: pointer;
 }
+
