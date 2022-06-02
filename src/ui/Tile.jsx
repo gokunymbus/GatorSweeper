@@ -1,5 +1,6 @@
 import React from "react";
 import "./Tile.css";
+import { Difficulties } from "../library/Constants";
 
 export default class Tile extends React.Component {
     constructor(props) {
@@ -74,9 +75,28 @@ export default class Tile extends React.Component {
     }
 
     render() {
-        const {isRevealed} = this.props;
+        const { isRevealed, difficulty } = this.props;
+
+        let difficultyClassName = "";
+        switch (difficulty) {
+            case Difficulties.EASY:
+                difficultyClassName = "Tile--easy"
+                break;
+
+            case Difficulties.HARD:
+                difficultyClassName = "Tile--hard"
+                break;
+
+            case Difficulties.EXTREME:
+                difficultyClassName = "Tile--extreme"
+                break;
+
+            default:
+                break;
+        }
+
         return(
-            <div className={`Tile`} ref={this.tileRef} tabIndex={0}>
+            <div className={`Tile ${difficultyClassName}`} ref={this.tileRef} tabIndex={0}>
                 {   
                     isRevealed ?
                     this.renderRevealed()

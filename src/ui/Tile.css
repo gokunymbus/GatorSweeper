@@ -8,6 +8,18 @@
     overflow: hidden;
 }
 
+.Tile--easy {
+    font-size: 16px;
+}
+
+.Tile--hard {
+    font-size: 10px;
+}
+
+.Tile--extreme {
+    font-size: 6px;
+}
+
 .Tile:active,
 .Tile:focus-visible {
     z-index: 1000;
@@ -80,5 +92,48 @@
 
     100% {
         opacity: 1;
+    }
+}
+
+
+@media screen and (min-width: 480px) {
+    .Tile--easy {
+        font-size: 20px;
+    }
+
+    .Tile--hard {
+        font-size: 12px;
+    }
+
+    .Tile--extreme {
+        font-size: 8px;
+    }
+}
+
+@media screen and (min-width: 800px) {
+    .Tile--easy {
+        font-size: 24px;
+    }
+
+    .Tile--hard {
+        font-size: 16px;
+    }
+
+    .Tile--extreme {
+        font-size: 12px;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .Tile--easy {
+        font-size: 32px;
+    }
+
+    .Tile--hard {
+        font-size: 20px;
+    }
+
+    .Tile--extreme {
+        font-size: 18px;
     }
 }

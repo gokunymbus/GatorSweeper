@@ -30,24 +30,25 @@ export default class Modes extends React.Component {
     
     render() {
         const { difficulty } = this.props;
+        const activeClassName = 'Modes__mode--active';
         return (
             <div className="Modes">
                <div
-                    className="Modes__easy"
+                    className={`Modes__mode ${difficulty == Difficulties.EASY ? activeClassName : ''}`}
                     ref={this.easyRef}
                     tabIndex={0}
                 >
                     {this.lang.modesEasy}
                 </div>
                 <div
-                    className="Modes__hard"
+                     className={`Modes__mode ${difficulty == Difficulties.HARD ? activeClassName : ''}`}
                     ref={this.hardRef}
                     tabIndex={0}
                 >
                     {this.lang.modesHard}
                 </div>
                 <div
-                    className="Modes__extreme"
+                     className={`Modes__mode ${difficulty == Difficulties.EXTREME ? activeClassName : ''}`}
                     ref={this.extremeRef}
                     tabIndex={0}
                 >

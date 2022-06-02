@@ -214,6 +214,7 @@ export default class Game extends React.Component {
                        onTileSelected={this.onTileSelected}
                        onTileRightClicked={this.onTileRightClicked}
                        onEnterKeyUp={this.onEnterKeyUp}
+                       difficulty={difficulty}
                     />
                 </Grid>
                 <Modes
