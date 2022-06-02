@@ -13,7 +13,12 @@ import {
 import timer from '../library/Timer';
 
 import './Game.css';
-import {DifficultySettings, Difficulties} from '../library/Constants';
+import {
+    DifficultySettings,
+    Difficulties,
+    GameState
+} from '../library/Constants';
+
 import Tile from './Tile';
 import RandomMinMax from '../library/RandomMinMax';
 import Modes from './Modes';
@@ -21,19 +26,17 @@ import Modes from './Modes';
 export default class Game extends React.Component {
     timerRef = null;
     timeoutIDs = [];
-    defaultDifficultySettings = DifficultySettings[Difficulties.EASY];
-    defaultDifficulty = Difficulties.EASY
 
     constructor(props) {
         super(props);
         this.state = this.getIntialGameState({});
     }
 
-    getIntialGameState = (params) => {
+    getIntialGameState = (defaults) => {
         const {
-            difficulty = this.defaultDifficulty,
-            difficultySettings = this.defaultDifficultySettings
-        } = params;
+            difficulty = Difficulties.EASY,
+            difficultySettings = DifficultySettings[Difficulties.EASY]
+        } = defaults;
     
         return {
             grid: createGridWithProximites({
@@ -43,8 +46,7 @@ export default class Game extends React.Component {
             }),
             flags: difficultySettings.flags,
             timer: 0,
-            isGameRunning: false,
-            isGameOver: false,
+            gameState: GameState.NEW,
             difficultySettings,
             difficulty,
         }
@@ -66,21 +68,21 @@ export default class Game extends React.Component {
             this.timeoutIDs.forEach((tid) => {
                 clearTimeout(tid);
             });
+            this.timeoutIDs = [];
         }
     }
 
     setGame = (params) => {
         this.clearTimeouts();
         this.clearTimer();
-
         this.setState(this.getIntialGameState(params));
     }
 
     selectTile = (tileProps) => {
         const {row, column, isMeow, isFlagged} = tileProps;
-        const {grid, isGameOver} = this.state;
+        const {grid, gameState} = this.state;
 
-        if (isGameOver || isFlagged) {
+        if (gameState == GameState.ENDED || isFlagged) {
             return;
         }
 
@@ -121,8 +123,7 @@ export default class Game extends React.Component {
 
         this.setState({
             grid: newGrid,
-            isGameRunning: !isNowGameOver,
-            isGameOver: isNowGameOver
+            gameState: isNowGameOver ? GameState.ENDED : GameState.RUNNING
         });
     }
 
@@ -176,8 +177,8 @@ export default class Game extends React.Component {
     };
 
     componentDidUpdate(previousProps, previousState) {
-        const { isGameRunning } = this.state;
-        if (isGameRunning && !previousState.isGameRunning) {
+        const { gameState } = this.state;
+        if (gameState == GameState.RUNNING && previousState.gameState == GameState.NEW) {
            this.createTimer();
         }
     }
@@ -194,7 +195,7 @@ export default class Game extends React.Component {
             grid,
             flags,
             timer,
-            isGameOver,
+            gameState,
             difficultySettings,
             difficulty
         } = this.state;
@@ -204,7 +205,7 @@ export default class Game extends React.Component {
                     onMainIconSelected={this.onMainIconSelected}
                     flags={flags}
                     timer={timer}
-                    isGameOver={isGameOver}
+                    gameState={gameState}
                 />
                 <Grid
                     gridData={grid}

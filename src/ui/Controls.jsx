@@ -1,5 +1,6 @@
 import React from "react";
 import './Controls.css';
+import { GameState } from "../library/Constants";
 
 export default class Controls extends React.Component {
     constructor(props) {
@@ -17,8 +18,8 @@ export default class Controls extends React.Component {
     }
     
     render() {
-        const { flags, timer, isGameOver } = this.props;
-        const gameOverClassName = isGameOver ? "Controls__action--gameover": "";
+        const { flags, timer, gameState } = this.props;
+        const gameOverClassName = gameState == GameState.ENDED ? "Controls__action--gameover": "";
 
         return (
             <div className="Controls">

@@ -25,3 +25,9 @@ export const DifficultySettings = {
         size: 30
     }
 }
+
+export const GameState = Object.freeze({
+    NEW:   Symbol("new"),
+    RUNNING:   Symbol("running"),
+    ENDED:  Symbol("ended")
+});
