@@ -1,12 +1,14 @@
 import React from "react";
 import './Controls.css';
 import { GameState } from "../library/Constants";
+import Language from "../library/Language";
 
 export default class Controls extends React.Component {
     constructor(props) {
         super(props);
     }
 
+    language = Language();
     actionRef = React.createRef();
     timerRef = React.createRef();
 
@@ -33,10 +35,10 @@ export default class Controls extends React.Component {
                 <div className="Controls__status">
                     <div className={`Controls__action ${gameOverClassName} ${gameWonClassName}`}  ref={this.actionRef}></div>
                     <div className="Controls__statusText">
-                        <div className={`Controls__statusText__status ${isGameRunning ? statusTextClassName : ""}`}>Started!</div>
-                        <div className={`Controls__statusText__status ${isGameOver ? statusTextClassName : ""}`}>Failed!</div>
-                        <div className={`Controls__statusText__status ${isGameNew ? statusTextClassName : ""}`}>Click!</div>
-                        <div className={`Controls__statusText__status ${isGameWon ? statusTextClassName : ""}`}>Winner!</div>
+                        <div className={`Controls__statusText__status ${isGameRunning ? statusTextClassName : ""}`}>{this.language.controlsGameStateStarted}</div>
+                        <div className={`Controls__statusText__status ${isGameOver ? statusTextClassName : ""}`}>{this.language.controlsGameStateFailed}</div>
+                        <div className={`Controls__statusText__status ${isGameNew ? statusTextClassName : ""}`}>{this.language.controlsGameStateNew}</div>
+                        <div className={`Controls__statusText__status ${isGameWon ? statusTextClassName : ""}`}>{this.language.controlsGameStateWinner}</div>
                     </div>
                 </div>
                 <div className="Controls__timer" ref={this.timerRef}>{timer}</div>

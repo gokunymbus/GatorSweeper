@@ -48,7 +48,6 @@ export default function () {
         default:
             // Default to english
             foundCode = "en";
-            console.log("ayy2", foundCode);
             break;
     }
 
