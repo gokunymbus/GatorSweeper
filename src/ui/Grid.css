@@ -2,13 +2,63 @@
 .Grid {
     width: 70vmin;
     height: 70vmin;
+    --borderSize: 1px;
+    --borderOffset: 0;
+    --borderZIndex: 10;
+    /* background-color: var(--tertiaryColor); */
 }
 
 .Grid__row {
     width: 100%;
     display: flex;
+    position: relative;
+    /* padding-bottom: var(--borderSize); */
+}
+
+.Grid__row::after {
+    content: '';
+    height: var(--borderSize);
+    width: 100%;
+    position: absolute;
+    bottom: var(--borderOffset);
+    left: var(--borderOffset);
+    background-color: var(--secondaryColor);
+    z-index: var(--borderZIndex);
+}
+
+.Grid__row:first-child::before {
+    content: '';
+    height: var(--borderSize);
+    width: 100%;
+    position: absolute;
+    top: var(--borderOffset);
+    left: var(--borderOffset);
+    background-color: var(--secondaryColor);
+    z-index: var(--borderZIndex);
 }
 
 .Grid__column {
-    box-sizing: border-box;
+    position: relative;
+}
+
+.Grid__column::after {
+    content: '';
+    width: var(--borderSize);
+    height: 100%;
+    position: absolute;
+    top: var(--borderOffset);
+    right: var(--borderOffset);
+    background-color: var(--secondaryColor);
+    z-index: var(--borderZIndex);
+}
+
+.Grid__column:first-child::before {
+    content: '';
+    width: var(--borderSize);
+    height: 100%;
+    position: absolute;
+    top: var(--borderOffset);
+    left: var(--borderOffset);
+    background-color: var(--secondaryColor);
+    z-index: var(--borderZIndex);
 }

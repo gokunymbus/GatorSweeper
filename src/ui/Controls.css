@@ -4,25 +4,25 @@
     width: 100%;
     justify-content: space-around;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 12px;
 }
 
 .Controls__flags,
 .Controls__timer {
     width: 100px;
-    height: 75px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--tertiaryColor);
     font-family: var(--fontFamily);
-    font-size: 48px;
+    font-size: 40px;
 }
 
 .Controls__action {
-    width: 80px;
-    height: 80px;
-    background-image: url('../media/gator.svg');
+    width: 40px;
+    height: 40px;
+    background-image: url('media/gator.svg');
     background-repeat: no-repeat;
     background-position: center;
     background-size: 90%;
@@ -43,7 +43,25 @@
     cursor: pointer;
 }
 
-@media screen and (min-width: 1025px) {
+
+/**
+    We don't want thin portait screens to show larger fonts 
+    to prevent squishing. So i use and min-height.
+**/
+
+@media screen and (min-width: 480px) and (min-height: 600px) {
+    .Controls__flags,
+    .Controls__timer {
+        font-size: 60px;
+    }
+
+    .Controls__action {
+        width: 80px;
+        height: 80px;
+    }
+}
+
+@media screen and (min-width: 800px) and (min-height: 600px) {
     .Controls__flags,
     .Controls__timer {
         font-size: 80px;

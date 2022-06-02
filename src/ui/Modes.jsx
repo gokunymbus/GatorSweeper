@@ -34,11 +34,12 @@ export default class Modes extends React.Component {
     }
     
     render() {
+        const { difficulty } = this.props;
         return (
             <div className="Modes">
-               <div className="Modes__easy" ref={this.easyRef}>{this.lang.modesEasy}</div>
-               <div className="Modes__hard" ref={this.hardRef}>{this.lang.modesHard}</div>
-               <div className="Modes__extreme" ref={this.extremeRef}>{this.lang.modesExtreme}</div>
+               <div className="Modes__easy" ref={this.easyRef} tabIndex={0}>{this.lang.modesEasy}</div>
+               <div className="Modes__hard" ref={this.hardRef} tabIndex={0}>{this.lang.modesHard}</div>
+               <div className="Modes__extreme" ref={this.extremeRef} tabIndex={0}>{this.lang.modesExtreme}</div>
             </div>
         )
     }

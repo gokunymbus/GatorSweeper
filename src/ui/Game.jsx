@@ -80,7 +80,7 @@ export default class Game extends React.Component {
         if (isMeow) {
             // Here we update one mine at a time
             // by picking one out of the Grid and then
-            // delaying when it's set state is called
+            // delaying when the state receives the update
             const mines = reduceMines(grid);
             mines.forEach((mine) => {
                 const tid = setTimeout(() => {
@@ -114,7 +114,7 @@ export default class Game extends React.Component {
 
         this.setState({
             grid: newGrid,
-            isGameRunning: true,
+            isGameRunning: !isNowGameOver,
             isGameOver: isNowGameOver
         });
     }
@@ -172,7 +172,7 @@ export default class Game extends React.Component {
 
     onDifficultySelected = (difficulty) => {
         this.difficulty = Defaults[difficulty];
-        setTimeout(() => this.resetGame(), 4);
+        this.resetGame();
     }
 
     render() {

@@ -26,10 +26,24 @@
     transform: scale3d(1.2, 1.2, 1.2);
 }
 
-@media screen and (min-width: 1025px) {
+/**
+    We don't want thin portait screens to show larger fonts 
+    to prevent squishing. So i use and min-height.
+**/
+
+@media screen and (min-width: 480px) and (min-height: 600px) {
+    .Modes__easy,
+    .Modes__hard,
+    .Modes__extreme {
+        font-size: 22px;
+    }
+}
+
+@media screen and (min-width: 800px) and (min-height: 600px) {
     .Modes__easy,
     .Modes__hard,
     .Modes__extreme {
         font-size: 34px;
     }
 }
+
