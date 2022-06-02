@@ -37,16 +37,61 @@
 
 .Controls__action--gameover {
     filter: grayscale(100%);
+    background-image: url('media/gator-end.svg');
+}
+
+.Controls__action--gamewon {
+    background-image: url('media/gator-win.svg');
 }
 
 .Controls__action:hover {
     cursor: pointer;
 }
 
+.Controls__statusText {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--fontFamily);
+    font-size: 8px;
+    color: var(--tertiaryColor);
+    min-height: 14px;
+    overflow-y: hidden;
+    overflow-x: visible;
+    position: relative;
+    white-space: nowrap;
+}
+
+.Controls__statusText__status {
+    position: absolute;
+    transition: transform 0.3s ease-out, opacity 0.2s ease-out;
+    transform: translateY(-100%);
+    opacity: 0;
+}
+
+.Controls__statusText__status--visible {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+@media screen and (min-width: 480px) {
+    .Controls__statusText {
+        font-size: 12px;
+        min-height: 16px;
+    }
+}
+
+@media screen and (min-width: 800px) {
+    .Controls__statusText {
+        font-size: 22px;
+        min-height: 30px;
+    }
+}
 
 /**
-    We don't want thin portait screens to show larger fonts 
-    to prevent squishing. So i use and min-height.
+    I want smaller fonts to display in "thinner"
+    screens.
 **/
 
 @media screen and (min-width: 480px) and (min-height: 600px) {

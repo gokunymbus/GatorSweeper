@@ -5,6 +5,8 @@ import Controls from './Controls';
 
 import {
     createGridWithProximites,
+    numberOfMines,
+    numberOfRevealedTiles,
     reduceMines,
     updateGridFromTarget,
     updateTargetTile
@@ -80,9 +82,10 @@ export default class Game extends React.Component {
 
     selectTile = (tileProps) => {
         const {row, column, isMeow, isFlagged} = tileProps;
-        const {grid, gameState} = this.state;
+        const {grid, gameState, difficultySettings} = this.state;
+        const { size } = difficultySettings;
 
-        if (gameState == GameState.ENDED || isFlagged) {
+        if (gameState == GameState.ENDED || gameState == GameState.WON || isFlagged) {
             return;
         }
 
@@ -110,20 +113,33 @@ export default class Game extends React.Component {
             });
         }
 
-        const isNowGameOver = isMeow ? true : false;
-        if (isNowGameOver) {
-           this.clearTimer();
-        }
-
         const newGrid = updateGridFromTarget({
             targetRowIndex: row,
             targetColumnIndex: column,
             grid
         });
 
+        
+        let newGameState;
+        const totalMines = numberOfMines(newGrid);
+        const totalRevealedTiles = numberOfRevealedTiles(newGrid);
+        const tilesLeft = (size * size) - totalRevealedTiles;
+    
+        switch (true) {
+            case isMeow:
+                newGameState = GameState.ENDED;
+                break;
+            case tilesLeft == totalMines:
+                newGameState = GameState.WON;
+                break;
+            default:
+                newGameState = GameState.RUNNING;
+                break;
+        }
+
         this.setState({
             grid: newGrid,
-            gameState: isNowGameOver ? GameState.ENDED : GameState.RUNNING
+            gameState: newGameState
         });
     }
 
@@ -180,6 +196,14 @@ export default class Game extends React.Component {
         const { gameState } = this.state;
         if (gameState == GameState.RUNNING && previousState.gameState == GameState.NEW) {
            this.createTimer();
+        }
+
+        if (
+            previousState.gameState == GameState.RUNNING
+            && gameState == GameState.ENDED
+            || gameState == GameState.WON
+        ) {
+            this.clearTimer();
         }
     }
 

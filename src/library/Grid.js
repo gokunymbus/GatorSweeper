@@ -373,3 +373,25 @@ export function reduceMines(grid) {
         )
     }, [])
 }
+
+export function numberOfRevealedTiles(grid) {
+    return grid.reduce((previousRow, currentRow) => {
+        return previousRow + currentRow.reduce((previousValue, currentColumn) => {
+            if (currentColumn.isMeow || !currentColumn.isRevealed) {
+                return previousValue;
+            }
+            return previousValue + 1;
+        }, 0)
+    }, 0)
+}
+
+export function numberOfMines(grid) {
+    return grid.reduce((previousRow, currentRow) => {
+        return previousRow + currentRow.reduce((previousValue, currentColumn) => {
+            if (!currentColumn.isMeow) {
+                return previousValue;
+            }
+            return previousValue + 1;
+        }, 0)
+    }, 0)
+}

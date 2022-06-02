@@ -9,7 +9,7 @@ export const DifficultySettings = {
     [Difficulties.EASY]: {
         flags: 20,
         minMines: 1,
-        maxMines: 10,
+        maxMines: 30,
         size: 10
     },
     [Difficulties.HARD]: {
@@ -29,5 +29,6 @@ export const DifficultySettings = {
 export const GameState = Object.freeze({
     NEW:   Symbol("new"),
     RUNNING:   Symbol("running"),
-    ENDED:  Symbol("ended")
+    ENDED:  Symbol("ended"),
+    WON:  Symbol("won")
 });

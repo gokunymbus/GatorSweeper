@@ -61,7 +61,7 @@
 }
 
 .Tile__covered--isFlagged {
-    background-image: url('media/flag64.png');
+    background-image: url('media/flag.svg');
     background-position: center;
     background-size: 60%;
     background-repeat: no-repeat;
