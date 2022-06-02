@@ -9,7 +9,7 @@ export const DifficultySettings = {
     [Difficulties.EASY]: {
         flags: 20,
         minMines: 1,
-        maxMines: 30,
+        maxMines: 10,
         size: 10
     },
     [Difficulties.HARD]: {
