@@ -19,10 +19,14 @@ export default class Controls extends React.Component {
     render() {
         const { flags, timer, isGameOver } = this.props;
         const gameOverClassName = isGameOver ? "Controls__action--gameover": "";
+
         return (
             <div className="Controls">
                 <div className="Controls__flags">{flags}</div>
-                <div className={`Controls__action ${gameOverClassName}`} ref={this.actionRef}></div>
+                <div className="Controls__status" ref={this.actionRef}>
+                    <div className={`Controls__action ${gameOverClassName}`}></div>
+                    <div className="Controls__statusText">Started</div>
+                </div>
                 <div className="Controls__timer" ref={this.timerRef}>{timer}</div>
             </div>
         )

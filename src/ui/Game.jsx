@@ -13,7 +13,7 @@ import {
 import timer from '../library/Timer';
 
 import './Game.css';
-import Defaults from '../library/Defaults';
+import {DifficultySettings, Difficulties} from '../library/Constants';
 import Tile from './Tile';
 import RandomMinMax from '../library/RandomMinMax';
 import Modes from './Modes';
@@ -21,25 +21,32 @@ import Modes from './Modes';
 export default class Game extends React.Component {
     timerRef = null;
     timeoutIDs = [];
-    difficulty = Defaults.easy;
+    defaultDifficultySettings = DifficultySettings[Difficulties.EASY];
+    defaultDifficulty = Difficulties.EASY
 
     constructor(props) {
         super(props);
-        this.state = this.getIntialGameState();
+        this.state = this.getIntialGameState({});
     }
 
-    getIntialGameState = () => {
+    getIntialGameState = (params) => {
+        const {
+            difficulty = this.defaultDifficulty,
+            difficultySettings = this.defaultDifficultySettings
+        } = params;
+    
         return {
             grid: createGridWithProximites({
-                gridSize: this.difficulty.size,
-                randomMin: this.difficulty.minMines,
-                randomMax: this.difficulty.maxMines
+                gridSize: difficultySettings.size,
+                randomMin: difficultySettings.minMines,
+                randomMax: difficultySettings.maxMines
             }),
-            flags: this.difficulty.flags,
+            flags: difficultySettings.flags,
             timer: 0,
             isGameRunning: false,
             isGameOver: false,
-            difficulty: this.difficulty
+            difficultySettings,
+            difficulty,
         }
     }
 
@@ -62,11 +69,11 @@ export default class Game extends React.Component {
         }
     }
 
-    resetGame = () => {
+    setGame = (params) => {
         this.clearTimeouts();
         this.clearTimer();
 
-        this.setState(this.getIntialGameState());
+        this.setState(this.getIntialGameState(params));
     }
 
     selectTile = (tileProps) => {
@@ -160,7 +167,12 @@ export default class Game extends React.Component {
     };
 
     onMainIconSelected = () => {
-       this.resetGame();
+        // Maintain current diffuculty
+        const {difficulty, difficultySettings} = this.state;
+        this.setGame({
+            difficulty,
+            difficultySettings
+        });
     };
 
     componentDidUpdate(previousProps, previousState) {
@@ -171,8 +183,10 @@ export default class Game extends React.Component {
     }
 
     onDifficultySelected = (difficulty) => {
-        this.difficulty = Defaults[difficulty];
-        this.resetGame();
+        this.setGame({
+            difficultySettings: DifficultySettings[difficulty],
+            difficulty
+        });
     }
 
     render() {
@@ -181,6 +195,7 @@ export default class Game extends React.Component {
             flags,
             timer,
             isGameOver,
+            difficultySettings,
             difficulty
         } = this.state;
         return (
@@ -193,7 +208,7 @@ export default class Game extends React.Component {
                 />
                 <Grid
                     gridData={grid}
-                    gridSize={difficulty.size}
+                    gridSize={difficultySettings.size}
                 >
                     <Tile
                        onTileSelected={this.onTileSelected}
@@ -201,7 +216,10 @@ export default class Game extends React.Component {
                        onEnterKeyUp={this.onEnterKeyUp}
                     />
                 </Grid>
-                <Modes onDifficultySelected={this.onDifficultySelected} />
+                <Modes
+                    onDifficultySelected={this.onDifficultySelected}
+                    difficulty={difficulty}
+                />
             </div>
         );
     }
