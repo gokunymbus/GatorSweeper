@@ -1,7 +1,7 @@
 
 import React from 'react';
 import Grid from './Grid';
-import Controls from './Controls';
+import Header from './Header';
 import {
     createGridWithProximites,
     numberOfMines,
@@ -23,7 +23,7 @@ import {
 } from '../library/Constants';
 import Tile from './Tile';
 import RandomMinMax from '../library/RandomMinMax';
-import Modes from './Modes';
+import Footer from './Footer';
 
 export default class Game extends React.Component {
     timerRef = null;
@@ -138,7 +138,7 @@ export default class Game extends React.Component {
                 newGameState = GameState.RUNNING;
                 break;
         }
-        const newState = {}
+        
         this.setState({
             grid: newGrid,
             gameState: newGameState,
@@ -237,12 +237,12 @@ export default class Game extends React.Component {
         } = this.state;
 
         return (
-            <div
+            <main
                 className="Game"
                 style={theme}
             >
                 <div className="Game__container">
-                    <Controls
+                    <Header
                         onMainIconSelected={this.onMainIconSelected}
                         flags={flags}
                         timer={timer}
@@ -260,12 +260,12 @@ export default class Game extends React.Component {
                             onLongPress={this.onLongPress}
                         />
                     </Grid>
-                    <Modes
+                    <Footer
                         onDifficultySelected={this.onDifficultySelected}
                         difficulty={difficulty}
                     />
                 </div>
-            </div>
+            </main>
         );
     }
 

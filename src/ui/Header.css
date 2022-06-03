@@ -1,4 +1,4 @@
-.Controls {
+.Header {
     display: flex;
     min-height: 50px;
     width: 100%;
@@ -7,8 +7,8 @@
     margin-bottom: 12px;
 }
 
-.Controls__flags,
-.Controls__timer {
+.Header__flags,
+.Header__timer {
     min-width: 56px;
     display: flex;
     align-items: center;
@@ -18,7 +18,7 @@
     font-size: 40px;
 }
 
-.Controls__status {
+.Header__status {
     flex-grow: 1;
     display: flex;
     align-items: center;
@@ -26,7 +26,7 @@
     flex-direction: column;
 }
 
-.Controls__action {
+.Header__action {
     width: 60px;
     height: 60px;
     background-image: url('media/gator-alt.svg');
@@ -37,25 +37,25 @@
     transition: filter 0.1s ease-out, transform 0.1s ease-out;
 }
 
-.Controls__action:active {
+.Header__action:active {
     filter: hue-rotate(120deg);
     transform: scale3d(1.1, 1.1, 1.1);
 }
 
-.Controls__action--gameover {
+.Header__action--gameover {
     filter: grayscale(100%);
     background-image: url('media/gator-end.svg');
 }
 
-.Controls__action--gamewon {
+.Header__action--gamewon {
     background-image: url('media/gator-win.svg');
 }
 
-.Controls__action:hover {
+.Header__action:hover {
     cursor: pointer;
 }
 
-.Controls__statusText {
+.Header__statusText {
     width: 100%;
     display: flex;
     align-items: center;
@@ -70,14 +70,14 @@
     white-space: nowrap;
 }
 
-.Controls__statusText__status {
+.Header__statusText__status {
     position: absolute;
     transition: transform 0.3s ease-out, opacity 0.2s ease-out;
     transform: translateY(-100%);
     opacity: 0;
 }
 
-.Controls__statusText__status--visible {
+.Header__statusText__status--visible {
     transform: translateY(0);
     opacity: 1;
 }
@@ -92,36 +92,36 @@
 
 
 @media screen and (min-width: 480px) and (min-height: 600px) {
-    .Controls__flags,
-    .Controls__timer {
+    .Header__flags,
+    .Header__timer {
         font-size: 60px;
         min-width: 110px;
     }
 
-    .Controls__action {
+    .Header__action {
         width: 80px;
         height: 80px;
     }
 
-    .Controls__statusText {
+    .Header__statusText {
         font-size: 12px;
         min-height: 16px;
     }
 }
 
 @media screen and (min-width: 800px) and (min-height: 600px) {
-    .Controls__flags,
-    .Controls__timer {
+    .Header__flags,
+    .Header__timer {
         font-size: 80px;
         min-width: 200px;
     }
 
-    .Controls__action {
+    .Header__action {
         width: 120px;
         height: 120px;
     }
 
-    .Controls__statusText {
+    .Header__statusText {
         font-size: 22px;
         min-height: 30px;
     }

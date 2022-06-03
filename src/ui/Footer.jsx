@@ -1,9 +1,9 @@
 import React from "react";
-import './Modes.css';
+import './Footer.css';
 import Language from "../library/Language";
 import { Difficulties } from "../library/Constants";
 
-export default class Modes extends React.Component {
+export default class Footer extends React.Component {
     lang = Language();
     constructor(props) {
         super(props);
@@ -30,31 +30,31 @@ export default class Modes extends React.Component {
     
     render() {
         const { difficulty } = this.props;
-        const activeClassName = 'Modes__mode--active';
+        const activeClassName = 'Footer__mode--active';
         return (
-            <div className="Modes">
+            <footer className="Footer">
                <div
-                    className={`Modes__mode ${difficulty == Difficulties.EASY ? activeClassName : ''}`}
+                    className={`Footer__mode ${difficulty == Difficulties.EASY ? activeClassName : ''}`}
                     ref={this.easyRef}
                     tabIndex={0}
                 >
                     {this.lang.modesEasy}
                 </div>
                 <div
-                     className={`Modes__mode ${difficulty == Difficulties.HARD ? activeClassName : ''}`}
+                     className={`Footer__mode ${difficulty == Difficulties.HARD ? activeClassName : ''}`}
                     ref={this.hardRef}
                     tabIndex={0}
                 >
                     {this.lang.modesHard}
                 </div>
                 <div
-                     className={`Modes__mode ${difficulty == Difficulties.EXTREME ? activeClassName : ''}`}
+                     className={`Footer__mode ${difficulty == Difficulties.EXTREME ? activeClassName : ''}`}
                     ref={this.extremeRef}
                     tabIndex={0}
                 >
                     {this.lang.modesExtreme}
                 </div>
-            </div>
+            </footer>
         )
     }
 }

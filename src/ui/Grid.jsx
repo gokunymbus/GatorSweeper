@@ -49,11 +49,11 @@ export default class Grid extends React.Component {
     render() {
         const { gridData } = this.props;
         return (
-            <div className="Grid">
+            <section className="Grid">
                 {
                     gridData.map((row, rowIndex) => this.renderRow(row, rowIndex))
                 }
-            </div>
+            </section>
         );
     }
 }
