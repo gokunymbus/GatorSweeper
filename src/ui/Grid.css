@@ -5,14 +5,12 @@
     --borderSize: 1px;
     --borderOffset: 0;
     --borderZIndex: 10;
-    /* background-color: var(--tertiaryColor); */
 }
 
 .Grid__row {
     width: 100%;
     display: flex;
     position: relative;
-    /* padding-bottom: var(--borderSize); */
 }
 
 .Grid__row::after {

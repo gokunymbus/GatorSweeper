@@ -1,12 +1,15 @@
 import React from "react";
 import "./Tile.css";
 import { Difficulties } from "../library/Constants";
+import timer from "../library/Timer";
 
 export default class Tile extends React.Component {
     constructor(props) {
         super(props);
     }
-    
+
+    timer = null;
+    intervalsPassed = 0;
     tileRef = React.createRef();
 
     onClick = (e) => {
@@ -25,6 +28,11 @@ export default class Tile extends React.Component {
         onEnterKeyUp(e, {...this.props});
     }
 
+    onLongPress = (e) => {
+        const {onLongPress} = this.props;
+        onLongPress(e, {...this.props});
+    }
+
     renderMeow() {
         return (<div className="Tile__mine"></div>)
     }
@@ -35,6 +43,10 @@ export default class Tile extends React.Component {
 
     renderBlank() {
         return (<div className="Tile__blank"></div>)
+    }
+
+    renderFlag() {
+        return (<div className="Tile__covered__flag"></div>)
     }
 
     renderRevealed() {
@@ -52,9 +64,12 @@ export default class Tile extends React.Component {
     }
 
     renderCovered() {
-        const {isFlagged} = this.props;
+        const { isFlagged } = this.props;
         return (
-            <div className={`Tile__covered ${(isFlagged) ? 'Tile__covered--isFlagged' : '' }`}></div>
+            <div className={`Tile__covered`} >
+                { isFlagged && this.renderFlag() }
+                <div className="Tile__covered__bg"></div>
+            </div>
         );
     }
 
@@ -71,6 +86,30 @@ export default class Tile extends React.Component {
             if (e.key == "Enter") {
                 this.onEnterKeyUp(e);
             }
+        });
+
+        this.tileRef.current.addEventListener('touchstart', (e) => {
+            this.timer = timer((intervalsPassed) => {this.intervalsPassed = intervalsPassed;}, 400);
+            e.preventDefault();
+        });
+
+        this.tileRef.current.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+        });
+
+        this.tileRef.current.addEventListener('touchend', (e) => {
+            if (this.intervalsPassed == 0) {
+                this.onClick(e);
+            }
+
+            if (this.intervalsPassed > 0) {
+                this.onLongPress();
+            }
+
+            this.timer.stop();
+            this.timer = null;
+            this.intervalsPassed = 0;
+            e.preventDefault();
         });
     }
 

@@ -32,3 +32,6 @@ export const GameState = Object.freeze({
     ENDED:  Symbol("ended"),
     WON:  Symbol("won")
 });
+
+export const defaultTheme = "main";
+export const defaultGameOverTheme = "gameover";

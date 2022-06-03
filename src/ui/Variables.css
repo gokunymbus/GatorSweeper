@@ -1,14 +1,10 @@
 :root {
-    --fontFamily: 'Koulen', Arial, sans-serif;
-    --primaryColor: #519548;
-    --secondaryColor: #88C425;
-    --tertiaryColor: #BEF202;
-    --otherColor: #1B676B;
+    /**
+        Variables are defined in js theme files
+        locally provided themes are in the themes folder.
 
-    --mobile: 320px;
-    --tablets: 481px;
-    --smalldevice: 769px;
-    --desktop: 1025px;
-    --extraLarge: 1201px;
-    --veryLarge: 2000px;
+        NOTE: Variables can be used here but 
+        will be overwritten by the incoming theme.js
+        file. 
+    */
 }

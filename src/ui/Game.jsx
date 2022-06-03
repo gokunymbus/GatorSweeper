@@ -2,7 +2,6 @@
 import React from 'react';
 import Grid from './Grid';
 import Controls from './Controls';
-
 import {
     createGridWithProximites,
     numberOfMines,
@@ -12,15 +11,16 @@ import {
     updateTargetTile
 } from '../library/Grid';
 
+import themes from '../themes/index.js'
 import timer from '../library/Timer';
-
 import './Game.css';
 import {
     DifficultySettings,
     Difficulties,
-    GameState
+    GameState,
+    defaultTheme,
+    defaultGameOverTheme
 } from '../library/Constants';
-
 import Tile from './Tile';
 import RandomMinMax from '../library/RandomMinMax';
 import Modes from './Modes';
@@ -37,7 +37,8 @@ export default class Game extends React.Component {
     getIntialGameState = (defaults) => {
         const {
             difficulty = Difficulties.EASY,
-            difficultySettings = DifficultySettings[Difficulties.EASY]
+            difficultySettings = DifficultySettings[Difficulties.EASY],
+            theme = themes[defaultTheme]
         } = defaults;
     
         return {
@@ -51,6 +52,7 @@ export default class Game extends React.Component {
             gameState: GameState.NEW,
             difficultySettings,
             difficulty,
+            theme: theme
         }
     }
 
@@ -136,10 +138,11 @@ export default class Game extends React.Component {
                 newGameState = GameState.RUNNING;
                 break;
         }
-
+        const newState = {}
         this.setState({
             grid: newGrid,
-            gameState: newGameState
+            gameState: newGameState,
+            ...(newGameState == GameState.ENDED && {theme: themes[defaultGameOverTheme]})
         });
     }
 
@@ -149,17 +152,17 @@ export default class Game extends React.Component {
         });
     };
 
-    onTileRightClicked = (e, tileProps) => {
+    addFlag(tileProps) {
         const {row, column} = tileProps;
         const {grid, flags} = this.state;
         const tile = grid[row][column];
+
         // If there are no flags left, don't place them
         if (flags == 0 || tile.isRevealed) {
             return;
         }
 
         const isFlagged = !tile.isFlagged;
-
         const newGrid = updateTargetTile({
             targetRow: row,
             targetColumn: column,
@@ -173,6 +176,10 @@ export default class Game extends React.Component {
             grid: newGrid,
             flags: isFlagged ?  flags - 1 : flags + 1
         });
+    }
+
+    onTileRightClicked = (e, tileProps) => {
+        this.addFlag(tileProps);
     };
 
     onEnterKeyUp = (e, tileProps) => {
@@ -181,6 +188,10 @@ export default class Game extends React.Component {
 
     onTileSelected = (e, tileProps) => {
         this.selectTile(tileProps);
+    };
+
+    onLongPress = (e, tileProps) => {
+        this.addFlag(tileProps);
     };
 
     onMainIconSelected = () => {
@@ -193,7 +204,7 @@ export default class Game extends React.Component {
     };
 
     componentDidUpdate(previousProps, previousState) {
-        const { gameState } = this.state;
+        const { gameState, theme } = this.state;
         if (gameState == GameState.RUNNING && previousState.gameState == GameState.NEW) {
            this.createTimer();
         }
@@ -221,31 +232,39 @@ export default class Game extends React.Component {
             timer,
             gameState,
             difficultySettings,
-            difficulty
+            difficulty,
+            theme
         } = this.state;
+
         return (
-            <div className="Game">
-                <Controls
-                    onMainIconSelected={this.onMainIconSelected}
-                    flags={flags}
-                    timer={timer}
-                    gameState={gameState}
-                />
-                <Grid
-                    gridData={grid}
-                    gridSize={difficultySettings.size}
-                >
-                    <Tile
-                       onTileSelected={this.onTileSelected}
-                       onTileRightClicked={this.onTileRightClicked}
-                       onEnterKeyUp={this.onEnterKeyUp}
-                       difficulty={difficulty}
+            <div
+                className="Game"
+                style={theme}
+            >
+                <div className="Game__container">
+                    <Controls
+                        onMainIconSelected={this.onMainIconSelected}
+                        flags={flags}
+                        timer={timer}
+                        gameState={gameState}
                     />
-                </Grid>
-                <Modes
-                    onDifficultySelected={this.onDifficultySelected}
-                    difficulty={difficulty}
-                />
+                    <Grid
+                        gridData={grid}
+                        gridSize={difficultySettings.size}
+                    >
+                        <Tile
+                            onTileSelected={this.onTileSelected}
+                            onTileRightClicked={this.onTileRightClicked}
+                            onEnterKeyUp={this.onEnterKeyUp}
+                            difficulty={difficulty}
+                            onLongPress={this.onLongPress}
+                        />
+                    </Grid>
+                    <Modes
+                        onDifficultySelected={this.onDifficultySelected}
+                        difficulty={difficulty}
+                    />
+                </div>
             </div>
         );
     }

@@ -9,8 +9,7 @@
 
 .Controls__flags,
 .Controls__timer {
-    width: 100px;
-    height: 40px;
+    min-width: 56px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -28,8 +27,8 @@
 }
 
 .Controls__action {
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 60px;
     background-image: url('media/gator-alt.svg');
     background-repeat: no-repeat;
     background-position: center;
@@ -62,7 +61,7 @@
     align-items: center;
     justify-content: center;
     font-family: var(--fontFamily);
-    font-size: 8px;
+    font-size: 12px;
     color: var(--tertiaryColor);
     min-height: 14px;
     overflow-y: hidden;
@@ -84,33 +83,29 @@
 }
 
 @media screen and (min-width: 480px) {
-    .Controls__statusText {
-        font-size: 12px;
-        min-height: 16px;
-    }
+   
 }
 
 @media screen and (min-width: 800px) {
-    .Controls__statusText {
-        font-size: 22px;
-        min-height: 30px;
-    }
+   
 }
 
-/**
-    I want smaller fonts to display in "thinner"
-    screens.
-**/
 
 @media screen and (min-width: 480px) and (min-height: 600px) {
     .Controls__flags,
     .Controls__timer {
         font-size: 60px;
+        min-width: 110px;
     }
 
     .Controls__action {
         width: 80px;
         height: 80px;
+    }
+
+    .Controls__statusText {
+        font-size: 12px;
+        min-height: 16px;
     }
 }
 
@@ -118,10 +113,16 @@
     .Controls__flags,
     .Controls__timer {
         font-size: 80px;
+        min-width: 200px;
     }
 
     .Controls__action {
         width: 120px;
         height: 120px;
+    }
+
+    .Controls__statusText {
+        font-size: 22px;
+        min-height: 30px;
     }
 }
