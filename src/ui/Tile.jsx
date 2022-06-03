@@ -93,9 +93,6 @@ export default class Tile extends React.Component {
             e.preventDefault();
         });
 
-        this.tileRef.current.addEventListener('touchmove', (e) => {
-            e.preventDefault();
-        });
 
         this.tileRef.current.addEventListener('touchend', (e) => {
             if (this.intervalsPassed == 0) {
