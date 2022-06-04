@@ -35,11 +35,18 @@
     background-size: 90%;
     border-radius: 50%;
     transition: filter 0.1s ease-out, transform 0.1s ease-out;
+    background-color: transparent;
+    border: 0;
 }
 
 .Header__action:active {
     filter: hue-rotate(120deg);
     transform: scale3d(1.1, 1.1, 1.1);
+}
+
+.Header__action:focus:not(:hover),
+.Header__action:focus-visible {
+    outline: 1px solid black;
 }
 
 .Header__action--gameover {
@@ -81,15 +88,6 @@
     transform: translateY(0);
     opacity: 1;
 }
-
-@media screen and (min-width: 480px) {
-   
-}
-
-@media screen and (min-width: 800px) {
-   
-}
-
 
 @media screen and (min-width: 480px) and (min-height: 600px) {
     .Header__flags,

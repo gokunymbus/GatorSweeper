@@ -21,27 +21,83 @@ export default class Header extends React.Component {
     
     render() {
         const { flags, timer, gameState } = this.props;
+
         const isGameRunning = gameState == GameState.RUNNING;
         const isGameNew = gameState == GameState.NEW;
         const isGameOver = gameState == GameState.ENDED;
         const isGameWon = gameState == GameState.WON;
+
         const gameOverClassName = isGameOver ? "Header__action--gameover": "";
         const gameWonClassName = isGameWon ? "Header__action--gamewon": "";
         const statusTextClassName = "Header__statusText__status--visible";
 
+        let extendedDescription = "";
+        switch (true) {
+            case isGameRunning:
+                extendedDescription = this.language.controlsAEDGameStateStarted;
+                break;
+            case isGameNew:
+                extendedDescription = this.language.controlsAEDGameStateNew;
+                break;
+            case isGameOver:
+                extendedDescription = this.language.controlsAEDGameStateFailed;
+                break;
+            case isGameWon:
+                extendedDescription = this.language.controlsAEDGameStateWinner;
+                break;
+
+            default:
+                break;
+        }
+
         return (
-            <header className="Header">
-                <div className="Header__flags">{flags}</div>
+            <header className="Header" aria-label="This is a minesweeper clone">
+                <data
+                    className="Header__flags"
+                    aria-label={this.language.controlsNumberOfFlags + " " + flags}
+                    tabIndex={0}
+                >{flags}</data>
                 <div className="Header__status">
-                    <div className={`Header__action ${gameOverClassName} ${gameWonClassName}`} ref={this.actionRef}></div>
-                    <div className="Header__statusText">
-                        <div className={`Header__statusText__status ${isGameRunning ? statusTextClassName : ""}`}>{this.language.HeaderGameStateStarted}</div>
-                        <div className={`Header__statusText__status ${isGameOver ? statusTextClassName : ""}`}>{this.language.HeaderGameStateFailed}</div>
-                        <div className={`Header__statusText__status ${isGameNew ? statusTextClassName : ""}`}>{this.language.HeaderGameStateNew}</div>
-                        <div className={`Header__statusText__status ${isGameWon ? statusTextClassName : ""}`}>{this.language.HeaderGameStateWinner}</div>
+                    <button
+                        className={`Header__action ${gameOverClassName} ${gameWonClassName}`}
+                        ref={this.actionRef}
+                        aria-label={this.language.controlsResetButton}
+                        tabIndex={0}
+                    ></button>
+                    <div className="Header__statusText" aria-label={extendedDescription} role="alert">
+                        <div
+                            className={`Header__statusText__status ${isGameRunning ? statusTextClassName : ""}`}
+                            aria-hidden="true"
+                        >
+                            {this.language.controlsGameStateStarted}
+                        </div>
+                        <div
+                            className={`Header__statusText__status ${isGameOver ? statusTextClassName : ""}`}
+                            aria-hidden="true"
+                        >
+                            {this.language.controlsGameStateFailed}
+                        </div>
+                        <div
+                            className={`Header__statusText__status ${isGameNew ? statusTextClassName : ""}`}
+                            aria-hidden="true"
+                        >
+                            {this.language.controlsGameStateNew}
+                        </div>
+                        <div
+                            className={`Header__statusText__status ${isGameWon ? statusTextClassName : ""}`}
+                            aria-hidden="true"
+                        >
+                            {this.language.controlsGameStateWinner}
+                        </div>
                     </div>
                 </div>
-                <time className="Header__timer" ref={this.timerRef}>{timer}</time>
+                <data
+                    className="Header__timer"
+                    ref={this.timerRef}
+                    aria-label={timer + " " + this.language.controlsSeconds}
+                    role="timer"
+                    tabIndex={0}
+                   >{timer}</data>
             </header>
         )
     }
