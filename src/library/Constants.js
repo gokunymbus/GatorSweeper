@@ -35,3 +35,5 @@ export const GameState = Object.freeze({
 
 export const defaultTheme = "main";
 export const defaultGameOverTheme = "gameover";
+
+export const readOutProximityKey = "q"

@@ -1,5 +1,6 @@
 import React from "react";
 import './Grid.css';
+import Language from "../utilities/Language";
 
 import Tile from './Tile';
 
@@ -7,6 +8,8 @@ export default class Grid extends React.Component {
     constructor(props) {
         super(props);
     }
+
+    language = Language();
 
     renderColumn(column, rowIndex, columnIndex) {
         const {
@@ -49,7 +52,7 @@ export default class Grid extends React.Component {
     render() {
         const { gridData } = this.props;
         return (
-            <section className="Grid">
+            <section className="Grid" aria-label={this.language.gridAED} tabIndex={0}>
                 {
                     gridData.map((row, rowIndex) => this.renderRow(row, rowIndex))
                 }

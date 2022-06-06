@@ -22,7 +22,7 @@ import {
     defaultGameOverTheme
 } from '../library/Constants';
 import Tile from './Tile';
-import RandomMinMax from '../library/RandomMinMax';
+import RandomMinMax from '../utilities/RandomMinMax';
 import Footer from './Footer';
 
 export default class Game extends React.Component {

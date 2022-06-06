@@ -2,15 +2,19 @@ import React from "react";
 import "./Tile.css";
 import { Difficulties } from "../library/Constants";
 import timer from "../library/Timer";
+import Language from "../utilities/Language";
+import ReplaceStringTokens from "../utilities/ReplaceStringTokens";
 
 export default class Tile extends React.Component {
     constructor(props) {
         super(props);
     }
 
+    language = Language();
     timer = null;
     intervalsPassed = 0;
     tileRef = React.createRef();
+
 
     onClick = (e) => {
         const {onTileSelected} = this.props;
@@ -83,6 +87,7 @@ export default class Tile extends React.Component {
         });
 
         this.tileRef.current.addEventListener('keyup', (e) => {
+            console.log(e.key)
             if (e.key == "Enter") {
                 this.onEnterKeyUp(e);
             }
@@ -109,8 +114,43 @@ export default class Tile extends React.Component {
         });
     }
 
+    getAEDStatus() {
+        const {
+            isRevealed,
+            proximities,
+            isMeow,
+            isFlagged
+        } = this.props
+
+        const {
+            tileAEDRevealed,
+            tileAEDHidden,
+            tileAEDRevealedMine,
+            tileAEDIsFlagged
+        } = this.language;
+
+        if (isRevealed && isMeow) {
+            return tileAEDRevealedMine;
+        }
+
+        if (isRevealed) {
+            return ReplaceStringTokens(tileAEDRevealed, [proximities])
+        }
+
+        if (isFlagged) {
+            return tileAEDHidden + " " + tileAEDIsFlagged;
+        }
+
+        return tileAEDHidden;
+    }
+
     render() {
-        const { isRevealed, difficulty } = this.props;
+        const {
+            isRevealed,
+            difficulty,
+            row,
+            column
+        } = this.props;
 
         let difficultyClassName = "";
         switch (difficulty) {
@@ -130,9 +170,19 @@ export default class Tile extends React.Component {
                 break;
         }
 
+        const aedTileDescription = ReplaceStringTokens(
+            this.language.tileAED,
+            [row,column]
+        ) + " " + this.getAEDStatus();
+
         return(
-            <div className={`Tile ${difficultyClassName}`} ref={this.tileRef} tabIndex={0}>
-                {   
+            <div
+                className={`Tile ${difficultyClassName}`}
+                ref={this.tileRef}
+                tabIndex={0}
+                aria-label={aedTileDescription}
+            >
+                {
                     isRevealed ?
                     this.renderRevealed()
                     :

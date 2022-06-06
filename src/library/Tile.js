@@ -1,4 +1,4 @@
-import RandomMinMax from "./RandomMinMax";
+import RandomMinMax from "../utilities/RandomMinMax";
 export function TileFactory(params) {
     const {
         min,

@@ -1,5 +1,5 @@
 import { TileFactory, TileChangeFactory } from "./Tile";
-import InRange from "./InRange";
+import InRange from "../utilities/InRange";
 
 /**
  * The entry point function for creating the grid, creates the grid and 

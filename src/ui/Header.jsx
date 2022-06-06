@@ -1,7 +1,7 @@
 import React from "react";
 import './Header.css';
 import { GameState } from "../library/Constants";
-import Language from "../library/Language";
+import Language from "../utilities/Language";
 
 export default class Header extends React.Component {
     constructor(props) {
@@ -64,7 +64,7 @@ export default class Header extends React.Component {
                         aria-label={this.language.controlsResetButton}
                         tabIndex={0}
                     ></button>
-                    <div className="Header__statusText" aria-label={extendedDescription} role="alert">
+                    <div className="Header__statusText" aria-label={extendedDescription} aria-live="passive">
                         <div
                             className={`Header__statusText__status ${isGameRunning ? statusTextClassName : ""}`}
                             aria-hidden="true"

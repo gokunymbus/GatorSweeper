@@ -1,6 +1,6 @@
 import React from "react";
 import './Footer.css';
-import Language from "../library/Language";
+import Language from "../utilities/Language";
 import { Difficulties } from "../library/Constants";
 
 export default class Footer extends React.Component {
