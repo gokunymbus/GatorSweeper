@@ -1,6 +1,7 @@
 import React from "react";
 import './Grid.css';
 import Language from "../utilities/Language";
+import {FocusGrid} from "../utilities/FocusGrid";
 
 import Tile from './Tile';
 
@@ -10,12 +11,14 @@ export default class Grid extends React.Component {
     }
 
     language = Language();
+    gridRef = React.createRef();
 
     renderColumn(column, rowIndex, columnIndex) {
         const {
             gridSize,
             children
         } = this.props;
+        const cellData = {row: rowIndex, column: columnIndex};
         return (
             <div
                 className="Grid__column"
@@ -26,12 +29,15 @@ export default class Grid extends React.Component {
             >
                 <Tile
                     {...column}
-                    row={rowIndex}
-                    column={columnIndex}
+                    {...cellData}
                     {...children.props}
                 />
             </div>
         )
+    }
+
+    componentDidMount() {
+        console.log(this.gridRef.current);
     }
 
     renderRow(columns, rowIndex) {
@@ -43,6 +49,7 @@ export default class Grid extends React.Component {
                 style={{
                     height: (100/gridSize) + "%"
                 }}
+                tabIndex={0}
             >
                 {columns.map((column, columnIndex) => this.renderColumn(column, rowIndex, columnIndex))}
             </div>
@@ -52,11 +59,18 @@ export default class Grid extends React.Component {
     render() {
         const { gridData } = this.props;
         return (
-            <section className="Grid" aria-label={this.language.gridAED} tabIndex={0}>
-                {
-                    gridData.map((row, rowIndex) => this.renderRow(row, rowIndex))
-                }
-            </section>
+            <FocusGrid
+                rowLength={gridData.length}
+                columnLength={gridData[0].length}
+                aria-label={this.language.gridAED}
+                className={"Grid__focusGroup"}
+            >
+                <section className="Grid">
+                    {
+                        gridData.map((row, rowIndex) => this.renderRow(row, rowIndex))
+                    }
+                </section>
+            </FocusGrid>
         );
     }
 }

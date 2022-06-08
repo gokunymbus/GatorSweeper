@@ -15,8 +15,8 @@ export default {
     "controlsGameStateWinner": "Winner!",
     "gridAED": "This is the main gameboard grid constructed of rows and columns with tiles in each cell. Use the arrow keys to enter the grid and navigate through the grid. Press {0} to flag a tile if you think a gator is there.",
     "tileAED": "Tile location row {0}, column {1}.",
-    "tileAEDRevealedMine": "is revealed and is a gator, game over.",
-    "tileAEDRevealed": "It's not revealed with {0} gators in proximity.",
+    "tileAEDRevealedMine": "It's revealed and is a gator, game over.",
+    "tileAEDRevealed": "It has been revealed with {0} gators in proximity.",
     "tileAEDHidden": "It's not revealed yet",
     "tileAEDIsFlagged": "It's currently Flagged"
 }

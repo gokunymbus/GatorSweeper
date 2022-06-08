@@ -4,17 +4,17 @@ import { Difficulties } from "../library/Constants";
 import timer from "../library/Timer";
 import Language from "../utilities/Language";
 import ReplaceStringTokens from "../utilities/ReplaceStringTokens";
+import { FocusGridCell } from "../utilities/FocusGrid";
 
 export default class Tile extends React.Component {
     constructor(props) {
         super(props);
+        this.tileRef = props.forwardRef || React.createRef();
     }
 
     language = Language();
     timer = null;
     intervalsPassed = 0;
-    tileRef = React.createRef();
-
 
     onClick = (e) => {
         const {onTileSelected} = this.props;
@@ -149,7 +149,8 @@ export default class Tile extends React.Component {
             isRevealed,
             difficulty,
             row,
-            column
+            column,
+            focusGridTabIndex
         } = this.props;
 
         let difficultyClassName = "";
@@ -157,15 +158,12 @@ export default class Tile extends React.Component {
             case Difficulties.EASY:
                 difficultyClassName = "Tile--easy"
                 break;
-
             case Difficulties.HARD:
                 difficultyClassName = "Tile--hard"
                 break;
-
             case Difficulties.EXTREME:
                 difficultyClassName = "Tile--extreme"
                 break;
-
             default:
                 break;
         }
@@ -176,11 +174,11 @@ export default class Tile extends React.Component {
         ) + " " + this.getAEDStatus();
 
         return(
-            <div
+            <FocusGridCell
                 className={`Tile ${difficultyClassName}`}
-                ref={this.tileRef}
-                tabIndex={0}
+                cellRef={this.tileRef}
                 aria-label={aedTileDescription}
+                tabIndex={focusGridTabIndex}
             >
                 {
                     isRevealed ?
@@ -188,7 +186,7 @@ export default class Tile extends React.Component {
                     :
                     this.renderCovered()
                 }
-            </div>
+            </FocusGridCell>
         )
     }
 }
