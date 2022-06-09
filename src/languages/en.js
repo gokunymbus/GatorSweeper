@@ -13,10 +13,13 @@ export default {
     "controlsGameStateNew": "Click!",
     "controlsAEDGameStateWinner": "You have won the game, congradulations. Press 1 to play again",
     "controlsGameStateWinner": "Winner!",
-    "gridAED": "This is the main gameboard grid constructed of rows and columns with tiles in each cell. Use the arrow keys to enter the grid and navigate through the grid. Press {0} to flag a tile if you think a gator is there.",
-    "tileAED": "Tile location row {0}, column {1}.",
+    "gridAED": "Main Grid. Contains rows and columns with tiles in each cell. Once a tile is selected, use the arrow keys to navigate and Enter to uncover a tile. Press {0} to flag a tile if you think a gator is there.",
+    "tileAED": "Tile row {0}, column {1}.",
     "tileAEDRevealedMine": "It's revealed and is a gator, game over.",
-    "tileAEDRevealed": "It has been revealed with {0} gators in proximity.",
-    "tileAEDHidden": "It's not revealed yet",
-    "tileAEDIsFlagged": "It's currently Flagged"
+    "tileAEDRevealed": "Revealed with {0} gators in proximity.",
+    "tileAEDHidden": "Not Revealed",
+    "tileAEDIsFlagged": "Flagged",
+    "footerAEDEasy": "Set game to Easy mode.",
+    "footerAEDHard": "Set Game to Hard mode, it's pretty hard.",
+    "footerAEDExtreme": "Set game to the most Extreme mode."
 }
