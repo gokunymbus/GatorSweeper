@@ -18,6 +18,15 @@
     font-size: 40px;
 }
 
+.Header__flags:active,
+.Header__flags:focus-visible,
+.Header__timer:active,
+.Header__timer:focus-visible {
+    z-index: var(----outlineZindex);
+    outline:var(--outline);
+    position: relative;
+}
+
 .Header__status {
     flex-grow: 1;
     display: flex;
@@ -33,10 +42,10 @@
     background-repeat: no-repeat;
     background-position: center;
     background-size: 90%;
-    border-radius: 50%;
     transition: filter 0.1s ease-out, transform 0.1s ease-out;
     background-color: transparent;
     border: 0;
+    margin-bottom: 6px;
 }
 
 .Header__action:active {
@@ -44,9 +53,9 @@
     transform: scale3d(1.1, 1.1, 1.1);
 }
 
-.Header__action:focus:not(:hover),
+.Header__action:focus,
 .Header__action:focus-visible {
-    outline: 1px solid black;
+    outline: var(--outline);
 }
 
 .Header__action--gameover {
@@ -115,8 +124,8 @@
     }
 
     .Header__action {
-        width: 120px;
-        height: 120px;
+        width: 110px;
+        height: 110px;
     }
 
     .Header__statusText {

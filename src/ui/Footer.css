@@ -10,6 +10,15 @@
     color: var(--tertiaryColor);
     font-size: 16px;
     transition: transform 0.1s ease-out;
+    background-color: transparent;
+    border: 0;
+}
+
+.Footer__mode:active,
+.Footer__mode:focus-visible {
+    z-index: var(----outlineZindex);
+    outline:var(--outline);
+    position: relative;
 }
 
 .Footer__mode--active {

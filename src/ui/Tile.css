@@ -23,7 +23,7 @@
 .Tile:active,
 .Tile:focus-visible {
     z-index: 1000;
-    outline: solid;
+    outline: var(--outline);
     position: relative;
 }
 

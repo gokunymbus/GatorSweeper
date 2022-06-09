@@ -1,6 +1,5 @@
 import React from 'react';
 import Clamp from './Clamp';
-import MergeRefs from './MergeRefs';
 
 /**
  * FocusGrid is a component that works with <FocusGridCell> to enable
@@ -34,6 +33,7 @@ import MergeRefs from './MergeRefs';
  *      </div>
  * </FocusGrid>
  */
+
 export class FocusGrid extends React.Component {
     constructor(props) {
         super(props);
@@ -62,7 +62,6 @@ export class FocusGrid extends React.Component {
             }
     
             const isFocused = activeColumn == column && activeRow == row;
-            console.log(isFocused, "starlight")
             return (
                 React.cloneElement(child, {
                     activeTabIndex: isFocused ? 0 : -1
@@ -124,6 +123,7 @@ export class FocusGrid extends React.Component {
                 {...additionalProps}
                 onFocus={this.onFocusHandler}
                 ref={this.groupRef}
+                role={"application"}
             >
                 {React.Children.map(children, (child) => {
                     const children = child.props.children;
@@ -140,51 +140,45 @@ export class FocusGrid extends React.Component {
     }
 }
 
+
 export class FocusGridCell extends React.Component {
     // Private cell ref
     _cellRef;
 
     constructor(props) {
         super(props);
-        this._cellRef = props.cellRef || React.createRef();
+        this._cellRef = props.forwardRef || React.createRef();
     }
 
     componentDidUpdate(prevProps, prevState) {
         const {activeTabIndex} = this.props;
         const {current} = this._cellRef;
+
+        current.setAttribute("tabindex", activeTabIndex);
+
+        if (activeTabIndex == 0 && prevProps.activeTabIndex == -1) {
+            current.focus();
+        }
     }
 
     componentDidMount() {
         const {activeTabIndex} = this.props;
         const {current} = this._cellRef;
-
-        if (activeTabIndex == 0) {
-            current.focus();
-        }
+        
+        current.setAttribute("tabindex", activeTabIndex);
     }
 
     render() {
         const {
             activeTabIndex,
-            children,
-            className = "",
-            cellRef,
-            row,
-            column,
-            ...additionalProps
+            children
         } = this.props;
 
-        console.log(activeTabIndex);
+        // Shoudl only have one child
+        React.Children.only(children);
 
-        return (
-            <div
-                {...additionalProps}
-                tabIndex={activeTabIndex}
-                className={"FocusGridCell " + className}
-                ref={cellRef}
-            >
-                {children}
-            </div>
-        )
+        return React.cloneElement(children, {
+            tabIndex: activeTabIndex
+        });
     }
 }

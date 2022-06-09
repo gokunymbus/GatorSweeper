@@ -7,4 +7,7 @@
         will be overwritten by the incoming theme.js
         file. 
     */
+
+    --outline: 3px solid #000000; 
+    --outlineZindex: 1000;
 }

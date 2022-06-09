@@ -152,6 +152,12 @@ Uncovered - Displays Mine or special object.
 When a tile is selected by a user, a callBack function will be invoked that will be provided by the parent components of the <Tile>. This callback will pass through the tile information so that the parent components can make a decision or make calls to update the grid. 
 
 
+## Accessibility
+
+
+### FocusGrid
+
+
 
 
 

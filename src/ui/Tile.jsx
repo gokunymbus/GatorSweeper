@@ -1,15 +1,14 @@
 import React from "react";
 import "./Tile.css";
-import { Difficulties } from "../library/Constants";
+import { Difficulties, setFlagKey } from "../library/Constants";
 import timer from "../library/Timer";
 import Language from "../utilities/Language";
 import ReplaceStringTokens from "../utilities/ReplaceStringTokens";
-import { FocusGridCell } from "../utilities/FocusGrid";
 
 export default class Tile extends React.Component {
     constructor(props) {
         super(props);
-        this.tileRef = React.createRef();
+        this.tileRef = props.forwardRef || React.createRef();
     }
 
     language = Language();
@@ -77,6 +76,7 @@ export default class Tile extends React.Component {
         );
     }
 
+    // @TODO Need to clear everything on unmount. 
     componentDidMount() {
         this.tileRef.current.addEventListener('click', (e) => {
             this.onClick(e);
@@ -87,9 +87,12 @@ export default class Tile extends React.Component {
         });
 
         this.tileRef.current.addEventListener('keyup', (e) => {
-            console.log(e.key)
             if (e.key == "Enter") {
                 this.onEnterKeyUp(e);
+            }
+
+            if (e.key == setFlagKey) {
+                this.onRightClick(e);
             }
         });
 
@@ -112,6 +115,8 @@ export default class Tile extends React.Component {
             this.intervalsPassed = 0;
             e.preventDefault();
         });
+
+        console.log("Tile - mounted")
     }
 
     getAEDStatus() {
@@ -138,7 +143,7 @@ export default class Tile extends React.Component {
         }
 
         if (isFlagged) {
-            return tileAEDHidden + " " + tileAEDIsFlagged;
+            return tileAEDIsFlagged + " " + tileAEDHidden;
         }
 
         return tileAEDHidden;
@@ -157,28 +162,29 @@ export default class Tile extends React.Component {
             case Difficulties.EASY:
                 difficultyClassName = "Tile--easy"
                 break;
+
             case Difficulties.HARD:
                 difficultyClassName = "Tile--hard"
                 break;
+
             case Difficulties.EXTREME:
                 difficultyClassName = "Tile--extreme"
                 break;
+
             default:
                 break;
         }
 
-        const aedTileDescription = ReplaceStringTokens(
+        const aedTileDescription = this.getAEDStatus() + " " + ReplaceStringTokens(
             this.language.tileAED,
             [row,column]
-        ) + " " + this.getAEDStatus();
+        );
 
         return(
-            <FocusGridCell
+            <div
                 className={`Tile ${difficultyClassName}`}
-                cellRef={this.tileRef}
+                ref={this.tileRef}
                 aria-label={aedTileDescription}
-                row={row}
-                column={column}
             >
                 {
                     isRevealed ?
@@ -186,7 +192,7 @@ export default class Tile extends React.Component {
                     :
                     this.renderCovered()
                 }
-            </FocusGridCell>
+            </div>
         )
     }
 }

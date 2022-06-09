@@ -33,27 +33,30 @@ export default class Footer extends React.Component {
         const activeClassName = 'Footer__mode--active';
         return (
             <footer className="Footer">
-               <div
+               <button
                     className={`Footer__mode ${difficulty == Difficulties.EASY ? activeClassName : ''}`}
                     ref={this.easyRef}
                     tabIndex={0}
+                    aria-label={this.lang.footerAEDEasy}
                 >
                     {this.lang.modesEasy}
-                </div>
-                <div
-                     className={`Footer__mode ${difficulty == Difficulties.HARD ? activeClassName : ''}`}
+                </button>
+                <button
+                    className={`Footer__mode ${difficulty == Difficulties.HARD ? activeClassName : ''}`}
                     ref={this.hardRef}
                     tabIndex={0}
+                    aria-label={this.lang.footerAEDHard}
                 >
                     {this.lang.modesHard}
-                </div>
-                <div
-                     className={`Footer__mode ${difficulty == Difficulties.EXTREME ? activeClassName : ''}`}
+                </button>
+                <button
+                    className={`Footer__mode ${difficulty == Difficulties.EXTREME ? activeClassName : ''}`}
                     ref={this.extremeRef}
                     tabIndex={0}
+                    aria-label={this.lang.footerAEDExtreme}
                 >
                     {this.lang.modesExtreme}
-                </div>
+                </button>
             </footer>
         )
     }

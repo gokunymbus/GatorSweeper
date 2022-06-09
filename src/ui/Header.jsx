@@ -52,11 +52,11 @@ export default class Header extends React.Component {
 
         return (
             <header className="Header" aria-label="This is a minesweeper clone">
-                <data
+                <div
                     className="Header__flags"
                     aria-label={this.language.controlsNumberOfFlags + " " + flags}
                     tabIndex={0}
-                >{flags}</data>
+                >{flags}</div>
                 <div className="Header__status">
                     <button
                         className={`Header__action ${gameOverClassName} ${gameWonClassName}`}
@@ -91,13 +91,13 @@ export default class Header extends React.Component {
                         </div>
                     </div>
                 </div>
-                <data
+                <div
                     className="Header__timer"
                     ref={this.timerRef}
                     aria-label={timer + " " + this.language.controlsSeconds}
                     role="timer"
                     tabIndex={0}
-                   >{timer}</data>
+                   >{timer}</div>
             </header>
         )
     }
