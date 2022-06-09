@@ -9,7 +9,7 @@ import { FocusGridCell } from "../utilities/FocusGrid";
 export default class Tile extends React.Component {
     constructor(props) {
         super(props);
-        this.tileRef = props.forwardRef || React.createRef();
+        this.tileRef = React.createRef();
     }
 
     language = Language();
@@ -149,8 +149,7 @@ export default class Tile extends React.Component {
             isRevealed,
             difficulty,
             row,
-            column,
-            focusGridTabIndex
+            column
         } = this.props;
 
         let difficultyClassName = "";
@@ -178,7 +177,8 @@ export default class Tile extends React.Component {
                 className={`Tile ${difficultyClassName}`}
                 cellRef={this.tileRef}
                 aria-label={aedTileDescription}
-                tabIndex={focusGridTabIndex}
+                row={row}
+                column={column}
             >
                 {
                     isRevealed ?

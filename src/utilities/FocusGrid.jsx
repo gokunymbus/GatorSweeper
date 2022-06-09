@@ -62,6 +62,7 @@ export class FocusGrid extends React.Component {
             }
     
             const isFocused = activeColumn == column && activeRow == row;
+            console.log(isFocused, "starlight")
             return (
                 React.cloneElement(child, {
                     activeTabIndex: isFocused ? 0 : -1
@@ -102,16 +103,10 @@ export class FocusGrid extends React.Component {
                     break;
             }
 
-            const setStateCallback = () => {
-                const currentFocusedItem = current.querySelector('[tabindex="0"]');
-                currentFocusedItem.focus();
-                console.log(currentFocusedItem);
-            }
-
             this.setState({
                 activeRow: newFocus.activeRow,
                 activeColumn: newFocus.activeColumn
-            }, setStateCallback)
+            })
         });
     }
 
@@ -146,35 +141,47 @@ export class FocusGrid extends React.Component {
 }
 
 export class FocusGridCell extends React.Component {
+    // Private cell ref
+    _cellRef;
+
     constructor(props) {
         super(props);
+        this._cellRef = props.cellRef || React.createRef();
     }
 
-    // Private cell ref
-    _cellRef = React.createRef();
+    componentDidUpdate(prevProps, prevState) {
+        const {activeTabIndex} = this.props;
+        const {current} = this._cellRef;
+    }
 
     componentDidMount() {
-        // this._cellRef.current.addEventListener('click', () => {
-        //     console.log("yooooo");
-        // });
-        console.log(this._cellRef);
+        const {activeTabIndex} = this.props;
+        const {current} = this._cellRef;
+
+        if (activeTabIndex == 0) {
+            current.focus();
+        }
     }
 
     render() {
         const {
+            activeTabIndex,
             children,
             className = "",
             cellRef,
+            row,
+            column,
             ...additionalProps
         } = this.props;
 
-        const mergedRefs = MergeRefs(this._cellRef, cellRef);
+        console.log(activeTabIndex);
 
         return (
             <div
-                className={"FocusGridCell " + className}
                 {...additionalProps}
-                ref={mergedRefs}
+                tabIndex={activeTabIndex}
+                className={"FocusGridCell " + className}
+                ref={cellRef}
             >
                 {children}
             </div>
