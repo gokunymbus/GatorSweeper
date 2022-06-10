@@ -1,8 +1,8 @@
 import React from "react";
 import "./Tile.css";
+import Language from "../languages/Language";
+import timer from "../utilities/Timer";
 import { setFlagKey } from "../library/Constants";
-import timer from "../library/Timer";
-import Language from "../utilities/Language";
 import ReplaceStringTokens from "../utilities/ReplaceStringTokens";
 import PropTypes from "prop-types";
 
@@ -77,23 +77,33 @@ export default class Tile extends React.Component {
     }
 
     onTouchStartHandler = (e) => {
+        if (e.targetTouches.length > 1) {
+            return;
+        }
+
         this.timer = timer(intervalsPassed => { this._intervalsPassed = intervalsPassed }, 400);
         e.preventDefault();
     }
 
     onTouchEndHandler = (e) => {
         if (this._intervalsPassed === 0) {
-            this.onClick(e);
+            this.onClickHandler(e);
         }
 
         if (this._intervalsPassed > 0) {
             this.onLongPress();
         }
 
-        this._timer.stop();
-        this._timer = null;
-        this._intervalsPassed = 0;
+        this.resetTimer();
         e.preventDefault();
+    }
+
+    resetTimer() {
+        if (this._timer) {
+            this._timer.stop();
+            this._timer = null;
+            this._intervalsPassed = 0;
+        }
     }
 
     renderMeow() {
@@ -148,7 +158,6 @@ export default class Tile extends React.Component {
             column
         } = this.props;
 
-        // Get description of our symb enum
         const difficultyClassName = "Tile--" + difficulty.description;
         const aedTileDescription = this.getARIADescription() + " " + ReplaceStringTokens(
             this._language.tileAED, [row, column]
@@ -182,11 +191,11 @@ Tile.propTypes = {
     proximities: PropTypes.number,
     isMeow: PropTypes.bool,
     isFlagged: PropTypes.bool,
-    row: PropTypes.number,
-    column: PropTypes.number,
-    difficulty: PropTypes.symbol,
-    onTileSelected: PropTypes.func,
-    onTileRightClicked: PropTypes.func,
-    onEnterKeyUp: PropTypes.func,
-    onLongPress: PropTypes.func
+    row: PropTypes.number.isRequired,
+    column: PropTypes.number.isRequired,
+    difficulty: PropTypes.symbol.isRequired,
+    onTileSelected: PropTypes.func.isRequired,
+    onTileRightClicked: PropTypes.funcisRequired,
+    onEnterKeyUp: PropTypes.func.funcisRequired,
+    onLongPress: PropTypes.func.funcisRequired
 }

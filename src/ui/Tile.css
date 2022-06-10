@@ -20,9 +20,8 @@
     font-size: 6px;
 }
 
-.Tile:active,
 .Tile:focus-visible {
-    z-index: 1000;
+    z-index: var(--levelOneZIndex);
     outline: solid;
     position: relative;
 }
@@ -31,12 +30,6 @@
     width: 100%;
     height: 100%;
     background-color: var(--tertiaryColor);
-}
-
-.Tile__revealed--proximity {
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .Tile__revealed__proximityNumber {
@@ -66,19 +59,23 @@
     overflow: hidden;
 }
 
+.Tile__covered:hover {
+    cursor: pointer;
+}
+
 .Tile__covered__flag {
     background-image: url('media/flag.svg');
     background-position: center;
     background-size: 60%;
     background-repeat: no-repeat;
-    z-index: 20;
+    z-index: var(--levelOneZIndex);
     width: 100%;
     height: 100%;
     animation: Tile__covered__flag;
     animation-duration: 0.2s;
     animation-timing-function: ease-in-out;
     animation-iteration-count: 1;
-    position:absolute;
+    position: absolute;
     top: 0;
     left: 0;
 }
@@ -89,11 +86,6 @@
     background-color: var(--otherColor);
     opacity: 0;
     transition: opacity 0.1s ease-in;
-}
-
-.Tile__covered:hover,
-.Tile__covered__flag {
-    cursor: pointer;
 }
 
 .Tile__covered:hover .Tile__covered__bg {

@@ -10,4 +10,7 @@
 
     --outline: 3px solid #000000; 
     --outlineZindex: 1000;
+    --levelOneZIndex: 10;
+    --levelTwoZIndex: 20;
+    --levelThreeZIndex: 30;
 }
