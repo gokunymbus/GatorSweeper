@@ -23,25 +23,23 @@
 .Tile:active,
 .Tile:focus-visible {
     z-index: 1000;
-    outline: var(--outline);
+    outline: solid;
     position: relative;
 }
 
-.Tile__mine,
-.Tile__covered,
-.Tile__blank,
-.Tile__proximity {
+.Tile__revealed {
     width: 100%;
     height: 100%;
-}
-
-.Tile__blank,
-.Tile__proximity,
-.Tile__mine {
     background-color: var(--tertiaryColor);
 }
 
-.Tile__mine {
+.Tile__revealed--proximity {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.Tile__revealed--mine {
     background-image: url('media/gator-grid.svg');
     background-size: 66%;
     background-repeat: no-repeat;
@@ -53,6 +51,8 @@
 }
 
 .Tile__covered {
+    width: 100%;
+    height: 100%;
     background-color: var(--primaryColor);
     transition: background-color 0.1s ease-out;
     position: relative;
@@ -93,12 +93,6 @@
     opacity: 1;
 }
 
-.Tile__proximity {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 @keyframes Tile__mine {
     0% {
         opacity: 0.1;
@@ -110,7 +104,7 @@
 }
 
 
-@keyframes Tile__covered__flag {
+@keyframes Tile__covered__flag {    
     0% {
         transform: translateY(100%);
     }
@@ -119,8 +113,6 @@
         transform: translateY(0);
     }
 }
-
-
 
 @media screen and (min-width: 480px) {
     .Tile--easy {

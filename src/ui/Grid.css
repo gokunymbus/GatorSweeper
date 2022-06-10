@@ -5,6 +5,8 @@
     --borderSize: 1px;
     --borderOffset: 0;
     --borderZIndex: 10;
+    overflow: hidden;
+    display: grid;
 }
 
 .Grid:active,
@@ -18,52 +20,26 @@
     width: 100%;
     display: flex;
     position: relative;
+    border-bottom: thin solid var(--secondaryColor);
+    display: grid;
+    grid-auto-columns: auto;
 }
 
-.Grid__row::after {
-    content: '';
-    height: var(--borderSize);
-    width: 100%;
-    position: absolute;
-    bottom: var(--borderOffset);
-    left: var(--borderOffset);
-    background-color: var(--secondaryColor);
-    z-index: var(--borderZIndex);
-}
-
-.Grid__row:first-child::before {
-    content: '';
-    height: var(--borderSize);
-    width: 100%;
-    position: absolute;
-    top: var(--borderOffset);
-    left: var(--borderOffset);
-    background-color: var(--secondaryColor);
-    z-index: var(--borderZIndex);
+.Grid__row:first-child {
+    border-top: thin solid var(--secondaryColor);
 }
 
 .Grid__column {
     position: relative;
+    border-right: thin solid var(--secondaryColor);
+    grid-row: 1;
 }
 
-.Grid__column::after {
-    content: '';
-    width: var(--borderSize);
-    height: 100%;
-    position: absolute;
-    top: var(--borderOffset);
-    right: var(--borderOffset);
-    background-color: var(--secondaryColor);
-    z-index: var(--borderZIndex);
+.Grid__column:first-child {
+    border-left: thin solid var(--secondaryColor);
 }
 
-.Grid__column:first-child::before {
-    content: '';
-    width: var(--borderSize);
-    height: 100%;
-    position: absolute;
-    top: var(--borderOffset);
-    left: var(--borderOffset);
-    background-color: var(--secondaryColor);
-    z-index: var(--borderZIndex);
+.Grid__row,
+.Grid__column {
+    box-sizing: border-box;
 }

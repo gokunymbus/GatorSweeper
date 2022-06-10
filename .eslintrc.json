@@ -18,5 +18,9 @@
         "react"
     ],
     "rules": {
+        "semi": 0,
+        "quotes": [2, "double"],
+        "indent": [2, 4],
+        "space-before-function-paren": 0
     }
 }

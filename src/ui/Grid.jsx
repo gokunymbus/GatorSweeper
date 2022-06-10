@@ -31,9 +31,6 @@ export default class Grid extends React.Component {
             <div
                 className="Grid__column"
                 key={columnIndex}
-                style={{
-                    width: (100/gridSize) + "%"
-                }}
             >
                 <FocusGridCell
                     {...cellData}
@@ -54,9 +51,6 @@ export default class Grid extends React.Component {
             <div
                 className="Grid__row"
                 key={rowIndex}
-                style={{
-                    height: (100/gridSize) + "%"
-                }}
             >
                 {columns.map((column, columnIndex) => this.renderColumn(column, rowIndex, columnIndex))}
             </div>
