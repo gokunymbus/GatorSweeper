@@ -6,7 +6,6 @@ export default function () {
     switch (true) {
         case /^en\b/.test(lang):
             foundCode = "en";
-            console.log("ayy1", foundCode);
             break;
 
         case /^es\b/.test(lang):

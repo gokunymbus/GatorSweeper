@@ -9,12 +9,11 @@ import PropTypes from "prop-types";
 export default class Tile extends React.Component {
     constructor(props) {
         super(props);
-        this.tileRef = props.forwardRef || React.createRef();
+        this._tileRef = props.forwardRef || React.createRef();
+        this._language = Language();
+        this._timer = null;
+        this._intervalsPassed = 0;
     }
-
-    language = Language();
-    timer = null;
-    intervalsPassed = 0;
 
     getARIADescription() {
         const {
@@ -29,7 +28,7 @@ export default class Tile extends React.Component {
             tileAEDHidden,
             tileAEDRevealedMine,
             tileAEDIsFlagged
-        } = this.language;
+        } = this._language;
 
         if (isRevealed && isMeow) {
             return tileAEDRevealedMine;
@@ -78,22 +77,22 @@ export default class Tile extends React.Component {
     }
 
     onTouchStartHandler = (e) => {
-        this.timer = timer(intervalsPassed => { this.intervalsPassed = intervalsPassed }, 400);
+        this.timer = timer(intervalsPassed => { this._intervalsPassed = intervalsPassed }, 400);
         e.preventDefault();
     }
 
     onTouchEndHandler = (e) => {
-        if (this.intervalsPassed === 0) {
+        if (this._intervalsPassed === 0) {
             this.onClick(e);
         }
 
-        if (this.intervalsPassed > 0) {
+        if (this._intervalsPassed > 0) {
             this.onLongPress();
         }
 
-        this.timer.stop();
-        this.timer = null;
-        this.intervalsPassed = 0;
+        this._timer.stop();
+        this._timer = null;
+        this._intervalsPassed = 0;
         e.preventDefault();
     }
 
@@ -102,7 +101,11 @@ export default class Tile extends React.Component {
     }
 
     renderProximity(proximities) {
-        return (<div className="Tile__revealed Tile__revealed--proximity">{proximities}</div>)
+        return (
+            <div className="Tile__revealed Tile__revealed--proximity">
+                <div className="Tile__revealed__proximityNumber">{proximities}</div>
+            </div>
+        )
     }
 
     renderBlank() {
@@ -148,13 +151,13 @@ export default class Tile extends React.Component {
         // Get description of our symb enum
         const difficultyClassName = "Tile--" + difficulty.description;
         const aedTileDescription = this.getARIADescription() + " " + ReplaceStringTokens(
-            this.language.tileAED, [row, column]
+            this._language.tileAED, [row, column]
         );
 
         return (
             <div
                 className={ `Tile ${difficultyClassName}` }
-                ref={this.tileRef}
+                ref={this._tileRef}
                 aria-label={aedTileDescription}
                 onClick={this.onClickHandler}
                 onContextMenu={this.onContextMenuHandler}
