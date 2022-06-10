@@ -5,11 +5,9 @@
     --borderSize: 1px;
     --borderOffset: 0;
     --borderZIndex: 10;
-    overflow: hidden;
     display: grid;
 }
 
-.Grid:active,
 .Grid:focus-visible {
     outline:var(--outline);
     z-index: var(--outlineZindex);

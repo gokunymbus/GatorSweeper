@@ -1,6 +1,6 @@
 import React from "react";
 import './Grid.css';
-import Language from "../utilities/Language";
+import Language from "../languages/Language";
 import {FocusGrid, FocusGridCell} from "../utilities/FocusGrid";
 import { setFlagKey } from "../library/Constants";
 
@@ -17,8 +17,7 @@ export default class Grid extends React.Component {
 
     renderColumn(column, rowIndex, columnIndex) {
         const {
-            gridSize,
-            children
+            tileProps
         } = this.props;
 
         const cellData = {
@@ -38,7 +37,7 @@ export default class Grid extends React.Component {
                     <Tile
                         {...column}
                         {...cellData}
-                        {...children.props}
+                        {...tileProps}
                     />
                 </FocusGridCell>
             </div>
@@ -46,7 +45,6 @@ export default class Grid extends React.Component {
     }
 
     renderRow(columns, rowIndex) {
-        const {gridSize} = this.props;
         return (
             <div
                 className="Grid__row"

@@ -1,7 +1,7 @@
 import React from "react";
 import './Header.css';
 import { GameState } from "../library/Constants";
-import Language from "../utilities/Language";
+import Language from "../languages/Language";
 
 export default class Header extends React.Component {
     constructor(props) {
@@ -15,7 +15,8 @@ export default class Header extends React.Component {
     componentDidMount() {
         const {onMainIconSelected} = this.props;
         this.actionRef.current.addEventListener('click', (e) => {
-            onMainIconSelected(e)
+            onMainIconSelected(e);
+            e.target.blur();
         });
     }
     
@@ -56,7 +57,9 @@ export default class Header extends React.Component {
                     className="Header__flags"
                     aria-label={this.language.controlsNumberOfFlags + " " + flags}
                     tabIndex={0}
-                >{flags}</div>
+                >
+                    {flags}
+                </div>
                 <div className="Header__status">
                     <button
                         className={`Header__action ${gameOverClassName} ${gameWonClassName}`}
@@ -97,7 +100,9 @@ export default class Header extends React.Component {
                     aria-label={timer + " " + this.language.controlsSeconds}
                     role="timer"
                     tabIndex={0}
-                   >{timer}</div>
+                >
+                    {timer}
+                </div>
             </header>
         )
     }
