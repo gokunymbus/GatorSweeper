@@ -18,9 +18,7 @@
     font-size: 40px;
 }
 
-.Header__flags:active,
 .Header__flags:focus-visible,
-.Header__timer:active,
 .Header__timer:focus-visible {
     z-index: var(----outlineZindex);
     outline:var(--outline);
@@ -48,9 +46,9 @@
     margin-bottom: 6px;
 }
 
-.Header__action:active {
+.Header__action:hover {
     filter: hue-rotate(120deg);
-    transform: scale3d(1.1, 1.1, 1.1);
+    transform: scale3d(1.07, 1.07, 1.07);
 }
 
 .Header__action:focus,
