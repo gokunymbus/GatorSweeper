@@ -1,4 +1,4 @@
-import * as languages from '../languages/index';
+import * as languages from './index';
 export default function () {
     const lang = navigator.language;
     let foundCode;
