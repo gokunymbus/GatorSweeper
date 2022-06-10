@@ -12,7 +12,7 @@ import {
 } from '../library/Grid';
 
 import themes from '../themes/index.js'
-import timer from '../library/Timer';
+import timer from '../utilities/Timer';
 import './Game.css';
 import {
     DifficultySettings,
@@ -251,14 +251,16 @@ export default class Game extends React.Component {
                     <Grid
                         gridData={grid}
                         gridSize={difficultySettings.size}
+                        tileProps={
+                            {
+                                onTileSelected: this.onTileSelected,
+                                onTileRightClicked: this.onTileRightClicked,
+                                onEnterKeyUp: this.onEnterKeyUp,
+                                difficulty: difficulty,
+                                onLongPress: this.onLongPress
+                            }
+                        }
                     >
-                        <Tile
-                            onTileSelected={this.onTileSelected}
-                            onTileRightClicked={this.onTileRightClicked}
-                            onEnterKeyUp={this.onEnterKeyUp}
-                            difficulty={difficulty}
-                            onLongPress={this.onLongPress}
-                        />
                     </Grid>
                     <Footer
                         onDifficultySelected={this.onDifficultySelected}
