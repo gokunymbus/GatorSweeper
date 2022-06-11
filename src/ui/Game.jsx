@@ -21,7 +21,6 @@ import {
     defaultTheme,
     defaultGameOverTheme
 } from '../library/Constants';
-import Tile from './Tile';
 import RandomMinMax from '../utilities/RandomMinMax';
 import Footer from './Footer';
 
@@ -83,7 +82,7 @@ export default class Game extends React.Component {
     }
 
     selectTile = (tileProps) => {
-        const {row, column, isMeow, isFlagged} = tileProps;
+        const {row, column, isMine, isFlagged} = tileProps;
         const {grid, gameState, difficultySettings} = this.state;
         const { size } = difficultySettings;
 
@@ -91,7 +90,7 @@ export default class Game extends React.Component {
             return;
         }
 
-        if (isMeow) {
+        if (isMine) {
             // Here we update one mine at a time
             // by picking one out of the Grid and then
             // delaying when the state receives the update
@@ -128,7 +127,7 @@ export default class Game extends React.Component {
         const tilesLeft = (size * size) - totalRevealedTiles;
     
         switch (true) {
-            case isMeow:
+            case isMine:
                 newGameState = GameState.ENDED;
                 break;
             case tilesLeft == totalMines:

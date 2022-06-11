@@ -2,9 +2,8 @@ import React from "react";
 import "./Tile.css";
 import Language from "../languages/Language";
 import timer from "../utilities/Timer";
-import { setFlagKey } from "../library/Constants";
+import { setFlagKey, selectTileKey } from "../library/Constants";
 import ReplaceStringTokens from "../utilities/ReplaceStringTokens";
-import PropTypes from "prop-types";
 
 export default class Tile extends React.Component {
     constructor(props) {
@@ -19,7 +18,7 @@ export default class Tile extends React.Component {
         const {
             isRevealed,
             proximities,
-            isMeow,
+            isMine,
             isFlagged
         } = this.props
 
@@ -30,7 +29,7 @@ export default class Tile extends React.Component {
             tileAEDIsFlagged
         } = this._language;
 
-        if (isRevealed && isMeow) {
+        if (isRevealed && isMine) {
             return tileAEDRevealedMine;
         }
 
@@ -62,36 +61,31 @@ export default class Tile extends React.Component {
     }
 
     onKeyUpHandler = (e) => {
-        if (e.key === "Enter") {
+        if (e.key === selectTileKey) {
             this.onEnterKeyUp(e);
+            return;
         }
 
         if (e.key === setFlagKey) {
             this.onContextMenuHandler(e);
+            return;
         }
-    }
-
-    onLongPress = (e) => {
-        const { onLongPress } = this.props;
-        onLongPress(e, { ...this.props });
     }
 
     onTouchStartHandler = (e) => {
-        if (e.targetTouches.length > 1) {
-            return;
-        }
-
         this.timer = timer(intervalsPassed => { this._intervalsPassed = intervalsPassed }, 400);
         e.preventDefault();
     }
 
     onTouchEndHandler = (e) => {
+        const { onTileSelected, onLongPress } = this.props;
+
         if (this._intervalsPassed === 0) {
-            this.onClickHandler(e);
+            onTileSelected(e, { ...this.props });
         }
 
         if (this._intervalsPassed > 0) {
-            this.onLongPress();
+            onLongPress(e, { ...this.props });
         }
 
         this.resetTimer();
@@ -106,7 +100,7 @@ export default class Tile extends React.Component {
         }
     }
 
-    renderMeow() {
+    renderMine() {
         return (<div className="Tile__revealed Tile__revealed--mine"></div>)
     }
 
@@ -127,10 +121,10 @@ export default class Tile extends React.Component {
     }
 
     renderRevealed() {
-        const { proximities, isMeow } = this.props;
+        const { proximities, isMine } = this.props;
 
-        if (isMeow) {
-            return this.renderMeow();
+        if (isMine) {
+            return this.renderMine();
         }
 
         if (proximities > 0) {
@@ -173,6 +167,7 @@ export default class Tile extends React.Component {
                 onKeyUp={this.onKeyUpHandler}
                 onTouchStart={this.onTouchStartHandler}
                 onTouchEnd={this.onTouchEndHandler}
+                tabIndex={0}
             >
                 {
                     isRevealed
@@ -182,20 +177,4 @@ export default class Tile extends React.Component {
             </div>
         )
     }
-}
-
-Tile.propTypes = {
-    // React ref
-    forwardRef: PropTypes.any,
-    isRevealed: PropTypes.bool,
-    proximities: PropTypes.number,
-    isMeow: PropTypes.bool,
-    isFlagged: PropTypes.bool,
-    row: PropTypes.number.isRequired,
-    column: PropTypes.number.isRequired,
-    difficulty: PropTypes.symbol.isRequired,
-    onTileSelected: PropTypes.func.isRequired,
-    onTileRightClicked: PropTypes.funcisRequired,
-    onEnterKeyUp: PropTypes.func.funcisRequired,
-    onLongPress: PropTypes.func.funcisRequired
 }

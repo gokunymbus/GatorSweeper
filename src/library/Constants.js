@@ -37,3 +37,4 @@ export const defaultTheme = "main";
 export const defaultGameOverTheme = "gameover";
 
 export const setFlagKey = "f";
+export const selectTileKey = "Enter";
