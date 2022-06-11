@@ -27,7 +27,7 @@ This function will create and return a new multi-dimensional array where the fir
 
 ```
 // Example Output
-Array[row][column] = Tile{proximities: 0, isMeow: false, isRevealed: false}
+Array[row][column] = Tile{proximities: 0, isMine: false, isRevealed: false}
 ```
 
 ### addProximities()
@@ -35,7 +35,7 @@ This function will accept a Grid object and map each Row and map each Column/Til
 
 ```
 // Example Output
-Array[row][column] = {proximities: 8, isMeow: false, isRevealed: false}
+Array[row][column] = {proximities: 8, isMine: false, isRevealed: false}
 ```
 
 ### getPerimeters()
@@ -45,14 +45,14 @@ This function accepts a Range object containing the beginning and ending target 
 Example Output
 ```
 [
-{proximities: 8, isMeow: false, isRevealed: false, row: 1, column: 1},
-{proximities: 8, isMeow: false, isRevealed: false, row: 1, column: 2},
-{proximities: 8, isMeow: false, isRevealed: false, row: 1, column: 3},
-{proximities: 8, isMeow: false, isRevealed: false, row: 2, column: 1},
-{proximities: 8, isMeow: false, isRevealed: false, row: 2, column: 3},
-{proximities: 8, isMeow: false, isRevealed: false, row: 3, column: 1},
-{proximities: 8, isMeow: false, isRevealed: false, row: 3, column: 2},
-{proximities: 8, isMeow: false, isRevealed: false, row: 3, column: 3}
+{proximities: 8, isMine: false, isRevealed: false, row: 1, column: 1},
+{proximities: 8, isMine: false, isRevealed: false, row: 1, column: 2},
+{proximities: 8, isMine: false, isRevealed: false, row: 1, column: 3},
+{proximities: 8, isMine: false, isRevealed: false, row: 2, column: 1},
+{proximities: 8, isMine: false, isRevealed: false, row: 2, column: 3},
+{proximities: 8, isMine: false, isRevealed: false, row: 3, column: 1},
+{proximities: 8, isMine: false, isRevealed: false, row: 3, column: 2},
+{proximities: 8, isMine: false, isRevealed: false, row: 3, column: 3}
 ]
 ```
 
@@ -84,7 +84,7 @@ The responsibility of these functions is to return a flat change list of Tiles t
 [
   {
     isFlagged: false,
-    isMeow: false,
+    isMine: false,
     isRevealed: false,
     proximities: 0,
     row: 0,
@@ -92,7 +92,7 @@ The responsibility of these functions is to return a flat change list of Tiles t
   },
   {
     isFlagged: false,
-    isMeow: false,
+    isMine: false,
     isRevealed: false,
     proximities: 0,
     row: 0,
@@ -100,7 +100,7 @@ The responsibility of these functions is to return a flat change list of Tiles t
   },
   {
     isFlagged: false,
-    isMeow: false,
+    isMine: false,
     isRevealed: false,
     proximities: 1,
     row: 0,
@@ -127,11 +127,11 @@ The Grid is made up of individual tiles that will be represented as an object. I
 ### TileFactory()
 Returns a new object with the following properties.
 
-- isMeow
+- isMine
 - isRevealed
 - proximities
 
-The “isMeow” property is determined by a min/max random number generator function.
+The “isMine” property is determined by a min/max random number generator function.
 
 ### TileChangeFactory()
 Similar to the TileFactory function except two additional properties are returned that indicate the row, and column of the tile in question. 

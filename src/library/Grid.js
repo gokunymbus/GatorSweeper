@@ -159,7 +159,7 @@ export function getPerimeters(params) {
 export function addProximities(gridArray) {
     return gridArray.map((row, rowIndex) => {
         return row.map((column, columnIndex) => {
-            if (column.isMeow) {
+            if (column.isMine) {
                 return TileFactory({...column});
             }
 
@@ -174,7 +174,7 @@ export function addProximities(gridArray) {
             });
 
             const totalMinesInRange = proximities.reduce((previousValue, currentValue) => {
-                return currentValue.isMeow ? previousValue + 1 : previousValue;
+                return currentValue.isMine ? previousValue + 1 : previousValue;
             }, 0);
 
             return TileFactory({...column, proximities: totalMinesInRange});
@@ -211,12 +211,12 @@ export function processTarget(params) {
 
     const target = grid[targetRow][targetColumn];
     const {
-        isMeow,
+        isMine,
         proximities,
         isFlagged
     } = target;
     const newTarget = TileChangeFactory({tileParams: {...target}, row: targetRow, column: targetColumn});
-    const isBlank = !isMeow && proximities == 0 && !isFlagged;
+    const isBlank = !isMine && proximities == 0 && !isFlagged;
     // IF it's not blank then it has a mine or
     // it has mines in proximity so let's return it
     // and not try to recurse it's perimeters.
@@ -359,7 +359,7 @@ export function reduceMines(grid) {
     return grid.reduce((previousRow, currentRow, currentRowIndex) => {
         return previousRow.concat(
             currentRow.reduce((previousColumn, currentColumn, currentColumnIndex) => {
-                if (!currentColumn.isMeow) {
+                if (!currentColumn.isMine) {
                     return previousColumn;
                 }
 
@@ -377,7 +377,7 @@ export function reduceMines(grid) {
 export function numberOfRevealedTiles(grid) {
     return grid.reduce((previousRow, currentRow) => {
         return previousRow + currentRow.reduce((previousValue, currentColumn) => {
-            if (currentColumn.isMeow || !currentColumn.isRevealed) {
+            if (currentColumn.isMine || !currentColumn.isRevealed) {
                 return previousValue;
             }
             return previousValue + 1;
@@ -388,7 +388,7 @@ export function numberOfRevealedTiles(grid) {
 export function numberOfMines(grid) {
     return grid.reduce((previousRow, currentRow) => {
         return previousRow + currentRow.reduce((previousValue, currentColumn) => {
-            if (!currentColumn.isMeow) {
+            if (!currentColumn.isMine) {
                 return previousValue;
             }
             return previousValue + 1;

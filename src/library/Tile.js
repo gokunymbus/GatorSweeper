@@ -3,14 +3,14 @@ export function TileFactory(params) {
     const {
         min,
         max,
-        isMeow =  RandomMinMax(min, max) == 1 ? true : false,
+        isMine =  RandomMinMax(min, max) == 1 ? true : false,
         isRevealed = false,
         proximities = 0,
         isFlagged = false
     } = params;
 
     return {
-        isMeow,
+        isMine,
         isRevealed,
         proximities,
         isFlagged

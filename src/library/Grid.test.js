@@ -82,8 +82,8 @@ describe('Grid', () => {
             grid: testDataTwo
         });
 
-        newGrid[0][0].isMeow = true;
-        expect(testDataTwo[0][0].isMeow).toBe(false);
+        newGrid[0][0].isMine = true;
+        expect(testDataTwo[0][0].isMine).toBe(false);
     });
 
     test('rangeFactory - returns correct ranges', () => {
