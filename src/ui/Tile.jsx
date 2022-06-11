@@ -74,7 +74,6 @@ export default class Tile extends React.Component {
 
     onTouchStartHandler = (e) => {
         this.timer = timer(intervalsPassed => { this._intervalsPassed = intervalsPassed }, 400);
-        e.preventDefault();
     }
 
     onTouchEndHandler = (e) => {
@@ -89,7 +88,6 @@ export default class Tile extends React.Component {
         }
 
         this.resetTimer();
-        e.preventDefault();
     }
 
     resetTimer() {
