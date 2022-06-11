@@ -1,9 +1,22 @@
+/**
+ * @copyright John Miller <2022
+ * 
+ */
+
 import React from "react";
+
+//CSS
 import "./Tile.css";
+
+// Language
 import Language from "../languages/Language";
-import timer from "../utilities/Timer";
+
+// Library
 import { setFlagKey, selectTileKey } from "../library/Constants";
+
+// Utilities
 import ReplaceStringTokens from "../utilities/ReplaceStringTokens";
+import timer from "../utilities/Timer";
 
 export default class Tile extends React.Component {
     constructor(props) {
@@ -12,6 +25,7 @@ export default class Tile extends React.Component {
         this._language = Language();
         this._timer = null;
         this._intervalsPassed = 0;
+        this._timeUntilLongPress = 400;
     }
 
     getARIADescription() {
@@ -73,10 +87,20 @@ export default class Tile extends React.Component {
     }
 
     onTouchStartHandler = (e) => {
-        this.timer = timer(intervalsPassed => { this._intervalsPassed = intervalsPassed }, 400);
+        if (e.touches.length > 1) {
+            return;
+        }
+
+        this.timer = timer(intervalsPassed => {
+            this._intervalsPassed = intervalsPassed
+        }, this._timeUntilLongPress);
     }
 
     onTouchEndHandler = (e) => {
+        if (e.touches.length > 1) {
+            return;
+        }
+    
         const { onTileSelected, onLongPress } = this.props;
 
         if (this._intervalsPassed === 0) {
