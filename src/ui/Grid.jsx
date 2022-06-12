@@ -21,12 +21,6 @@ export default class Grid extends React.Component {
             renderCell
         } = this.props;
 
-        const cellData = {
-            rowIndex,
-            columnIndex,
-            ...column
-        };
-
         return (
             <div
                 className="Grid__column"

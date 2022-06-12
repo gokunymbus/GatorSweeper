@@ -1,7 +1,31 @@
+/**
+ * @Copyright John Miller
+ * @Author John Miller
+ * @License MIT GatorSweeper 2022
+ * 
+ */
 
+// React
 import React from 'react';
+
+// Styles
+import './Game.css';
+
+// Components
+import Footer from './Footer';
 import Grid from './Grid';
 import Header from './Header';
+import Tile from './Tile';
+
+// Library
+import {
+    DifficultySettings,
+    Difficulties,
+    GameState,
+    defaultTheme,
+    defaultGameOverTheme,
+    setFlagKey
+} from '../library/Constants';
 import {
     createGridWithProximites,
     numberOfMines,
@@ -11,45 +35,28 @@ import {
     updateTargetTile
 } from '../library/Grid';
 
+// Themes
 import themes from '../themes/index.js'
-import timer from '../utilities/Timer';
-import './Game.css';
-import {
-    DifficultySettings,
-    Difficulties,
-    GameState,
-    defaultTheme,
-    defaultGameOverTheme
-} from '../library/Constants';
-import RandomMinMax from '../utilities/RandomMinMax';
-import Footer from './Footer';
 
-import {FocusGrid, FocusGridCellAtrributes} from "../utilities/FocusGrid";
+// Utilities
+import {FocusGrid, FocusGridCellDataAttribute} from "../utilities/FocusGrid";
+import RandomMinMax from '../utilities/RandomMinMax';
 import ReplaceStringTokens from "../utilities/ReplaceStringTokens";
+import timer from '../utilities/Timer';
 
 // Language
 import Language from "../languages/Language";
 
-// Utilities
-
-
-//Library
-import { setFlagKey } from "../library/Constants";
-
-// Components
-import Tile from './Tile';
-
 export default class Game extends React.Component {
-    timerRef = null;
-    timeoutIDs = [];
-    language = Language();
-
     constructor(props) {
         super(props);
         this.state = this.getIntialGameState({});
+        this._timerRef = null;
+        this._timeoutIDs = [];
+        this._language = Language();
     }
 
-    getIntialGameState = (defaults) => {
+    getIntialGameState(defaults) {
         const {
             difficulty = Difficulties.EASY,
             difficultySettings = DifficultySettings[Difficulties.EASY],
@@ -71,33 +78,33 @@ export default class Game extends React.Component {
         }
     }
 
-    createTimer = () => {
-        this.timerRef = timer(this.onTimerUpdate);
+    createTimer() {
+        this._timerRef = timer(this.onTimerUpdate);
     }
 
-    clearTimer = () => {
-        if (this.timerRef) {
-            this.timerRef.stop();
-            this.timerRef = null;
+    clearTimer() {
+        if (this._timerRef) {
+            this._timerRef.stop();
+            this._timerRef = null;
         }
     }
 
-    clearTimeouts = () => {
-        if (this.timeoutIDs.length > 0) {
-            this.timeoutIDs.forEach((tid) => {
+    clearTimeouts() {
+        if (this._timeoutIDs.length > 0) {
+            this._timeoutIDs.forEach((tid) => {
                 clearTimeout(tid);
             });
-            this.timeoutIDs = [];
+            this._timeoutIDs = [];
         }
     }
 
-    setGame = (params) => {
+    setGame(params) {
         this.clearTimeouts();
         this.clearTimer();
         this.setState(this.getIntialGameState(params));
     }
 
-    selectTile = (tileProps) => {
+    selectTile(tileProps) {
         const {row, column, isMine, isFlagged} = tileProps;
         const {grid, gameState, difficultySettings} = this.state;
         const { size } = difficultySettings;
@@ -126,7 +133,7 @@ export default class Game extends React.Component {
                         return {grid: newGrid}
                     });
                 }, RandomMinMax(300, 1200));
-                this.timeoutIDs = this.timeoutIDs.concat(tid);
+                this._timeoutIDs = this._timeoutIDs.concat(tid);
             });
         }
 
@@ -251,7 +258,7 @@ export default class Game extends React.Component {
             theme
         } = this.state;
 
-        const formatedGridAED = ReplaceStringTokens(this.language.gridAED, [setFlagKey]);
+        const formatedGridAED = ReplaceStringTokens(this._language.gridAED, [setFlagKey]);
 
         return (
             <main
@@ -269,12 +276,13 @@ export default class Game extends React.Component {
                         rowLength={grid.length}
                         columnLength={grid[0].length}
                         aria-label={formatedGridAED}
+                        tabIndex={0}
+                        role={"application"}
                     >
                         <Grid
                             gridData={grid}
                             gridSize={difficultySettings.size}
                             renderCell={(rowIndex, columnIndex, data) => {
-                                console.log(FocusGridCellAtrributes(rowIndex, columnIndex))
                                 return (
                                     <Tile
                                         row={rowIndex}
@@ -286,7 +294,7 @@ export default class Game extends React.Component {
                                         difficulty={difficulty}
                                         onLongPress={this.onLongPress}
                                         htmlAttributes={{
-                                            [FocusGridCellDataName]: true
+                                            ...FocusGridCellDataAttribute(rowIndex, columnIndex)
                                         }}
                                     />
                                 )

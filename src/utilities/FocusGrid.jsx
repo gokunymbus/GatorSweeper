@@ -2,117 +2,166 @@ import React from 'react';
 import Clamp from './Clamp';
 
 /**
- * FocusGrid is a component that works with <FocusGridCell> to enable
- * focus navigation for a grid structure with arrow keys or other keys. As the user
- * presses up/down/left/right a positive tabIndex will provided to immediate
- * child of <FocusGridCell>
+ * FocusGrid is a simple focus manager for grid like structures.
+ * It must be used with the FocusGridCellDataAtrribute function
+ * to allow cells to be focusable. It by no means is a full 
+ * featured focus manager. 
+ * 
+ * @todo Other versions will likley come 
+ * with more focus support. Ideally this component would only
+ * require an attribute and make the assumptions about each
+ * cell in the DOM in respect to two dimensional navigation.
  * 
  * @example
- * <FocusGrid>
+ * <FocusGrid
+ *      rowLength={10}
+ *      columnLength={10}
+ * >
  *    <div class="row">
- *      <div class="cell">
- *          <FocusGridCell row={0} column={0}>
- *              <Cell />
- *          </FocusGridCell>
+ *      <div
+ *          class="cell"
+ *          {...FocusGridCellDataAtrribute(rowIndex, columnIndex)}
+ *      >
+ *           Content
  *      </div>
- *      <div class="cell">
- *           <FocusGridCell row={0} column={1}>
- *              <Cell />
- *           </FocusGridCell>
+ *      <div
+ *          class="cell"
+ *          {...FocusGridCellDataAtrribute(rowIndex, columnIndex)}
+ *      >
+ *           Content
  *      </div>
- *   <div class="row">
- *      <div class="cell">
- *          <FocusGridCell row={1} column={0}>
- *              <Cell />
- *          </FocusGridCell>
+ *      <div class="row">
+ *      <div
+ *          class="cell"
+ *          {...FocusGridCellDataAtrribute(rowIndex, columnIndex)}
+ *      >
+ *           Content
  *      </div>
- *      <div class="cell">
- *           <FocusGridCell row={1} column={1}>
- *              <Cell />
- *           </FocusGridCell>
+ *      <div
+ *          class="cell"
+ *          {...FocusGridCellDataAtrribute(rowIndex, columnIndex)}
+ *      >
+ *           Content
  *      </div>
  * </FocusGrid>
  *
  */
-export const FocusGridCellDataName = "data-focusgridcell";
+
+const focusGridPositionKeyName = "data-focusgridposition";
+
+export function FocusGridCellDataAttribute(rowIndex, columnIndex) {
+    return { [focusGridPositionKeyName]: `${rowIndex}-${columnIndex}` };
+}
+
+function FocusGridCellKeySelector(rowIndex, columnIndex) {
+    const keyValue = FocusGridCellDataAttribute(rowIndex, columnIndex);
+    return `[${focusGridPositionKeyName}="${keyValue[focusGridPositionKeyName]}"]`;
+}
 
 export class FocusGrid extends React.Component {
     constructor(props) {
         super(props);
         
         this.state = {
-            activeIndex
+            activeRow: 0,
+            activeColumn: 0
         }
     }
 
     groupRef = React.createRef();
 
-    componentDidMount() {
+    onKeyUpHandler = (e) => {
         const {current} = this.groupRef;
-        current.addEventListener('keyup', (e) => {
-            if (e.target == current) {
-                return;
-            }
+        if (e.target == current) {
+            return;
+        }
+    
+        const {activeRow, activeColumn} = this.state;
+        const {rowLength, columnLength} = this.props;
         
-            const {activeRow, activeColumn} = this.state;
-            const {rowLength, columnLength} = this.props;
-            
-            let newFocus = {activeRow, activeColumn};
-            switch(true) {
-                case e.key == "ArrowUp":
-                    const up =  activeRow - 1;
-                    newFocus.activeRow = Clamp(up, 0, rowLength -1);
-                    break;
-                case e.key == "ArrowDown":
-                    const down =  activeRow + 1;
-                    newFocus.activeRow = Clamp(down, 0, rowLength -1);
-                    break;
-                case e.key == "ArrowLeft":
-                    const left =  activeColumn - 1;
-                    newFocus.activeColumn = Clamp(left, 0, columnLength - 1);
-                    break;
-                case e.key == "ArrowRight":
-                    const right =  activeColumn + 1;
-                    newFocus.activeColumn = Clamp(right, 0, columnLength - 1);
-                    break;
-                default:
-                    break;
-            }
+        let newFocus = {activeRow, activeColumn};
+        switch(true) {
+            case e.key == "ArrowUp":
+                const up =  activeRow - 1;
+                newFocus.activeRow = Clamp(up, 0, rowLength -1);
+                break;
+            case e.key == "ArrowDown":
+                const down =  activeRow + 1;
+                newFocus.activeRow = Clamp(down, 0, rowLength -1);
+                break;
+            case e.key == "ArrowLeft":
+                const left =  activeColumn - 1;
+                newFocus.activeColumn = Clamp(left, 0, columnLength - 1);
+                break;
+            case e.key == "ArrowRight":
+                const right =  activeColumn + 1;
+                newFocus.activeColumn = Clamp(right, 0, columnLength - 1);
+                break;
+            default:
+                break;
+        }
 
-            this.setState({
-                activeRow: newFocus.activeRow,
-                activeColumn: newFocus.activeColumn
-            })
+        this.setState({
+            activeRow: newFocus.activeRow,
+            activeColumn: newFocus.activeColumn
         });
     }
 
-    moveDown() {
-        
+    setFocusCells() {
+        const {current} = this.groupRef;
+
+        const focusableElements = current.querySelectorAll(`[${focusGridPositionKeyName}]`);
+        if (focusableElements.length == 0) {
+            console.warn("FocusGrid: No focusable cell elements");
+            return;
+        }
+
+        focusableElements.forEach((element, index) => {
+            if (index == 0) {
+                element.setAttribute('tabindex', 0);
+                return;
+            }
+            element.setAttribute('tabindex', -1)
+        });
     }
 
-    getSelector(row, column) {
-        return `[${FocusGridCellColumnName}="${column}"]`
-            + `[${FocusGridCellRowName}="${row}"]`;
+    componentDidMount() {
+        this.setFocusCells();
+    }
+
+    setTabIndex(element, rowIndex, columnIndex, newFocus, setFocus = false) {
+        const foundElement = element.querySelector(
+            FocusGridCellKeySelector(rowIndex, columnIndex)
+        );
+
+        foundElement.setAttribute('tabindex', newFocus);
+        if (setFocus) {
+            foundElement.focus();
+        }
     }
 
     componentDidUpdate(prevProps, prevState) {
+        // IF the grid has changed size at all, reset
+        // all focus attributes and state;
+        const { rowLength, columnLength } = this.props;
+        if (rowLength !== prevProps.rowLength || columnLength !== prevProps.columnLength) {
+            this.setFocusCells();
+            this.setState({activeRow: 0, activeColumn: 0});
+            return;
+        }
+
+        // If the active row/column is the same, do nothing
+        // and return;
         const { activeRow, activeColumn } = this.state;
         if (prevState.activeRow == activeRow && prevState.activeColumn == activeColumn) {
             return;
         }
 
+
         const {current} = this.groupRef;
 
-        const oldFocusedElement = current.querySelector(
-            this.getSelector(prevState.activeRow, prevState.activeColumn)
-        );
-        oldFocusedElement.setAttribute('tabindex', -1);
-
-        const newFocusElement = current.querySelector(
-            this.getSelector(activeRow, activeColumn)
-        );
-        newFocusElement.setAttribute('tabindex', 0);
-        newFocusElement.focus();
+        this.setTabIndex(current, activeRow, activeColumn, 0, true);
+        this.setTabIndex(current, prevState.activeRow, prevState.activeColumn, -1);
     }
 
 
@@ -121,16 +170,16 @@ export class FocusGrid extends React.Component {
             children,
             rowLength,
             columnLength,
+            className,
             ...additionalProps
         } = this.props;
         return (
             <div
-                className="FocusGrid"
-                tabIndex={0}
+                className={`FocusGrid ${className || ""}`}
                 {...additionalProps}
                 onFocus={this.onFocusHandler}
                 ref={this.groupRef}
-                role={"application"}
+                onKeyUp={this.onKeyUpHandler}
             >
                 {children}
             </div>
