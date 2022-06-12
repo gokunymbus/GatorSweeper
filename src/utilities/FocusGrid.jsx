@@ -32,43 +32,20 @@ import Clamp from './Clamp';
  *           </FocusGridCell>
  *      </div>
  * </FocusGrid>
+ *
  */
+export const FocusGridCellDataName = "data-focusgridcell";
 
 export class FocusGrid extends React.Component {
     constructor(props) {
         super(props);
         
         this.state = {
-            activeRow: 0,
-            activeColumn: 0
+            activeIndex
         }
     }
 
     groupRef = React.createRef();
-
-    traverseChildren(elementChildren) {
-        return React.Children.map(elementChildren, (child) => {
-            const { activeColumn, activeRow } = this.state;
-            const { children, row, column } = child.props;
-
-            if (child.type != FocusGridCell && !children) {
-                return child;
-            }
-
-            if (child.type != FocusGridCell && children) {
-                return React.cloneElement(child, {
-                    children: this.traverseChildren(children)
-                });
-            }
-    
-            const isFocused = activeColumn == column && activeRow == row;
-            return (
-                React.cloneElement(child, {
-                    activeTabIndex: isFocused ? 0 : -1
-                })
-            )
-        });
-    }
 
     componentDidMount() {
         const {current} = this.groupRef;
@@ -109,6 +86,36 @@ export class FocusGrid extends React.Component {
         });
     }
 
+    moveDown() {
+        
+    }
+
+    getSelector(row, column) {
+        return `[${FocusGridCellColumnName}="${column}"]`
+            + `[${FocusGridCellRowName}="${row}"]`;
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        const { activeRow, activeColumn } = this.state;
+        if (prevState.activeRow == activeRow && prevState.activeColumn == activeColumn) {
+            return;
+        }
+
+        const {current} = this.groupRef;
+
+        const oldFocusedElement = current.querySelector(
+            this.getSelector(prevState.activeRow, prevState.activeColumn)
+        );
+        oldFocusedElement.setAttribute('tabindex', -1);
+
+        const newFocusElement = current.querySelector(
+            this.getSelector(activeRow, activeColumn)
+        );
+        newFocusElement.setAttribute('tabindex', 0);
+        newFocusElement.focus();
+    }
+
+
     render() {
         const {
             children,
@@ -125,60 +132,8 @@ export class FocusGrid extends React.Component {
                 ref={this.groupRef}
                 role={"application"}
             >
-                {React.Children.map(children, (child) => {
-                    const children = child.props.children;
-                    const hasChildren = children && children.length && children.length > 0;
-
-                    return (
-                        React.cloneElement(child, {
-                            ...(hasChildren ? {children: this.traverseChildren(children)} : {})
-                        })
-                    )
-                })}
+                {children}
             </div>
         )
-    }
-}
-
-
-export class FocusGridCell extends React.Component {
-    // Private cell ref
-    _cellRef;
-
-    constructor(props) {
-        super(props);
-        this._cellRef = props.forwardRef || React.createRef();
-    }
-
-    componentDidUpdate(prevProps, prevState) {
-        const {activeTabIndex} = this.props;
-        const {current} = this._cellRef;
-
-        current.setAttribute("tabindex", activeTabIndex);
-
-        if (activeTabIndex == 0 && prevProps.activeTabIndex == -1) {
-            current.focus();
-        }
-    }
-
-    componentDidMount() {
-        const {activeTabIndex} = this.props;
-        const {current} = this._cellRef;
-        
-        current.setAttribute("tabindex", activeTabIndex);
-    }
-
-    render() {
-        const {
-            activeTabIndex,
-            children
-        } = this.props;
-
-        // Shoudl only have one child
-        React.Children.only(children);
-
-        return React.cloneElement(children, {
-            tabIndex: activeTabIndex
-        });
     }
 }
