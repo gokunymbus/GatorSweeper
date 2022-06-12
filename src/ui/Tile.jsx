@@ -1,8 +1,11 @@
 /**
- * @copyright John Miller <2022
+ * @Copyright John Miller
+ * @Author John Miller
+ * @License MIT GatorSweeper 2022
  * 
  */
 
+// React
 import React from "react";
 
 //CSS
@@ -21,7 +24,7 @@ import timer from "../utilities/Timer";
 export default class Tile extends React.Component {
     constructor(props) {
         super(props);
-        this._tileRef = props.forwardRef || React.createRef();
+        this._tileRef = React.createRef();
         this._language = Language();
         this._timer = null;
         this._intervalsPassed = 0;
@@ -171,7 +174,8 @@ export default class Tile extends React.Component {
             isRevealed,
             difficulty,
             row,
-            column
+            column,
+            htmlAttributes
         } = this.props;
 
         const difficultyClassName = "Tile--" + difficulty.description;
@@ -190,6 +194,7 @@ export default class Tile extends React.Component {
                 onTouchStart={this.onTouchStartHandler}
                 onTouchEnd={this.onTouchEndHandler}
                 tabIndex={0}
+                {...htmlAttributes}
             >
                 {
                     isRevealed

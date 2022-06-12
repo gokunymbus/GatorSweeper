@@ -24,9 +24,25 @@ import {
 import RandomMinMax from '../utilities/RandomMinMax';
 import Footer from './Footer';
 
+import {FocusGrid, FocusGridCellAtrributes} from "../utilities/FocusGrid";
+import ReplaceStringTokens from "../utilities/ReplaceStringTokens";
+
+// Language
+import Language from "../languages/Language";
+
+// Utilities
+
+
+//Library
+import { setFlagKey } from "../library/Constants";
+
+// Components
+import Tile from './Tile';
+
 export default class Game extends React.Component {
     timerRef = null;
     timeoutIDs = [];
+    language = Language();
 
     constructor(props) {
         super(props);
@@ -235,6 +251,8 @@ export default class Game extends React.Component {
             theme
         } = this.state;
 
+        const formatedGridAED = ReplaceStringTokens(this.language.gridAED, [setFlagKey]);
+
         return (
             <main
                 className="Game"
@@ -247,20 +265,34 @@ export default class Game extends React.Component {
                         timer={timer}
                         gameState={gameState}
                     />
-                    <Grid
-                        gridData={grid}
-                        gridSize={difficultySettings.size}
-                        tileProps={
-                            {
-                                onTileSelected: this.onTileSelected,
-                                onTileRightClicked: this.onTileRightClicked,
-                                onEnterKeyUp: this.onEnterKeyUp,
-                                difficulty: difficulty,
-                                onLongPress: this.onLongPress
-                            }
-                        }
+                    <FocusGrid
+                        rowLength={grid.length}
+                        columnLength={grid[0].length}
+                        aria-label={formatedGridAED}
                     >
-                    </Grid>
+                        <Grid
+                            gridData={grid}
+                            gridSize={difficultySettings.size}
+                            renderCell={(rowIndex, columnIndex, data) => {
+                                console.log(FocusGridCellAtrributes(rowIndex, columnIndex))
+                                return (
+                                    <Tile
+                                        row={rowIndex}
+                                        column={columnIndex}
+                                        {...data}
+                                        onTileSelected={this.onTileSelected}
+                                        onTileRightClicked={this.onTileRightClicked}
+                                        onEnterKeyUp={this.onEnterKeyUp}
+                                        difficulty={difficulty}
+                                        onLongPress={this.onLongPress}
+                                        htmlAttributes={{
+                                            [FocusGridCellDataName]: true
+                                        }}
+                                    />
+                                )
+                            }}
+                        />
+                    </FocusGrid>
                     <Footer
                         onDifficultySelected={this.onDifficultySelected}
                         difficulty={difficulty}

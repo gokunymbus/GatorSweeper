@@ -1,29 +1,30 @@
-import React from "react";
-import './Grid.css';
-import Language from "../languages/Language";
-import {FocusGrid, FocusGridCell} from "../utilities/FocusGrid";
-import { setFlagKey } from "../library/Constants";
+/**
+ * @Copyright John Miller
+ * @Author John Miller
+ * @License MIT GatorSweeper 2022
+ * 
+ */
 
-import Tile from './Tile';
-import ReplaceStringTokens from "../utilities/ReplaceStringTokens";
+// React
+import React from "react";
+
+// CSS
+import './Grid.css';
 
 export default class Grid extends React.Component {
     constructor(props) {
         super(props);
     }
 
-    language = Language();
-    gridRef = React.createRef();
-
     renderColumn(column, rowIndex, columnIndex) {
         const {
-            tileProps
+            renderCell
         } = this.props;
 
         const cellData = {
-            row: rowIndex,
-            column: columnIndex,
-            forwardRef: React.createRef()
+            rowIndex,
+            columnIndex,
+            ...column
         };
 
         return (
@@ -31,15 +32,7 @@ export default class Grid extends React.Component {
                 className="Grid__column"
                 key={columnIndex}
             >
-                <FocusGridCell
-                    {...cellData}
-                >
-                    <Tile
-                        {...column}
-                        {...cellData}
-                        {...tileProps}
-                    />
-                </FocusGridCell>
+                {renderCell(rowIndex, columnIndex, column)}
             </div>
         )
     }
@@ -50,25 +43,21 @@ export default class Grid extends React.Component {
                 className="Grid__row"
                 key={rowIndex}
             >
-                {columns.map((column, columnIndex) => this.renderColumn(column, rowIndex, columnIndex))}
+                {columns.map((column, columnIndex) =>
+                    this.renderColumn(column, rowIndex, columnIndex)
+                )}
             </div>
         )
     }
 
     render() {
         const { gridData } = this.props;
-        const formatedGridAED = ReplaceStringTokens(this.language.gridAED, [setFlagKey]);
         return (
-            <FocusGrid
-                rowLength={gridData.length}
-                columnLength={gridData[0].length}
-                aria-label={formatedGridAED}
-                className={"Grid"}
-            >
-                {
-                    gridData.map((row, rowIndex) => this.renderRow(row, rowIndex))
-                }
-            </FocusGrid>
+            <div className="Grid">
+                {gridData.map((row, rowIndex) =>
+                        this.renderRow(row, rowIndex)
+                )}
+            </div>
         );
     }
 }
