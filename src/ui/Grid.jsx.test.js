@@ -1,7 +1,7 @@
 import React from "react";
 import Grid from "./Grid";
 
-import { render, cleanup, fireEvent, screen } from "@testing-library/react";
+import { render, cleanup, screen } from "@testing-library/react";
 import '@testing-library/jest-dom';
 
 const testData = [

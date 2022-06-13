@@ -1,5 +1,6 @@
 import main from "./main";
 import gameover from "./gameover";
+import won from "./won";
 
 /**
  * Converts object key names to css property style keynames
@@ -20,5 +21,6 @@ export function ObjectToCSSProperty(properties) {
 
 export default {
     main: ObjectToCSSProperty(main),
-    gameover: ObjectToCSSProperty(gameover)
+    gameover: ObjectToCSSProperty(gameover),
+    won: ObjectToCSSProperty(won)
 }

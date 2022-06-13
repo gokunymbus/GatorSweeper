@@ -114,9 +114,9 @@ export default class Game extends React.Component {
         }
 
         if (isMine) {
-            // Here we update one mine at a time
-            // by picking one out of the Grid and then
-            // delaying when the state receives the update
+            // This is to "stagger" updating
+            // each mine so they appear to 
+            // show up at different times. 
             const mines = reduceMines(grid);
             mines.forEach((mine) => {
                 const tid = setTimeout(() => {
@@ -143,12 +143,11 @@ export default class Game extends React.Component {
             grid
         });
 
-        
-        let newGameState;
         const totalMines = numberOfMines(newGrid);
         const totalRevealedTiles = numberOfRevealedTiles(newGrid);
         const tilesLeft = (size * size) - totalRevealedTiles;
-    
+
+        let newGameState;
         switch (true) {
             case isMine:
                 newGameState = GameState.ENDED;
