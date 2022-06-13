@@ -1,0 +1,17 @@
+
+.Grid {
+    width: 100%;
+}
+
+.Grid__row {
+    width: 100%;
+    display: flex;
+}
+
+.Grid__column {
+    box-sizing: border-box;
+    flex-basis: 50px;
+    border: 1px solid red;
+    width: 50px;
+    height: 50px;
+}
