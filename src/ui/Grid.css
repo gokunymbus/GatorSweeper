@@ -1,14 +1,11 @@
 
 .Grid {
-    width: 70vmin;
-    height: 70vmin;
     --borderSize: 1px;
     --borderOffset: 0;
     --borderZIndex: 10;
     display: grid;
-    contain:paint;
-    will-change: contents;
-    transform: translateZ(0);
+    width: 280px;
+    height: 280px;
 }
 
 .Grid:focus-visible {
@@ -43,4 +40,18 @@
 .Grid__row,
 .Grid__column {
     box-sizing: border-box;
+}
+
+@media screen and (min-width: 480px) and (min-height: 480px) {
+    .Grid {
+        width: 450px;
+        height: 450px;
+    }
+}
+
+@media screen and (min-width: 1000px) and (min-height: 1000px) {
+    .Grid {
+        width: 900px;
+        height: 900px;
+    }
 }
