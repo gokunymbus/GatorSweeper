@@ -16,7 +16,7 @@ describe('Grid.jsx', () => {
     });
 
     test('properly renders 6 rows and columns of data', () => {
-        render(
+        const { container } = render(
             <Grid
                gridData={testData}
                renderCell={(rowIndex, columnIndex, cellData) => {
