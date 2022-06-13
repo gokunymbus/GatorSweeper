@@ -278,6 +278,7 @@ export default class Game extends React.Component {
                         aria-label={formatedGridAED}
                         tabIndex={0}
                         role={"application"}
+                        className={"Game__focusGrid"}
                     >
                         <Grid
                             gridData={grid}

@@ -6,6 +6,9 @@
     --borderOffset: 0;
     --borderZIndex: 10;
     display: grid;
+    contain:paint;
+    will-change: contents;
+    transform: translateZ(0);
 }
 
 .Grid:focus-visible {

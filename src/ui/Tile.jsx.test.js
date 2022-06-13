@@ -1,7 +1,7 @@
 import React from "react";
 import Tile from "./Tile";
 import { Difficulties, setFlagKey, selectTileKey } from "../library/Constants";
-import { render, screen, cleanup, fireEvent } from "@testing-library/react";
+import { render, cleanup, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import '@testing-library/jest-dom'
 

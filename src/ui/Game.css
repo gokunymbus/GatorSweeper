@@ -18,3 +18,7 @@
    flex-direction: column;
    align-items: center;
 }
+
+.Game__focusGrid:focus-visible {
+    outline: var(--outline);
+}

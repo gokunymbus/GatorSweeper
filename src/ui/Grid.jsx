@@ -11,6 +11,9 @@ import React from "react";
 // CSS
 import './Grid.css';
 
+/**
+ * A simple grid component
+ */
 export default class Grid extends React.Component {
     constructor(props) {
         super(props);
@@ -49,7 +52,7 @@ export default class Grid extends React.Component {
         return (
             <div className="Grid">
                 {gridData.map((row, rowIndex) =>
-                        this.renderRow(row, rowIndex)
+                    this.renderRow(row, rowIndex)
                 )}
             </div>
         );

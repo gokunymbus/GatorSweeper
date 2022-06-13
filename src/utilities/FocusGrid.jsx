@@ -8,9 +8,9 @@ import Clamp from './Clamp';
  * featured focus manager. 
  * 
  * @todo Other versions will likley come 
- * with more focus support. Ideally this component would only
- * require an attribute and make the assumptions about each
- * cell in the DOM in respect to two dimensional navigation.
+ * with more focus support. Ideally this component would
+ * calculate each cells direction position without relying
+ * on a rigid rows and columns value. 
  * 
  * @example
  * <FocusGrid
@@ -46,18 +46,6 @@ import Clamp from './Clamp';
  * </FocusGrid>
  *
  */
-
-const focusGridPositionKeyName = "data-focusgridposition";
-
-export function FocusGridCellDataAttribute(rowIndex, columnIndex) {
-    return { [focusGridPositionKeyName]: `${rowIndex}-${columnIndex}` };
-}
-
-function FocusGridCellKeySelector(rowIndex, columnIndex) {
-    const keyValue = FocusGridCellDataAttribute(rowIndex, columnIndex);
-    return `[${focusGridPositionKeyName}="${keyValue[focusGridPositionKeyName]}"]`;
-}
-
 export class FocusGrid extends React.Component {
     constructor(props) {
         super(props);
@@ -107,7 +95,7 @@ export class FocusGrid extends React.Component {
         });
     }
 
-    setFocusCells() {
+    restTabIndexes() {
         const {current} = this.groupRef;
 
         const focusableElements = current.querySelectorAll(`[${focusGridPositionKeyName}]`);
@@ -126,7 +114,7 @@ export class FocusGrid extends React.Component {
     }
 
     componentDidMount() {
-        this.setFocusCells();
+        this.restTabIndexes();
     }
 
     setTabIndex(element, rowIndex, columnIndex, newFocus, setFocus = false) {
@@ -141,11 +129,11 @@ export class FocusGrid extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        // IF the grid has changed size at all, reset
+        // If the grid has changed size at all, reset
         // all focus attributes and state;
         const { rowLength, columnLength } = this.props;
         if (rowLength !== prevProps.rowLength || columnLength !== prevProps.columnLength) {
-            this.setFocusCells();
+            this.restTabIndexes();
             this.setState({activeRow: 0, activeColumn: 0});
             return;
         }
@@ -157,9 +145,7 @@ export class FocusGrid extends React.Component {
             return;
         }
 
-
         const {current} = this.groupRef;
-
         this.setTabIndex(current, activeRow, activeColumn, 0, true);
         this.setTabIndex(current, prevState.activeRow, prevState.activeColumn, -1);
     }
@@ -185,4 +171,41 @@ export class FocusGrid extends React.Component {
             </div>
         )
     }
+}
+
+
+const focusGridPositionKeyName = "data-focusgridposition";
+
+/**
+ * Provides and key value object that can be
+ * added to an HTML element to designate it as
+ * focusable element in FocusGrid.
+ * 
+ * @example
+ * <div
+ *  className="GridCell"
+ *  {...FocusGridCellDataAttribute(0, 0)}
+ *  >
+ *  <p> Cell content </p>
+ * </div>
+ * 
+ * @param {*} rowIndex
+ * @param {*} columnIndex
+ * @returns {object} {[keyname]: value}
+ */
+export function FocusGridCellDataAttribute(rowIndex, columnIndex) {
+    return { [focusGridPositionKeyName]: `${rowIndex}-${columnIndex}` };
+}
+
+/**
+ * Provides a CSS selector string based on 
+ * a row and column index.
+ * 
+ * @param {*} rowIndex 
+ * @param {*} columnIndex 
+ * @returns {CSSSe}
+ */
+function FocusGridCellKeySelector(rowIndex, columnIndex) {
+    const keyValue = FocusGridCellDataAttribute(rowIndex, columnIndex);
+    return `[${focusGridPositionKeyName}="${keyValue[focusGridPositionKeyName]}"]`;
 }
