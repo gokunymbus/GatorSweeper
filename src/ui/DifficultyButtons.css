@@ -1,11 +1,11 @@
-.Footer {
+.DifficultyButtons {
     width: 100%;
     display: flex;
     justify-content: space-evenly;
     padding: 8px;
 }
 
-.Footer__mode {
+.DifficultyButtons__button {
     font-family: var(--fontFamily);
     color: var(--tertiaryColor);
     font-size: 16px;
@@ -14,22 +14,22 @@
     border: 0;
 }
 
-.Footer__mode:focus-visible {
+.DifficultyButtons__button:focus-visible {
     z-index: var(----outlineZindex);
     outline:var(--outline);
     position: relative;
 }
 
-.Footer__mode--active {
+.DifficultyButtons__button--active {
     text-decoration: underline;
     text-underline-offset: 8px;
 }
 
-.Footer__mode:hover {
+.DifficultyButtons__button:hover {
     cursor: pointer;
 }
 
-.Footer__mode:hover {
+.DifficultyButtons__button:hover {
     transform: scale3d(1.2, 1.2, 1.2);
 }
 
@@ -39,14 +39,13 @@
 **/
 
 @media screen and (min-width: 480px) and (min-height: 600px) {
-    .Footer__mode {
+    .DifficultyButtons__button {
         font-size: 22px;
     }
 }
 
 @media screen and (min-width: 800px) and (min-height: 600px) {
-    .Footer__mode {
+    .DifficultyButtons__button {
         font-size: 34px;
     }
 }
-

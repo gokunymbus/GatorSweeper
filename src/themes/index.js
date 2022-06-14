@@ -18,7 +18,6 @@ export function ObjectToCSSProperty(properties) {
     }, {});
 }
 
-
 export default {
     main: ObjectToCSSProperty(main),
     gameover: ObjectToCSSProperty(gameover),

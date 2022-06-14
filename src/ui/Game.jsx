@@ -12,7 +12,7 @@ import React from 'react';
 import './Game.css';
 
 // Components
-import Footer from './Footer';
+import DifficultyButtons from './DifficultyButtons';
 import Grid from './Grid';
 import Header from './Header';
 import Tile from './Tile';
@@ -22,8 +22,6 @@ import {
     DifficultySettings,
     Difficulties,
     GameState,
-    defaultTheme,
-    defaultGameOverTheme,
     setFlagKey
 } from '../library/Constants';
 import {
@@ -35,9 +33,6 @@ import {
     updateTargetTile
 } from '../library/Grid';
 
-// Themes
-import themes from '../themes/index.js'
-
 // Utilities
 import {FocusGrid, FocusGridCellDataAttribute} from "../utilities/FocusGrid";
 import RandomMinMax from '../utilities/RandomMinMax';
@@ -48,20 +43,74 @@ import timer from '../utilities/Timer';
 import Language from "../languages/Language";
 
 export default class Game extends React.Component {
+    #timerRef = null;
+    #timeoutIDs = [];
+    #language = Language();
+
     constructor(props) {
         super(props);
-        this.state = this.getIntialGameState({});
-        this._timerRef = null;
-        this._timeoutIDs = [];
-        this._language = Language();
+        this.state = this.#getIntialGameState({});
     }
 
-    getIntialGameState(defaults) {
+    #addFlag(tileProps) {
+        const { row, column } = tileProps;
+        const { grid, flags } = this.state;
+        const tile = grid[row][column];
+
+        // If there are no flags left or
+        // if the tile is already revealed,
+        // just return and do nothing.
+        if (flags == 0 || tile.isRevealed) {
+            return;
+        }
+
+        const isFlagged = !tile.isFlagged;
+        const newGrid = updateTargetTile({
+            targetRow: row,
+            targetColumn: column,
+            grid,
+            tileParams: {
+                isFlagged,
+            }
+        });
+
+        this.setState({
+            grid: newGrid,
+            flags: isFlagged ?  flags - 1 : flags + 1
+        });
+    }
+
+    #clearTimeouts() {
+        if (this.#timeoutIDs.length > 0) {
+            this.#timeoutIDs.forEach((tid) => {
+                clearTimeout(tid);
+            });
+            this.#timeoutIDs = [];
+        }
+    }
+
+    #createTimer() {
+        this.#timerRef = timer(this.#onTimerUpdate);
+    }
+
+    #clearTimer() {
+        if (this.#timerRef) {
+            this.#timerRef.stop();
+            this.#timerRef = null;
+        }
+    }
+
+    #getIntialGameState(defaultOverrides) {
         const {
-            difficulty = Difficulties.EASY,
-            difficultySettings = DifficultySettings[Difficulties.EASY],
-            theme = themes[defaultTheme]
-        } = defaults;
+            defaultDifficulty,
+            defaultDifficultySettings,
+            defaultTheme
+        } = this.props;
+        const {
+            difficulty = defaultDifficulty,
+            difficultySettings = defaultDifficultySettings,
+            theme = defaultTheme
+        } = defaultOverrides;
     
         return {
             grid: createGridWithProximites({
@@ -78,38 +127,45 @@ export default class Game extends React.Component {
         }
     }
 
-    createTimer() {
-        this._timerRef = timer(this.onTimerUpdate);
+    #onTimerUpdate = (seconds) => {
+        this.setState({
+            timer: seconds
+        });
+    };
+
+    #onSetFlag = (tileProps) => {
+        this.#addFlag(tileProps);
+    };
+
+    #onTileSelected = (tileProps) => {
+        this.#selectTile(tileProps);
+    };
+
+    #onDifficultySelected(difficulty) {
+        this.#resetGame({
+            difficultySettings: DifficultySettings[difficulty],
+            difficulty
+        });
     }
 
-    clearTimer() {
-        if (this._timerRef) {
-            this._timerRef.stop();
-            this._timerRef = null;
-        }
-    }
+    #onReset = () => {
+        const { difficulty, difficultySettings } = this.state;
+        this.#resetGame({
+            difficulty,
+            difficultySettings
+        });
+    };
 
-    clearTimeouts() {
-        if (this._timeoutIDs.length > 0) {
-            this._timeoutIDs.forEach((tid) => {
-                clearTimeout(tid);
-            });
-            this._timeoutIDs = [];
-        }
-    }
-
-    setGame(params) {
-        this.clearTimeouts();
-        this.clearTimer();
-        this.setState(this.getIntialGameState(params));
-    }
-
-    selectTile(tileProps) {
-        const {row, column, isMine, isFlagged} = tileProps;
-        const {grid, gameState, difficultySettings} = this.state;
+    #selectTile(tileProps) {
+        const { row, column, isMine, isFlagged } = tileProps;
+        const { grid, gameState, difficultySettings } = this.state;
         const { size } = difficultySettings;
+        const minStateDelay = 300;
+        const maxStateDelay = 1200;
 
-        if (gameState == GameState.ENDED || gameState == GameState.WON || isFlagged) {
+        if (gameState == GameState.ENDED
+            || gameState == GameState.WON
+            || isFlagged) {
             return;
         }
 
@@ -132,8 +188,8 @@ export default class Game extends React.Component {
     
                         return {grid: newGrid}
                     });
-                }, RandomMinMax(300, 1200));
-                this._timeoutIDs = this._timeoutIDs.concat(tid);
+                }, RandomMinMax(minStateDelay, maxStateDelay));
+                this.#timeoutIDs = this.#timeoutIDs.concat(tid);
             });
         }
 
@@ -145,89 +201,41 @@ export default class Game extends React.Component {
 
         const totalMines = numberOfMines(newGrid);
         const totalRevealedTiles = numberOfRevealedTiles(newGrid);
-        const tilesLeft = (size * size) - totalRevealedTiles;
+        const remainingTiles = (size * size) - totalRevealedTiles;
 
         let newGameState;
         switch (true) {
             case isMine:
                 newGameState = GameState.ENDED;
                 break;
-            case tilesLeft == totalMines:
+            case remainingTiles == totalMines:
                 newGameState = GameState.WON;
                 break;
             default:
                 newGameState = GameState.RUNNING;
                 break;
         }
+
+        const { gameOverTheme } = this.props;
         
         this.setState({
             grid: newGrid,
             gameState: newGameState,
-            ...(newGameState == GameState.ENDED && {theme: themes[defaultGameOverTheme]})
+            ...(newGameState == GameState.ENDED && { theme: gameOverTheme })
         });
     }
 
-    onTimerUpdate = (seconds) => {
-        this.setState({
-            timer: seconds
-        });
-    };
-
-    addFlag(tileProps) {
-        const {row, column} = tileProps;
-        const {grid, flags} = this.state;
-        const tile = grid[row][column];
-
-        // If there are no flags left, don't place them
-        if (flags == 0 || tile.isRevealed) {
-            return;
-        }
-
-        const isFlagged = !tile.isFlagged;
-        const newGrid = updateTargetTile({
-            targetRow: row,
-            targetColumn: column,
-            grid,
-            tileParams: {
-                isFlagged
-            }
-        });
-
-        this.setState({
-            grid: newGrid,
-            flags: isFlagged ?  flags - 1 : flags + 1
-        });
+    #resetGame(initialStateOverrides) {
+        this.#clearTimeouts();
+        this.#clearTimer();
+        this.setState(this.#getIntialGameState(initialStateOverrides));
     }
-
-    onTileRightClicked = (e, tileProps) => {
-        this.addFlag(tileProps);
-    };
-
-    onEnterKeyUp = (e, tileProps) => {
-        this.selectTile(tileProps);
-    };
-
-    onTileSelected = (e, tileProps) => {
-        this.selectTile(tileProps);
-    };
-
-    onLongPress = (e, tileProps) => {
-        this.addFlag(tileProps);
-    };
-
-    onMainIconSelected = () => {
-        // Maintain current diffuculty
-        const {difficulty, difficultySettings} = this.state;
-        this.setGame({
-            difficulty,
-            difficultySettings
-        });
-    };
 
     componentDidUpdate(previousProps, previousState) {
-        const { gameState, theme } = this.state;
-        if (gameState == GameState.RUNNING && previousState.gameState == GameState.NEW) {
-           this.createTimer();
+        const { gameState } = this.state;
+        if (gameState == GameState.RUNNING
+            && previousState.gameState == GameState.NEW) {
+           this.#createTimer();
         }
 
         if (
@@ -235,15 +243,13 @@ export default class Game extends React.Component {
             && gameState == GameState.ENDED
             || gameState == GameState.WON
         ) {
-            this.clearTimer();
+            this.#clearTimer();
         }
     }
 
-    onDifficultySelected = (difficulty) => {
-        this.setGame({
-            difficultySettings: DifficultySettings[difficulty],
-            difficulty
-        });
+    componentWillUnmount() {
+        this.#clearTimer();
+        this.#clearTimeouts();
     }
 
     render() {
@@ -257,27 +263,70 @@ export default class Game extends React.Component {
             theme
         } = this.state;
 
-        const formatedGridAED = ReplaceStringTokens(this._language.gridAED, [setFlagKey]);
+        const buttons =  [
+            {
+                difficulty: Difficulties.EASY,
+                ariaLabel: this.#language.footerAEDEasy,
+                string: this.#language.modesEasy,
+                isActive: difficulty === Difficulties.EASY
+            },
+            {
+                difficulty: Difficulties.HARD,
+                ariaLabel: this.#language.footerAEDHard,
+                string: this.#language.modesHard,
+                isActive: difficulty === Difficulties.HARD
+            },
+            {
+                difficulty: Difficulties.EXTREME,
+                ariaLabel: this.#language.footerAEDExtreme,
+                string: this.#language.modesExtreme,
+                isActive: difficulty === Difficulties.EXTREME
+            }
+        ];
+
+        const headerStates = {
+            [GameState.RUNNING]: {
+                statusName: this.#language.controlsGameStateStarted,
+                ariaDescription: this.#language.controlsAEDGameStateStarted
+            },
+            [GameState.NEW]: {
+                statusName: this.#language.controlsGameStateNew,
+                ariaDescription: this.#language.controlsAEDGameStateNew
+            },
+            [GameState.ENDED]: {
+                statusName: this.#language.controlsGameStateFailed,
+                ariaDescription: this.#language.controlsAEDGameStateFailed
+            },
+            [GameState.WON]: {
+                statusName: this.#language.controlsGameStateWinner,
+                ariaDescription: this.#language.controlsAEDGameStateWinner
+            }
+        };
 
         return (
             <main
                 className="Game"
-                style={theme}
+                style={theme} 
             >
                 <div className="Game__container">
                     <Header
-                        onMainIconSelected={this.onMainIconSelected}
+                        onReset={this.#onReset}
                         flags={flags}
                         timer={timer}
-                        gameState={gameState}
+                        statusName={headerStates[gameState].statusName}
+                        statusAriaDescription={headerStates[gameState].ariaDescription}
+                        isGameOver={gameState == GameState.ENDED}
+                        isGameWon={gameState == GameState.WON}
                     />
                     <FocusGrid
                         rowLength={grid.length}
                         columnLength={grid[0].length}
-                        aria-label={formatedGridAED}
+                        aria-label={ReplaceStringTokens(
+                            this.#language.gridAED, [setFlagKey]
+                        )}
                         tabIndex={0}
-                        role={"application"}
-                        className={"Game__focusGrid"}
+                        role="application"
+                        className="Game__focusGrid"
                     >
                         <Grid
                             gridData={grid}
@@ -288,11 +337,9 @@ export default class Game extends React.Component {
                                         row={rowIndex}
                                         column={columnIndex}
                                         {...data}
-                                        onTileSelected={this.onTileSelected}
-                                        onTileRightClicked={this.onTileRightClicked}
-                                        onEnterKeyUp={this.onEnterKeyUp}
+                                        onTileSelected={this.#onTileSelected}
+                                        onSetFlag={this.#onSetFlag}
                                         difficulty={difficulty}
-                                        onLongPress={this.onLongPress}
                                         htmlAttributes={{
                                             ...FocusGridCellDataAttribute(rowIndex, columnIndex)
                                         }}
@@ -301,9 +348,9 @@ export default class Game extends React.Component {
                             }}
                         />
                     </FocusGrid>
-                    <Footer
-                        onDifficultySelected={this.onDifficultySelected}
-                        difficulty={difficulty}
+                    <DifficultyButtons
+                        onButtonSelected={this.#onDifficultySelected.bind(this)}
+                        buttons={buttons}
                     />
                 </div>
             </main>

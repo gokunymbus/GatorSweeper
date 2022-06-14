@@ -1,3 +1,10 @@
+/**
+ * @Copyright John Miller
+ * @Author John Miller
+ * @License MIT GatorSweeper 2022
+ * 
+ */
+
 import React from "react";
 import Grid from "./Grid";
 
@@ -10,7 +17,7 @@ const testData = [
     [{name: "Row3 Column1"}, {name: "Row3 Column2"}]
 ];
 
-describe('Grid.jsx', () => {
+describe('<Grid />', () => {
     afterEach(() => {
         cleanup();
     });
@@ -32,5 +39,27 @@ describe('Grid.jsx', () => {
         expect(screen.getAllByText('Row', {exact: false}).length).toBe(6);
         expect(container.querySelectorAll('.Grid__column').length).toBe(6);
         expect(container.querySelectorAll('.Grid__row').length).toBe(3);
+    });
+
+    test('render cell calls with correct values', () => {
+        const renderCell = jest.fn((rowIndex, columnIndex, cellData) => {
+            return (
+                <div></div>
+            )
+        });
+        render(
+            <Grid
+               gridData={testData}
+               renderCell={renderCell}
+            />
+        );
+        
+        expect(renderCell).nthCalledWith(1, 0, 0, testData[0][0]);
+        expect(renderCell).nthCalledWith(2, 0, 1, testData[0][1]);
+        expect(renderCell).nthCalledWith(3, 1, 0, testData[1][0]);
+        expect(renderCell).nthCalledWith(4, 1, 1, testData[1][1]);
+        expect(renderCell).nthCalledWith(5, 2, 0, testData[2][0]);
+        expect(renderCell).nthCalledWith(6, 2, 1, testData[2][1]);
+     
     });
 });

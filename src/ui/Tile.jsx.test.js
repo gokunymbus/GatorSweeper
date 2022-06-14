@@ -1,7 +1,14 @@
+/**
+ * @Copyright John Miller
+ * @Author John Miller
+ * @License MIT GatorSweeper 2022
+ * 
+ */
+
 import React from "react";
-import Tile from "./Tile";
+import Tile, {testID} from "./Tile";
 import { Difficulties, setFlagKey, selectTileKey } from "../library/Constants";
-import { render, cleanup, fireEvent } from "@testing-library/react";
+import { render, cleanup, fireEvent, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import '@testing-library/jest-dom'
 
@@ -21,28 +28,28 @@ describe('<Tile />', () => {
     });
 
     test('default render', () => {
-        const { container } = render(
+        render(
             <Tile
                {...defaultTileProps}
             />
         );
 
-        expect(container.querySelector('.Tile__covered')).toBeInTheDocument();
+        expect(screen.getByTestId(`${testID}-covered`)).toBeInTheDocument();
     });
 
     test('renders a flag', () => {
-        const { container } = render(
+        render(
             <Tile
                 row={0}
                 {...defaultTileProps}
                 isFlagged={true}
             />
         );
-        expect(container.querySelector('.Tile__covered__flag')).toBeInTheDocument();
+        expect(screen.getByTestId(`${testID}-covered-flag`)).toBeInTheDocument();
     });
 
     test('renders a mine when revealed and ismine', () => {
-        const { container } = render(
+        render(
             <Tile
                 {...defaultTileProps}
                 isMine={true}
@@ -50,11 +57,11 @@ describe('<Tile />', () => {
             />
         );
 
-        expect(container.querySelector('.Tile__revealed--mine')).toBeInTheDocument();
+        expect(screen.getByTestId(`${testID}-revealed-mine`)).toBeInTheDocument();
     });
 
     test('renders blank when revealed and ismine is false', () => {
-        const { container } = render(
+        render(
             <Tile
                 {...defaultTileProps}
                 isMine={false}
@@ -62,12 +69,12 @@ describe('<Tile />', () => {
             />
         );
 
-        expect(container.querySelector('.Tile__revealed--blank')).toBeInTheDocument();
+        expect(screen.getByTestId(`${testID}-revealed-blank`)).toBeInTheDocument();
     });
 
     test('renders proximities when revealed and provided', () => {
         const proximities = 5;
-        const { container, getByText } = render(
+        const { getByText } = render(
             <Tile
                 {...defaultTileProps}
                 isMine={false}
@@ -75,93 +82,102 @@ describe('<Tile />', () => {
                 proximities={proximities}
             />
         );
-        const proximityElement = container.querySelector('.Tile__revealed__proximityNumber');
-        expect(proximityElement).toBeInTheDocument();
+        expect(screen.getByTestId(`${testID}-proximity-number`)).toBeInTheDocument();
         expect(getByText(proximities)).toBeInTheDocument();
     });
 
     test('calls onTileSelected handler when clicked', async () => {
-        const user = userEvent.setup()
+        const user = userEvent.setup();
         const onTileSelected = jest.fn();
-        const { container } = render(
+        render(
             <Tile
                 {...defaultTileProps}
                 onTileSelected={onTileSelected}
             />
         );
 
-        await user.click(container.querySelector('.Tile'));
+        await user.click(screen.getByTestId(`${testID}`));
         expect(onTileSelected).toBeCalled();
     });
 
-    test('calls onTileRightClicked event handler when right clicked', async () => {
-        const user = userEvent.setup()
-        const onTileRightClicked = jest.fn();
-        const { container } = render(
+    test('calls onSetFlag event handler when right clicked', async () => {
+        const user = userEvent.setup();
+        const onSetFlag = jest.fn();
+        render(
             <Tile
                 {...defaultTileProps}
-                onTileRightClicked={onTileRightClicked}
+                onSetFlag={onSetFlag}
             />
         );
 
-        await user.pointer({keys: '[MouseRight]', target: container.querySelector('.Tile')});
-        expect(onTileRightClicked).toBeCalled();
+        await user.pointer({keys: '[MouseRight]', target: screen.getByTestId(`${testID}`)});
+        expect(onSetFlag).toBeCalled();
         
     });
 
-    test('calls onEnterKeyUp event handler when enter key pressed', async () => {
+    test('calls onTileSelected event handler when enter key pressed', async () => {
         const user = userEvent.setup();
-        const onEnterKeyUp = jest.fn();
-        const onTileRightClicked = jest.fn();
-        const { container } = render(
+        const onTileSelected = jest.fn();
+        render(
             <Tile
                 {...defaultTileProps}
-                onEnterKeyUp={onEnterKeyUp}
-                onTileRightClicked={onTileRightClicked}
+                onTileSelected={onTileSelected}
             />
         );
 
-        const tileElement = container.querySelector('.Tile');
+        const tileElement = screen.getByTestId(`${testID}`);
         tileElement.focus();
     
         await user.keyboard(`[${selectTileKey}]`);
-        expect(onEnterKeyUp).toBeCalled();
+        expect(onTileSelected).toBeCalled();
+    });
 
+    test('calls onSetFlag event handler when setFlagKey is pressed', async () => {
+        const user = userEvent.setup();
+        const onSetFlag = jest.fn();
+        render(
+            <Tile
+                {...defaultTileProps}
+                onSetFlag={onSetFlag}
+            />
+        );
+
+        const tileElement = screen.getByTestId(`${testID}`);
         tileElement.focus();
-
-        await user.keyboard(setFlagKey);
-        expect(onTileRightClicked).toBeCalled();
+    
+        await user.keyboard(`${setFlagKey}`);
+        expect(onSetFlag).toBeCalled();
     });
 
 
     test('calls onTileSelected event handler when tapped with finger', () => {
         const onTileSelected = jest.fn();
-        const { container } = render(
+        render(
             <Tile
                 {...defaultTileProps}
                 onTileSelected={onTileSelected}
             />
         );
 
-        fireEvent.touchStart(container.querySelector('.Tile'), {});
-        fireEvent.touchEnd(container.querySelector('.Tile'), {});
+        fireEvent.touchStart(screen.getByTestId(`${testID}`), {});
+        fireEvent.touchEnd(screen.getByTestId(`${testID}`), {});
         expect(onTileSelected).toBeCalled();
     });
 
-    test('calls onLongPress event handler when finger tap is held.', async () => {
-        const onLongPress = jest.fn();
-        const { container } = render(
+    test('calls onSetFlag event handler when finger tap is held.', async () => {
+        const onSetFlag = jest.fn();
+        render(
             <Tile
                 {...defaultTileProps}
-                onLongPress={onLongPress}
+                onSetFlag={onSetFlag}
             />
         );
 
-        fireEvent.touchStart(container.querySelector('.Tile'), {});
+        fireEvent.touchStart(screen.getByTestId(`${testID}`), {});
         await new Promise(resolve => setTimeout(resolve, 2000));
-        fireEvent.touchEnd(container.querySelector('.Tile'), {});
+        fireEvent.touchEnd(screen.getByTestId(`${testID}`), {});
 
-        expect(onLongPress).toBeCalled();
+        expect(onSetFlag).toBeCalled();
     });
 
 });

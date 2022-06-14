@@ -1,109 +1,94 @@
 import React from "react";
 import './Header.css';
-import { GameState } from "../library/Constants";
 import Language from "../languages/Language";
 
 export default class Header extends React.Component {
+    #language = Language();
+    #statusActiveClassName = "Header__statusText__status--animated";
+    #animationDelay = 100;
+    #statusRef = React.createRef();
+
     constructor(props) {
         super(props);
     }
 
-    language = Language();
-    actionRef = React.createRef();
-    timerRef = React.createRef();
-
-    componentDidMount() {
-        const {onMainIconSelected} = this.props;
-        this.actionRef.current.addEventListener('click', (e) => {
-            onMainIconSelected(e);
-            e.target.blur();
-        });
+    #onClickHandler = (e) => {
+        const { onReset } = this.props;
+        onReset();
+        e.target.blur();
     }
-    
-    render() {
-        const { flags, timer, gameState } = this.props;
 
-        const isGameRunning = gameState == GameState.RUNNING;
-        const isGameNew = gameState == GameState.NEW;
-        const isGameOver = gameState == GameState.ENDED;
-        const isGameWon = gameState == GameState.WON;
-
-        const gameOverClassName = isGameOver ? "Header__action--gameover": "";
-        const gameWonClassName = isGameWon ? "Header__action--gamewon": "";
-        const statusTextClassName = "Header__statusText__status--visible";
-
-        let extendedDescription = "";
-        switch (true) {
-            case isGameRunning:
-                extendedDescription = this.language.controlsAEDGameStateStarted;
-                break;
-            case isGameNew:
-                extendedDescription = this.language.controlsAEDGameStateNew;
-                break;
-            case isGameOver:
-                extendedDescription = this.language.controlsAEDGameStateFailed;
-                break;
-            case isGameWon:
-                extendedDescription = this.language.controlsAEDGameStateWinner;
-                break;
-
-            default:
-                break;
+    componentDidUpdate(prevProps) {
+        const { statusName } = this.props;
+        const { current } = this.#statusRef;
+        if (statusName != prevProps.statusName) {
+            current.classList.remove(this.#statusActiveClassName);
+            setTimeout(() => {
+                current.classList.add(this.#statusActiveClassName);
+            }, this.#animationDelay)
         }
+    }
+
+    render() {
+        const {
+            flags,
+            timer,
+            isGameWon,
+            isGameOver,
+            statusName,
+            statusAriaDescription
+        } = this.props;
+
+        const {
+            controlsNumberOfFlags,
+            controlsResetButton,
+            controlsSeconds
+        } = this.#language;
+
+        const gameStateClassName = isGameOver
+            ? "Header__action--gameover" : isGameWon
+                ? "Header__action--gamewon" : ""
 
         return (
-            <header className="Header" aria-label="This is a minesweeper clone">
+            <div className="Header">
                 <div
                     className="Header__flags"
-                    aria-label={this.language.controlsNumberOfFlags + " " + flags}
+                    aria-label={controlsNumberOfFlags + " " + flags}
                     tabIndex={0}
                 >
                     {flags}
                 </div>
                 <div className="Header__status">
                     <button
-                        className={`Header__action ${gameOverClassName} ${gameWonClassName}`}
-                        ref={this.actionRef}
-                        aria-label={this.language.controlsResetButton}
+                        className={`Header__action ${gameStateClassName}`}
+                        onClick={this.#onClickHandler}
+                        aria-label={controlsResetButton}
                         tabIndex={0}
-                    ></button>
-                    <div className="Header__statusText" aria-label={extendedDescription} aria-live="passive">
+                    />
+                    <div
+                        className="Header__statusText"
+                        aria-label={statusAriaDescription}
+                        aria-live="passive"
+                    >
                         <div
-                            className={`Header__statusText__status ${isGameRunning ? statusTextClassName : ""}`}
+                            className={`Header__statusText__status ${this.#statusActiveClassName}`}
                             aria-hidden="true"
+                            ref={this.#statusRef}
                         >
-                            {this.language.controlsGameStateStarted}
-                        </div>
-                        <div
-                            className={`Header__statusText__status ${isGameOver ? statusTextClassName : ""}`}
-                            aria-hidden="true"
-                        >
-                            {this.language.controlsGameStateFailed}
-                        </div>
-                        <div
-                            className={`Header__statusText__status ${isGameNew ? statusTextClassName : ""}`}
-                            aria-hidden="true"
-                        >
-                            {this.language.controlsGameStateNew}
-                        </div>
-                        <div
-                            className={`Header__statusText__status ${isGameWon ? statusTextClassName : ""}`}
-                            aria-hidden="true"
-                        >
-                            {this.language.controlsGameStateWinner}
+                            { statusName }
                         </div>
                     </div>
                 </div>
                 <div
                     className="Header__timer"
                     ref={this.timerRef}
-                    aria-label={timer + " " + this.language.controlsSeconds}
+                    aria-label={timer + " " + controlsSeconds}
                     role="timer"
                     tabIndex={0}
                 >
                     {timer}
                 </div>
-            </header>
+            </div>
         )
     }
 }

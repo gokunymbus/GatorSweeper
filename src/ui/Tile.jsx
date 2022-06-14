@@ -21,17 +21,22 @@ import { setFlagKey, selectTileKey } from "../library/Constants";
 import ReplaceStringTokens from "../utilities/ReplaceStringTokens";
 import timer from "../utilities/Timer";
 
+export const testID = "tile";
+
 export default class Tile extends React.Component {
+    // Private Properties
+    #tileRef = React.createRef();
+    #language = Language();
+    #timer = null;
+    #intervalsPassed = 0;
+    #timeUntilLongPress = 400;
+
     constructor(props) {
         super(props);
-        this._tileRef = React.createRef();
-        this._language = Language();
-        this._timer = null;
-        this._intervalsPassed = 0;
-        this._timeUntilLongPress = 400;
     }
 
-    getARIADescription() {
+    // Private Methods
+    #getARIADescription() {
         const {
             isRevealed,
             proximities,
@@ -44,7 +49,7 @@ export default class Tile extends React.Component {
             tileAEDHidden,
             tileAEDRevealedMine,
             tileAEDIsFlagged
-        } = this._language;
+        } = this.#language;
 
         if (isRevealed && isMine) {
             return tileAEDRevealedMine;
@@ -61,114 +66,131 @@ export default class Tile extends React.Component {
         return tileAEDHidden;
     }
 
-    onClickHandler = (e) => {
+    #onClickHandler = (e) => {
         const { onTileSelected } = this.props;
-        onTileSelected(e, { ...this.props });
+        onTileSelected({ ...this.props });
     }
 
-    onContextMenuHandler = (e) => {
-        const { onTileRightClicked } = this.props;
-        onTileRightClicked(e, { ...this.props });
+    #onContextMenuHandler = (e) => {
+        const { onSetFlag } = this.props;
+        onSetFlag({ ...this.props });
         e.preventDefault();
     }
 
-    onEnterKeyUp = (e) => {
-        const { onEnterKeyUp } = this.props;
-        onEnterKeyUp(e, { ...this.props });
-    }
-
-    onKeyUpHandler = (e) => {
+    #onKeyUpHandler = (e) => {
+        const { onSetFlag, onTileSelected } = this.props;
         if (e.key === selectTileKey) {
-            this.onEnterKeyUp(e);
+            onTileSelected({ ...this.props });
             return;
         }
 
         if (e.key === setFlagKey) {
-            this.onContextMenuHandler(e);
+            onSetFlag({ ...this.props });
             return;
         }
     }
 
-    onTouchStartHandler = (e) => {
+    #onTouchEndHandler = (e) => {
+        if (e.touches.length > 1) {
+            return;
+        }
+
+        const { onTileSelected, onSetFlag } = this.props;
+
+        if (this.#intervalsPassed === 0) {
+            onTileSelected({ ...this.props });
+        }
+
+        if (this.#intervalsPassed > 0) {
+            onSetFlag({ ...this.props });
+        }
+
+        this.#resetTimer();
+    }
+
+    #onTouchStartHandler = (e) => {
         if (e.touches.length > 1) {
             return;
         }
 
         this.timer = timer(intervalsPassed => {
-            this._intervalsPassed = intervalsPassed
-        }, this._timeUntilLongPress);
+            this.#intervalsPassed = intervalsPassed
+        }, this.#timeUntilLongPress);
     }
 
-    onTouchEndHandler = (e) => {
-        if (e.touches.length > 1) {
-            return;
-        }
-    
-        const { onTileSelected, onLongPress } = this.props;
-
-        if (this._intervalsPassed === 0) {
-            onTileSelected(e, { ...this.props });
-        }
-
-        if (this._intervalsPassed > 0) {
-            onLongPress(e, { ...this.props });
-        }
-
-        this.resetTimer();
-    }
-
-    resetTimer() {
-        if (this._timer) {
-            this._timer.stop();
-            this._timer = null;
-            this._intervalsPassed = 0;
-        }
-    }
-
-    renderMine() {
-        return (<div className="Tile__revealed Tile__revealed--mine"></div>)
-    }
-
-    renderProximity(proximities) {
+    #renderBlank() {
         return (
-            <div className="Tile__revealed Tile__revealed--proximity">
-                <div className="Tile__revealed__proximityNumber">{proximities}</div>
-            </div>
+            <div
+                className="Tile__revealed Tile__revealed--blank"
+                data-testid={`${testID}-revealed-blank`}
+            />
         )
     }
 
-    renderBlank() {
-        return (<div className="Tile__revealed Tile__revealed--blank"></div>)
-    }
-
-    renderFlag() {
-        return (<div className="Tile__covered__flag"></div>)
-    }
-
-    renderRevealed() {
-        const { proximities, isMine } = this.props;
-
-        if (isMine) {
-            return this.renderMine();
-        }
-
-        if (proximities > 0) {
-            return this.renderProximity(proximities);
-        }
-
-        return this.renderBlank();
-    }
-
-    renderCovered() {
+    #renderCovered() {
         const { isFlagged } = this.props;
         return (
-            <div className={ "Tile__covered" }>
-                { isFlagged && this.renderFlag() }
+            <div className={ "Tile__covered" } data-testid={`${testID}-covered`}>
+                { isFlagged && this.#renderFlag() }
                 <div className="Tile__covered__bg"></div>
             </div>
         );
     }
 
+    #renderFlag() {
+        return (
+            <div
+                className="Tile__covered__flag"
+                data-testid={`${testID}-covered-flag`}
+            />
+        )
+    }
+
+    #renderMine() {
+        return (
+            <div
+                className="Tile__revealed Tile__revealed--mine"
+                data-testid={`${testID}-revealed-mine`}
+            />
+        )
+    }
+
+    #renderProximity(proximities) {
+        return (
+            <div className="Tile__revealed Tile__revealed--proximity">
+                <div
+                    className="Tile__revealed__proximityNumber"
+                    data-testid={`${testID}-proximity-number`}
+                >
+                    {proximities}
+                </div>
+            </div>
+        )
+    }
+
+    #renderRevealed() {
+        const { proximities, isMine } = this.props;
+
+        if (isMine) {
+            return this.#renderMine();
+        }
+
+        if (proximities > 0) {
+            return this.#renderProximity(proximities);
+        }
+
+        return this.#renderBlank();
+    }
+
+    #resetTimer() {
+        if (this.#timer) {
+            this.#timer.stop();
+            this.#timer = null;
+            this.#intervalsPassed = 0;
+        }
+    }
+
+    // Public Methods
     render() {
         const {
             isRevealed,
@@ -179,27 +201,28 @@ export default class Tile extends React.Component {
         } = this.props;
 
         const difficultyClassName = "Tile--" + difficulty.description;
-        const aedTileDescription = this.getARIADescription() + " " + ReplaceStringTokens(
-            this._language.tileAED, [row, column]
+        const aedTileDescription = this.#getARIADescription() + " " + ReplaceStringTokens(
+            this.#language.tileAED, [row, column]
         );
 
         return (
             <div
                 className={ `Tile ${difficultyClassName}` }
-                ref={this._tileRef}
+                data-testid={`${testID}`}
+                ref={this.#tileRef}
                 aria-label={aedTileDescription}
-                onClick={this.onClickHandler}
-                onContextMenu={this.onContextMenuHandler}
-                onKeyUp={this.onKeyUpHandler}
-                onTouchStart={this.onTouchStartHandler}
-                onTouchEnd={this.onTouchEndHandler}
+                onClick={this.#onClickHandler}
+                onContextMenu={this.#onContextMenuHandler}
+                onKeyUp={this.#onKeyUpHandler}
+                onTouchStart={this.#onTouchStartHandler}
+                onTouchEnd={this.#onTouchEndHandler}
                 tabIndex={0}
                 {...htmlAttributes}
             >
                 {
                     isRevealed
-                        ? this.renderRevealed()
-                        : this.renderCovered()
+                        ? this.#renderRevealed()
+                        : this.#renderCovered()
                 }
             </div>
         )

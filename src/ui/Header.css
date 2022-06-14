@@ -86,12 +86,12 @@
 
 .Header__statusText__status {
     position: absolute;
-    transition: transform 0.3s ease-out, opacity 0.2s ease-out;
     transform: translateY(-100%);
     opacity: 0;
 }
 
-.Header__statusText__status--visible {
+.Header__statusText__status--animated {
+    transition: transform 0.3s ease-out, opacity 0.2s ease-out;
     transform: translateY(0);
     opacity: 1;
 }

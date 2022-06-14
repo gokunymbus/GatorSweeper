@@ -57,6 +57,7 @@ export class FocusGrid extends React.Component {
     }
 
     groupRef = React.createRef();
+    #initialState = true;
 
     onKeyUpHandler = (e) => {
         const {current} = this.groupRef;
@@ -135,6 +136,14 @@ export class FocusGrid extends React.Component {
         if (rowLength !== prevProps.rowLength || columnLength !== prevProps.columnLength) {
             this.restTabIndexes();
             this.setState({activeRow: 0, activeColumn: 0});
+            this.#initialState = true;
+            return;
+        }
+
+        // Prevents focus from being added
+        // when the focus grid is reset/changed.
+        if (this.#initialState) {
+            this.#initialState = false;
             return;
         }
 
@@ -163,7 +172,6 @@ export class FocusGrid extends React.Component {
             <div
                 className={`FocusGrid ${className || ""}`}
                 {...additionalProps}
-                onFocus={this.onFocusHandler}
                 ref={this.groupRef}
                 onKeyUp={this.onKeyUpHandler}
             >
