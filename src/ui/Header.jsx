@@ -2,6 +2,8 @@ import React from "react";
 import './Header.css';
 import Language from "../languages/Language";
 
+export const testID = "header";
+
 export default class Header extends React.Component {
     #language = Language();
     #statusActiveClassName = "Header__statusText__status--animated";
@@ -55,6 +57,7 @@ export default class Header extends React.Component {
                     className="Header__flags"
                     aria-label={controlsNumberOfFlags + " " + flags}
                     tabIndex={0}
+                    data-testid={`${testID}-flags`}
                 >
                     {flags}
                 </div>
@@ -64,6 +67,7 @@ export default class Header extends React.Component {
                         onClick={this.#onClickHandler}
                         aria-label={controlsResetButton}
                         tabIndex={0}
+                        data-testid={`${testID}-reset-button`}
                     />
                     <div
                         className="Header__statusText"
@@ -85,6 +89,7 @@ export default class Header extends React.Component {
                     aria-label={timer + " " + controlsSeconds}
                     role="timer"
                     tabIndex={0}
+                    data-testid={`${testID}-timer`}
                 >
                     {timer}
                 </div>

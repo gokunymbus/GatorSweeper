@@ -6,7 +6,7 @@
  */
 
 import React from "react";
-import Grid from "./Grid";
+import Grid, { testID } from "./Grid";
 
 import { render, cleanup, screen } from "@testing-library/react";
 import '@testing-library/jest-dom';
@@ -23,7 +23,7 @@ describe('<Grid />', () => {
     });
 
     test('properly renders 6 rows and columns of data', () => {
-        const { container } = render(
+        const { container, getAllByTestId } = render(
             <Grid
                gridData={testData}
                renderCell={(rowIndex, columnIndex, cellData) => {
@@ -37,8 +37,8 @@ describe('<Grid />', () => {
         );
 
         expect(screen.getAllByText('Row', {exact: false}).length).toBe(6);
-        expect(container.querySelectorAll('.Grid__column').length).toBe(6);
-        expect(container.querySelectorAll('.Grid__row').length).toBe(3);
+        expect(getAllByTestId(`${testID}-column`).length).toBe(6);
+        expect(getAllByTestId(`${testID}-row`).length).toBe(3);
     });
 
     test('render cell calls with correct values', () => {

@@ -11,6 +11,8 @@ import React from "react";
 // CSS
 import './Grid.css';
 
+export const testID = "grid";
+
 /**
  * A simple grid component
  */
@@ -27,6 +29,7 @@ export default class Grid extends React.Component {
         return (
             <div
                 className="Grid__column"
+                data-testid={`${testID}-column`}
                 key={columnIndex}
             >
                 {renderCell(rowIndex, columnIndex, column)}
@@ -39,6 +42,7 @@ export default class Grid extends React.Component {
             <div
                 className="Grid__row"
                 key={rowIndex}
+                data-testid={`${testID}-row`}
             >
                 {columns.map((column, columnIndex) =>
                     this.renderColumn(column, rowIndex, columnIndex)
