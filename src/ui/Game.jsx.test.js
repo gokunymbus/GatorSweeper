@@ -110,7 +110,7 @@ describe("<Game />", () => {
         await waitFor(() => {
             expect(getByTestId(`${headerTestID}-timer`).innerHTML).toBe("2");
         }, {
-            timeout: 2100,
+            timeout: 2600,
         });
 
         await user.click(getByTestId(`${headerTestID}-reset-button`));
