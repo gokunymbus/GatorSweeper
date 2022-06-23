@@ -18,7 +18,7 @@ import Language from "../languages/Language";
 import {setFlagKey, selectTileKey} from "../library/Constants";
 
 // Utilities
-import replaceStringTokens from "../utilities/replaceStringToken";
+import replaceStringTokens from "../utilities/replaceStringTokens";
 import timer from "../utilities/Timer";
 
 export const testID = "tile";

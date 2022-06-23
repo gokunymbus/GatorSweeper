@@ -4,7 +4,7 @@
  *
  * @example
  *  const string = "Yay i won {0} times and collected {1} money!"
- *  const newString = ReplaceStringToken(string, [500, '$400']);
+ *  const newString = replaceStringTokens(string, [500, '$400']);
  *
  *  console.log(newString); // "Yay i won 500 times";
  *
