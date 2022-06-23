@@ -3,5 +3,5 @@ export default {
     "primaryColor": "#519548",
     "secondaryColor": "#88C425",
     "tertiaryColor": "#BEF202",
-    "otherColor": "#1B676B"
+    "otherColor": "#1B676B",
 }
