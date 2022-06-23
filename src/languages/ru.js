@@ -21,5 +21,5 @@ export default {
     "tileAEDIsFlagged": "Flagged",
     "footerAEDEasy": "Set game to Easy mode.",
     "footerAEDHard": "Set Game to Hard mode, it's pretty hard.",
-    "footerAEDExtreme": "Set game to the most Extreme mode."
+    "footerAEDExtreme": "Set game to the most Extreme mode.",
 }
