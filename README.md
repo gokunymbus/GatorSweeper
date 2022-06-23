@@ -32,18 +32,18 @@ I decided to build my own version of minesweeper called GatorSweeper. I used Jav
 On previous projects i always used Jest for unit tests but i also frequently used Enzyme but due to many reasons including: it's no longer maitained, and encourages bad testing practies i have decided to move to using React Testing Library. RTL is a great project that is actively maintained and supports more stable testing practices.
 
 ## TODOS/Future work
-1. Linting should pass the build
-  1. Currently the project is not passing the Google style rules linting, working on that.
-2. Add a rest button when the game ends
-3. Add the ability to save the game state on the server and even import states. 
-4. See history of previous games.
-5. Add a how to play section.
-6. Create final translated strings for ARIA labeles
-  1. The primary strings on the game are translated but the aria versions are not.
-  2. Ideally i would use a translation library.
-7. Create a better Winning theme.
-  1. RIght now it just changes the image of the gator.
-  2. It should look more like a win with a new theme and maybe other special effects. 
+- Linting should pass the build
+  - Currently the project is not passing the Google style rules linting, working on that.
+- Add a rest button when the game ends
+- Add the ability to save the game state on the server and even import states. 
+- See history of previous games.
+- Add a how to play section.
+- Create final translated strings for ARIA labeles
+  - The primary strings on the game are translated but the aria versions are not.
+  - Ideally i would use a translation library.
+- Create a better Winning theme.
+  - RIght now it just changes the image of the gator.
+  - It should look more like a win with a new theme and maybe other special effects. 
 
 
 
