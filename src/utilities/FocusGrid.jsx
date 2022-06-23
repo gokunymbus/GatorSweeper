@@ -1,5 +1,5 @@
 import React from "react";
-import Clamp from "./Clamp";
+import clamp from "./clamp";
 
 /**
  * FocusGrid is a simple focus manager for grid like structures.
@@ -72,19 +72,19 @@ export class FocusGrid extends React.Component {
         switch (true) {
         case e.key == "ArrowUp":
             const up = activeRow - 1;
-            newFocus.activeRow = Clamp(up, 0, rowLength -1);
+            newFocus.activeRow = clamp(up, 0, rowLength -1);
             break;
         case e.key == "ArrowDown":
             const down = activeRow + 1;
-            newFocus.activeRow = Clamp(down, 0, rowLength -1);
+            newFocus.activeRow = clamp(down, 0, rowLength -1);
             break;
         case e.key == "ArrowLeft":
             const left = activeColumn - 1;
-            newFocus.activeColumn = Clamp(left, 0, columnLength - 1);
+            newFocus.activeColumn = clamp(left, 0, columnLength - 1);
             break;
         case e.key == "ArrowRight":
             const right = activeColumn + 1;
-            newFocus.activeColumn = Clamp(right, 0, columnLength - 1);
+            newFocus.activeColumn = clamp(right, 0, columnLength - 1);
             break;
         default:
             break;

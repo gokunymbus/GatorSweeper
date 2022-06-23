@@ -9,10 +9,10 @@
  *  const value = 987;
  *  const min = 5;
  *  const max = 40;
- *  const clampedValue = Clamp(value, min, max);
+ *  const clampedValue = clamp(value, min, max);
  *  console.log(clampedValue) // 40
  */
-export default function Clamp(value, min, max) {
+export default function clamp(value, min, max) {
     if (value < min) {
         return min;
     }
