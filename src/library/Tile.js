@@ -3,17 +3,17 @@ export function TileFactory(params) {
     const {
         min,
         max,
-        isMine =  RandomMinMax(min, max) == 1 ? true : false,
+        isMine = RandomMinMax(min, max) == 1 ? true : false,
         isRevealed = false,
         proximities = 0,
-        isFlagged = false
+        isFlagged = false,
     } = params;
 
     return {
         isMine,
         isRevealed,
         proximities,
-        isFlagged
+        isFlagged,
     }
 }
 
@@ -21,12 +21,12 @@ export function TileChangeFactory(params) {
     const {
         row,
         column,
-        tileParams
+        tileParams,
     } = params;
 
     return {
         ...TileFactory(tileParams),
         row,
-        column
+        column,
     }
 };

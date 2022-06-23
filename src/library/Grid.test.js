@@ -3,29 +3,29 @@ import {
     updateGridFromTarget,
     createGridWithProximites,
     getPerimeters,
-    rangeFactory
-} from './Grid';
+    rangeFactory,
+} from "./Grid";
 
 import {
     testData,
     testDataThreeRevealed,
     testDataTwo,
     testDataTwoRevealed,
-    processTargetsResult
-} from './Grid.testdata';
+    processTargetsResult,
+} from "./Grid.testdata";
 
 const perimeterLength = 3;
 const offset = Math.floor(perimeterLength / 2);
 
-describe('Grid', () => {
-    test('createGridWithProximites - properly creates grid with proximities', () => {
+describe("Grid", () => {
+    test("createGridWithProximites - properly creates grid with proximities", () => {
         const size = 100;
         const grid = createGridWithProximites({
             gridSize: size,
             randomMin: 1,
-            randomMax: 5
+            randomMax: 5,
         });
-        
+
         expect(grid).toBeDefined();
         expect(grid[size -1][size -1]).toBeDefined();
         expect(grid.length).toBe(size);
@@ -43,53 +43,53 @@ describe('Grid', () => {
         expect(proximitiesCount).toBeGreaterThan(0);
     });
 
-    test('processTarget - correctly finds all changes based on target', () => {
+    test("processTarget - correctly finds all changes based on target", () => {
         const targetColumn = 0;
         const targetRow = 0;
         const changes = processTarget({
             grid: testDataTwo,
             targetColumn,
-            targetRow
+            targetRow,
         });
         expect(changes.length).toBe(15);
         expect(changes).toEqual(processTargetsResult);
     });
 
-    test('updateGridFromTarget - returns the correct grid with updates applied', () => {
+    test("updateGridFromTarget - returns the correct grid with updates applied", () => {
         const newGrid = updateGridFromTarget({
             targetRowIndex: 0,
             targetColumnIndex: 0,
-            grid: testDataTwo
+            grid: testDataTwo,
         });
 
         expect(newGrid).toEqual(testDataTwoRevealed);
     });
 
-    test('updateGridFromTarget - updates a single tile when a tile is a prixmity or a meow', () => {
+    test("updateGridFromTarget - updates a single tile when a tile is a prixmity or a meow", () => {
         const newGrid = updateGridFromTarget({
             targetRowIndex: 0,
             targetColumnIndex: 3,
-            grid: testDataTwo
+            grid: testDataTwo,
         });
 
         expect(newGrid).toEqual(testDataThreeRevealed);
     });
 
-    test('updateGridFromTarget - new grid can be mutated without mutating original', () => {
+    test("updateGridFromTarget - new grid can be mutated without mutating original", () => {
         const newGrid = updateGridFromTarget({
             targetRowIndex: 0,
             targetColumnIndex: 0,
-            grid: testDataTwo
+            grid: testDataTwo,
         });
 
         newGrid[0][0].isMine = true;
         expect(testDataTwo[0][0].isMine).toBe(false);
     });
 
-    test('rangeFactory - returns correct ranges', () => {
+    test("rangeFactory - returns correct ranges", () => {
         const range = rangeFactory({
             targetRowIndex: 2,
-            targetColumnIndex: 1
+            targetColumnIndex: 1,
         });
 
         expect(range.begin.row).toBe(1);
@@ -102,50 +102,50 @@ describe('Grid', () => {
         expect(range.target.column).toBe(1);
     });
 
-    test('getPerimeters - expect to return all 8 perimeters', () => {
+    test("getPerimeters - expect to return all 8 perimeters", () => {
         const range = rangeFactory({
             targetRowIndex: 2,
-            targetColumnIndex: 1
+            targetColumnIndex: 1,
         });
         const perimeters = getPerimeters({
             range,
-            grid: testData
+            grid: testData,
         });
         expect(perimeters.length).toBe(8)
     });
 
-    test('getPerimeters - expect to return all 3 perimeters', () => {
+    test("getPerimeters - expect to return all 3 perimeters", () => {
         const range = rangeFactory({
             targetRowIndex: 0,
-            targetColumnIndex: 0
+            targetColumnIndex: 0,
         });
         const perimeters = getPerimeters({
             range,
-            grid: testData
+            grid: testData,
         });
         expect(perimeters.length).toBe(3)
     });
 
-    test('getPerimeters - expect the correct perimeters to be returned and target to be undefined', () => {
+    test("getPerimeters - expect the correct perimeters to be returned and target to be undefined", () => {
         const range = rangeFactory({
             targetRowIndex: 2,
-            targetColumnIndex: 1
+            targetColumnIndex: 1,
         });
 
         const {
             begin,
             end,
-            target
+            target,
         } = range;
 
         const perimeters = getPerimeters({
             range,
-            grid: testData
+            grid: testData,
         });
 
         const firstPerimeter = perimeters.find((tile) => tile.row == begin.row && tile.column == begin.column);
         const endPerimeter = perimeters.find((tile) => tile.row == end.row && tile.column == end.column);
-        const targetTile = perimeters.find(tile => tile.row == target.row && tile.column == target.column);
+        const targetTile = perimeters.find((tile) => tile.row == target.row && tile.column == target.column);
         expect(targetTile).toBeUndefined();
         expect(firstPerimeter).toBeDefined();
         expect(endPerimeter).toBeDefined();
