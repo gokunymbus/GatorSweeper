@@ -1,17 +1,17 @@
-const path = require('path');
+const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
-    mode: 'development',
-    entry: path.resolve(__dirname, 'src','index.js'),
+    mode: "development",
+    entry: path.resolve(__dirname, "src", "index.js"),
     watchOptions: {
       ignored: /node_modules/,
     },
     output: {
-      path: path.resolve(__dirname, 'dist'),
-      filename: 'meowsweeper.js'
+      path: path.resolve(__dirname, "dist"),
+      filename: "meowsweeper.js"
     },
-    devtool: 'inline-source-map',
+    devtool: "inline-source-map",
     module: {
       rules: [
         {
@@ -27,23 +27,23 @@ module.exports = {
         },
         {
           test: /\.(jsx|js)$/,
-          include: path.resolve(__dirname, 'src'),
+          include: path.resolve(__dirname, "src"),
           exclude: /node_modules/,
           use: [{
-            loader: 'babel-loader',
+            loader: "babel-loader",
             options: {
               presets: [
-                ['@babel/preset-env', {
+                ["@babel/preset-env", {
                   "targets": "defaults" 
                 }],
-                '@babel/preset-react'
+                "@babel/preset-react"
               ]
             }
           }]
         },
         {
           test: /\.(png|jpg|gif)$/i,
-          type: 'asset/source',
+          type: "asset/source",
         }
       ]
     },
@@ -56,11 +56,11 @@ module.exports = {
       }),
     ],
     resolve: {
-      extensions: ['', '.js', '.jsx', '.css'],
+      extensions: ["", ".js", ".jsx", ".css"],
     },
     devServer: {
       static: {
-        directory: path.join(__dirname, 'dist'),
+        directory: path.join(__dirname, "dist"),
       },
       compress: true,
       port: 9000,
