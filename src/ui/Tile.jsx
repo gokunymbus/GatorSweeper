@@ -18,7 +18,7 @@ import Language from "../languages/Language";
 import {setFlagKey, selectTileKey} from "../library/Constants";
 
 // Utilities
-import ReplaceStringTokens from "../utilities/ReplaceStringTokens";
+import replaceStringTokens from "../utilities/replaceStringTokens";
 import timer from "../utilities/Timer";
 
 export const testID = "tile";
@@ -56,7 +56,7 @@ export default class Tile extends React.Component {
         }
 
         if (isRevealed) {
-            return ReplaceStringTokens(tileAEDRevealed, [proximities])
+            return replaceStringTokens(tileAEDRevealed, [proximities])
         }
 
         if (isFlagged) {
@@ -201,7 +201,7 @@ export default class Tile extends React.Component {
         } = this.props;
 
         const difficultyClassName = "Tile--" + difficulty.description;
-        const aedTileDescription = this.#getARIADescription() + " " + ReplaceStringTokens(
+        const aedTileDescription = this.#getARIADescription() + " " + replaceStringTokens(
             this.#language.tileAED, [row, column],
         );
 

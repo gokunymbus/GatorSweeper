@@ -12,7 +12,7 @@
  * @param {array} arrayOfValues An array of each value to replace in the provided string.
  * @retuns A new string containg the values, and the original string if an error occurs.
  */
-export default function ReplaceStringTokens(string, arrayOfValues) {
+export default function replaceStringTokens(string, arrayOfValues) {
     if (!arrayOfValues || !arrayOfValues.length) {
         return string;
     }

@@ -35,7 +35,7 @@ import {
 // Utilities
 import {FocusGrid, FocusGridCellDataAttribute} from "../utilities/FocusGrid";
 import RandomMinMax from "../utilities/RandomMinMax";
-import ReplaceStringTokens from "../utilities/ReplaceStringTokens";
+import replaceStringTokens from "../utilities/replaceStringTokens";
 import timer from "../utilities/Timer";
 
 // Language
@@ -321,7 +321,7 @@ export default class Game extends React.Component {
                     <FocusGrid
                         rowLength={grid.length}
                         columnLength={grid[0].length}
-                        aria-label={ReplaceStringTokens(
+                        aria-label={replaceStringTokens(
                             this.#language.gridAED, [setFlagKey],
                         )}
                         tabIndex={0}
