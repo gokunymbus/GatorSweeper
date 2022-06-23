@@ -1,5 +1,5 @@
 import {TileFactory, TileChangeFactory} from "./Tile";
-import InRange from "../utilities/InRange";
+import inRange from "../utilities/inRange";
 
 /**
  * The entry point function for creating the grid, creates the grid and
@@ -131,8 +131,8 @@ export function getPerimeters(params) {
         return previousRow.concat(
             currentRow.reduce((previousColumn, currentColumn, currentColumnIndex) => {
                 const {begin, end, target} = range;
-                const rowInRange = InRange(begin.row, end.row, currentRowIndex);
-                const columnInRange = InRange(begin.column, end.column, currentColumnIndex);
+                const rowInRange = inRange(begin.row, end.row, currentRowIndex);
+                const columnInRange = inRange(begin.column, end.column, currentColumnIndex);
                 const isTarget = currentRowIndex == target.row && currentColumnIndex == target.column;
 
                 // indexs not in range
