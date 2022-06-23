@@ -108,7 +108,7 @@ describe("<Game />", () => {
         await user.click(getAllByTestId(tileTestID)[0]);
 
         await waitFor(() => {
-            expect(getByTestId(`${headerTestID}-timer`).innerHTML).toBe("2");
+            expect(getByTestId(`${headerTestID}-timer`).innerHTML).not.toBe("0");
         }, {
             timeout: 2600,
         });
