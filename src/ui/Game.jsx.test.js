@@ -9,7 +9,8 @@ import React from "react";
 import Game from "./Game";
 import { testID as tileTestID } from "./Tile";
 import { testID as headerTestID } from "./Header";
-import { Difficulties, DifficultySettings } from "../library/Constants";
+import { testID as diffButtonTestID } from './DifficultyButtons';
+import * as constants from "../library/Constants";
 import * as themes from '../themes/index';
 
 import { render, cleanup, screen, waitFor} from "@testing-library/react";
@@ -49,6 +50,27 @@ const testData = [
     ]
 ];
 
+const testSettings = {
+    [constants.Difficulties.EASY]: {
+        flags: 5,
+        minMines: 1,
+        maxMines: 100,
+        size: 2
+    },
+    [constants.Difficulties.HARD]: {
+        flags: 40,
+        minMines: 1,
+        maxMines: 7,
+        size: 20
+    },
+    [constants.Difficulties.EXTREME]: {
+        flags: 100,
+        minMines: 1,
+        maxMines: 4,
+        size: 30
+    }
+};
+
 jest.spyOn(GridAPI, 'createGridWithProximites').mockReturnValue(testData);
 
 describe('<Game />', () => {
@@ -57,8 +79,8 @@ describe('<Game />', () => {
     });
 
     const defaultProps = {
-        defaultDifficulty: Difficulties.EASY,
-        defaultDifficultySettings: DifficultySettings[Difficulties.EASY],
+        defaultDifficulty: constants.Difficulties.EASY,
+        difficultySettings: testSettings,
         defaultTheme: themes.main,
         gameOverTheme: themes.gameover,
         gameWonTheme: themes.won
@@ -136,7 +158,7 @@ describe('<Game />', () => {
             expect(getByTestId(`${headerTestID}-timer`).innerHTML).toBe("0");
             expect(container.querySelector('.Header__action--gameover')).toBeInTheDocument();
         }, {
-            timeout: 2100 // Long enough for timer to update twice still running.
+            timeout: 2100 // Long enough where the timer could be "2" but should be "0"
         });
 
         // It shouldn't uncover any more tiles. 
@@ -157,22 +179,57 @@ describe('<Game />', () => {
         await user.click(getAllByTestId(tileTestID)[0]);
         await user.click(getAllByTestId(tileTestID)[1]);
         await user.click(getAllByTestId(tileTestID)[2]);
+
+        await waitFor(() => {
+            expect(getAllByTestId(`${tileTestID}-proximity-number`).length).toBe(3);
+            expect(container.querySelector('.Header__action--gamewon')).toBeInTheDocument();
+        });
+
+        // It shouldn't uncover any more tiles. 
+        await user.click(getAllByTestId(tileTestID)[3]);
+        await waitFor(() => {
+            expect(getAllByTestId(`${tileTestID}-proximity-number`).length).toBe(3);
+        });
+    });
+
+    test('expect flags to update when tile is right clicked', async () => {
+        const user = userEvent.setup();
+        const { getAllByTestId, getByTestId, container, debug } = render(
+            <Game
+                {...defaultProps}
+            />
+        );
+
+        await user.pointer({keys: '[MouseRight]', target: getAllByTestId(tileTestID)[0]});
+        expect(getByTestId(`${headerTestID}-flags`).innerHTML)
+            .toBe(`${testSettings[constants.Difficulties.EASY].flags - 1}`);
         
-        debug()
+        // Expect it to reset when same tile is clicked again.
+        await user.pointer({keys: '[MouseRight]', target: getAllByTestId(tileTestID)[0]});
+        expect(getByTestId(`${headerTestID}-flags`).innerHTML)
+            .toBe(`${testSettings[constants.Difficulties.EASY].flags}`);
+    });
 
-        // await waitFor(() => {
-        //     expect(getAllByTestId(`${tileTestID}-proximity-number`).length).toBe(3);
-        //     expect(container.querySelector('.Header__action--gamewon')).toBeInTheDocument();
-        // }, {
-        //     timeout: 2100 // Long enough for timer to update twice still running.
-        // });
+    test('expect board to reset when new settings are updated', async () => {
+        const user = userEvent.setup();
+        const { getAllByTestId, getByTestId, container, debug } = render(
+            <Game
+                {...defaultProps}
+            />
+        );
+        
+        await user.click(getAllByTestId(tileTestID)[0]);
+        await user.click(getAllByTestId(tileTestID)[1]);
+        await user.click(getAllByTestId(tileTestID)[2]);
+        
+        await user.click(getByTestId(`${diffButtonTestID}-${constants.Difficulties.HARD.description}`));
 
-        // // It shouldn't uncover any more tiles. 
-        // await user.click(getAllByTestId(tileTestID)[3]);
-        // await waitFor(() => {
-        //     expect(getAllByTestId(`${tileTestID}-revealed-mine`).length).toBe(0);
-        // });
-
-
+        await waitFor(() => {
+            expect(getAllByTestId(`${tileTestID}-covered`).length).toBe(4);
+            expect(getByTestId(`${headerTestID}-flags`).innerHTML)
+            .toBe(`${testSettings[constants.Difficulties.HARD].flags}`);
+        }, {
+            timeout: 2100 // Long enough for timer to update twice still running.
+        });
     });
  });

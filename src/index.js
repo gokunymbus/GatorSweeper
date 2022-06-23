@@ -23,7 +23,7 @@ function init() {
     const difficulty = Difficulties.EASY;
     const element = <Game
         defaultDifficulty={difficulty}
-        defaultDifficultySettings={DifficultySettings[difficulty]}
+        difficultySettings={DifficultySettings}
         defaultTheme={themes.main}
         gameOverTheme={themes.gameover}
         gameWonTheme={themes.won}

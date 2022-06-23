@@ -19,7 +19,6 @@ import Tile from './Tile';
 
 // Library
 import {
-    DifficultySettings,
     Difficulties,
     GameState,
     setFlagKey
@@ -103,25 +102,25 @@ export default class Game extends React.Component {
     #getIntialGameState(defaultOverrides) {
         const {
             defaultDifficulty,
-            defaultDifficultySettings,
+            difficultySettings,
             defaultTheme
         } = this.props;
         const {
             difficulty = defaultDifficulty,
-            difficultySettings = defaultDifficultySettings,
+            activeSettings = difficultySettings[defaultDifficulty],
             theme = defaultTheme
         } = defaultOverrides;
     
         return {
             grid: createGridWithProximites({
-                gridSize: difficultySettings.size,
-                randomMin: difficultySettings.minMines,
-                randomMax: difficultySettings.maxMines
+                gridSize: activeSettings.size,
+                randomMin: activeSettings.minMines,
+                randomMax: activeSettings.maxMines
             }),
-            flags: difficultySettings.flags,
+            flags: activeSettings.flags,
             timer: 0,
             gameState: GameState.NEW,
-            difficultySettings,
+            activeSettings,
             difficulty,
             theme: theme
         }
@@ -142,24 +141,25 @@ export default class Game extends React.Component {
     };
 
     #onDifficultySelected(difficulty) {
+        const { difficultySettings } = this.props;
         this.#resetGame({
-            difficultySettings: DifficultySettings[difficulty],
+            activeSettings: difficultySettings[difficulty],
             difficulty
         });
     }
 
     #onReset = () => {
-        const { difficulty, difficultySettings } = this.state;
+        const { difficulty, activeSettings } = this.state;
         this.#resetGame({
             difficulty,
-            difficultySettings
+            activeSettings
         });
     };
 
     #selectTile(tileProps) {
         const { row, column, isMine, isFlagged } = tileProps;
-        const { grid, gameState, difficultySettings } = this.state;
-        const { size } = difficultySettings;
+        const { grid, gameState, activeSettings } = this.state;
+        const { size } = activeSettings;
         const minStateDelay = 300;
         const maxStateDelay = 1200;
 
@@ -258,7 +258,7 @@ export default class Game extends React.Component {
             flags,
             timer,
             gameState,
-            difficultySettings,
+            activeSettings,
             difficulty,
             theme
         } = this.state;
@@ -330,7 +330,7 @@ export default class Game extends React.Component {
                     >
                         <Grid
                             gridData={grid}
-                            gridSize={difficultySettings.size}
+                            gridSize={activeSettings.size}
                             renderCell={(rowIndex, columnIndex, data) => {
                                 return (
                                     <Tile

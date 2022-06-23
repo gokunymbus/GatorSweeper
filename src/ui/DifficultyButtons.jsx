@@ -8,6 +8,8 @@
 import React from "react";
 import './DifficultyButtons.css';
 
+export const testID = 'difficulty-button';
+
 export default class DifficultyButtons extends React.Component {
     constructor(props) {
         super(props);
@@ -39,6 +41,7 @@ export default class DifficultyButtons extends React.Component {
                 aria-label={ariaLabel}
                 key={index}
                 role="button"
+                data-testid={`${testID}-${difficulty.description}`}
             >
                 {string}
             </div>
