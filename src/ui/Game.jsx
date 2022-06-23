@@ -34,7 +34,7 @@ import {
 
 // Utilities
 import {FocusGrid, FocusGridCellDataAttribute} from "../utilities/FocusGrid";
-import RandomMinMax from "../utilities/RandomMinMax";
+import randomMinMax from "../utilities/randomMinMax";
 import replaceStringTokens from "../utilities/replaceStringTokens";
 import timer from "../utilities/Timer";
 
@@ -188,7 +188,7 @@ export default class Game extends React.Component {
 
                         return {grid: newGrid}
                     });
-                }, RandomMinMax(minStateDelay, maxStateDelay));
+                }, randomMinMax(minStateDelay, maxStateDelay));
                 this.#timeoutIDs = this.#timeoutIDs.concat(tid);
             });
         }

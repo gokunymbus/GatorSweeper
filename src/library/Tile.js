@@ -1,9 +1,9 @@
-import RandomMinMax from "../utilities/RandomMinMax";
+import randomMinMax from "../utilities/randomMinMax";
 export function TileFactory(params) {
     const {
         min,
         max,
-        isMine = RandomMinMax(min, max) == 1 ? true : false,
+        isMine = randomMinMax(min, max) == 1 ? true : false,
         isRevealed = false,
         proximities = 0,
         isFlagged = false,
