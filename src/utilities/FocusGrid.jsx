@@ -1,17 +1,17 @@
-import React from 'react';
-import Clamp from './Clamp';
+import React from "react";
+import Clamp from "./Clamp";
 
 /**
  * FocusGrid is a simple focus manager for grid like structures.
  * It must be used with the FocusGridCellDataAtrribute function
- * to allow cells to be focusable. It by no means is a full 
- * featured focus manager. 
- * 
- * @todo Other versions will likley come 
+ * to allow cells to be focusable. It by no means is a full
+ * featured focus manager.
+ *
+ * @todo Other versions will likley come
  * with more focus support. Ideally this component would
  * calculate each cells direction position without relying
- * on a rigid rows and columns value. 
- * 
+ * on a rigid rows and columns value.
+ *
  * @example
  * <FocusGrid
  *      rowLength={10}
@@ -49,10 +49,10 @@ import Clamp from './Clamp';
 export class FocusGrid extends React.Component {
     constructor(props) {
         super(props);
-        
+
         this.state = {
             activeRow: 0,
-            activeColumn: 0
+            activeColumn: 0,
         }
     }
 
@@ -64,35 +64,35 @@ export class FocusGrid extends React.Component {
         if (e.target == current) {
             return;
         }
-    
+
         const {activeRow, activeColumn} = this.state;
         const {rowLength, columnLength} = this.props;
-        
-        let newFocus = {activeRow, activeColumn};
-        switch(true) {
-            case e.key == "ArrowUp":
-                const up =  activeRow - 1;
-                newFocus.activeRow = Clamp(up, 0, rowLength -1);
-                break;
-            case e.key == "ArrowDown":
-                const down =  activeRow + 1;
-                newFocus.activeRow = Clamp(down, 0, rowLength -1);
-                break;
-            case e.key == "ArrowLeft":
-                const left =  activeColumn - 1;
-                newFocus.activeColumn = Clamp(left, 0, columnLength - 1);
-                break;
-            case e.key == "ArrowRight":
-                const right =  activeColumn + 1;
-                newFocus.activeColumn = Clamp(right, 0, columnLength - 1);
-                break;
-            default:
-                break;
+
+        const newFocus = {activeRow, activeColumn};
+        switch (true) {
+        case e.key == "ArrowUp":
+            const up = activeRow - 1;
+            newFocus.activeRow = Clamp(up, 0, rowLength -1);
+            break;
+        case e.key == "ArrowDown":
+            const down = activeRow + 1;
+            newFocus.activeRow = Clamp(down, 0, rowLength -1);
+            break;
+        case e.key == "ArrowLeft":
+            const left = activeColumn - 1;
+            newFocus.activeColumn = Clamp(left, 0, columnLength - 1);
+            break;
+        case e.key == "ArrowRight":
+            const right = activeColumn + 1;
+            newFocus.activeColumn = Clamp(right, 0, columnLength - 1);
+            break;
+        default:
+            break;
         }
 
         this.setState({
             activeRow: newFocus.activeRow,
-            activeColumn: newFocus.activeColumn
+            activeColumn: newFocus.activeColumn,
         });
     }
 
@@ -107,10 +107,10 @@ export class FocusGrid extends React.Component {
 
         focusableElements.forEach((element, index) => {
             if (index == 0) {
-                element.setAttribute('tabindex', 0);
+                element.setAttribute("tabindex", 0);
                 return;
             }
-            element.setAttribute('tabindex', -1)
+            element.setAttribute("tabindex", -1)
         });
     }
 
@@ -120,10 +120,10 @@ export class FocusGrid extends React.Component {
 
     setTabIndex(element, rowIndex, columnIndex, newFocus, setFocus = false) {
         const foundElement = element.querySelector(
-            FocusGridCellKeySelector(rowIndex, columnIndex)
+            FocusGridCellKeySelector(rowIndex, columnIndex),
         );
 
-        foundElement.setAttribute('tabindex', newFocus);
+        foundElement.setAttribute("tabindex", newFocus);
         if (setFocus) {
             foundElement.focus();
         }
@@ -132,7 +132,7 @@ export class FocusGrid extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         // If the grid has changed size at all, reset
         // all focus attributes and state;
-        const { rowLength, columnLength } = this.props;
+        const {rowLength, columnLength} = this.props;
         if (rowLength !== prevProps.rowLength || columnLength !== prevProps.columnLength) {
             this.restTabIndexes();
             this.setState({activeRow: 0, activeColumn: 0});
@@ -149,7 +149,7 @@ export class FocusGrid extends React.Component {
 
         // If the active row/column is the same, do nothing
         // and return;
-        const { activeRow, activeColumn } = this.state;
+        const {activeRow, activeColumn} = this.state;
         if (prevState.activeRow == activeRow && prevState.activeColumn == activeColumn) {
             return;
         }
@@ -188,7 +188,7 @@ const focusGridPositionKeyName = "data-focusgridposition";
  * Provides and key value object that can be
  * added to an HTML element to designate it as
  * focusable element in FocusGrid.
- * 
+ *
  * @example
  * <div
  *  className="GridCell"
@@ -196,22 +196,22 @@ const focusGridPositionKeyName = "data-focusgridposition";
  *  >
  *  <p> Cell content </p>
  * </div>
- * 
+ *
  * @param {*} rowIndex
  * @param {*} columnIndex
- * @returns {object} {[keyname]: value}
+ * @return {object} {[keyname]: value}
  */
 export function FocusGridCellDataAttribute(rowIndex, columnIndex) {
-    return { [focusGridPositionKeyName]: `${rowIndex}-${columnIndex}` };
+    return {[focusGridPositionKeyName]: `${rowIndex}-${columnIndex}`};
 }
 
 /**
- * Provides a CSS selector string based on 
+ * Provides a CSS selector string based on
  * a row and column index.
- * 
- * @param {*} rowIndex 
- * @param {*} columnIndex 
- * @returns {CSSSe}
+ *
+ * @param {*} rowIndex
+ * @param {*} columnIndex
+ * @return {CSSSe}
  */
 function FocusGridCellKeySelector(rowIndex, columnIndex) {
     const keyValue = FocusGridCellDataAttribute(rowIndex, columnIndex);

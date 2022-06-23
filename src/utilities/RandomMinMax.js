@@ -1,3 +1,3 @@
-export default function RandomMinMax(min, max) { // min and max included 
+export default function RandomMinMax(min, max) { // min and max included
     return Math.floor(Math.random() * (max - min + 1) + min)
 }

@@ -1,5 +1,5 @@
-describe('FocusGroup', () => {
-    test('test', () => {
+describe("FocusGroup", () => {
+    test("test", () => {
         expect(true);
     });
 });

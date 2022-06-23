@@ -1,23 +1,23 @@
-import React from 'react';
-import {createRoot} from 'react-dom/client';
+import React from "react";
+import {createRoot} from "react-dom/client";
 
-import Game from './ui/Game';
+import Game from "./ui/Game";
 
 // Themes
-import themes from './themes/index.js'
+import themes from "./themes/index.js"
 
 // Import cs Variables
-import './ui/Variables.css';
-import './index.css';
+import "./ui/Variables.css";
+import "./index.css";
 
 import {
     DifficultySettings,
-    Difficulties
-} from './library/Constants';
+    Difficulties,
+} from "./library/Constants";
 
 function init() {
     const root = createRoot(
-        document.getElementById('app-container')
+        document.getElementById("app-container"),
     );
 
     const difficulty = Difficulties.EASY;
