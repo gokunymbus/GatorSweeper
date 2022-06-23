@@ -19,7 +19,7 @@ import {setFlagKey, selectTileKey} from "../library/Constants";
 
 // Utilities
 import replaceStringTokens from "../utilities/replaceStringTokens";
-import timer from "../utilities/Timer";
+import timer from "../utilities/timer";
 
 export const testID = "tile";
 

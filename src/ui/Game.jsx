@@ -36,7 +36,7 @@ import {
 import {FocusGrid, FocusGridCellDataAttribute} from "../utilities/FocusGrid";
 import randomMinMax from "../utilities/randomMinMax";
 import replaceStringTokens from "../utilities/replaceStringTokens";
-import timer from "../utilities/Timer";
+import timer from "../utilities/timer";
 
 // Language
 import Language from "../languages/Language";
