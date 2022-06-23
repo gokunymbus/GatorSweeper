@@ -5,7 +5,7 @@
     },
     "extends": [
         "plugin:react/recommended",
-        "standard"
+        "google"
     ],
     "parserOptions": {
         "ecmaFeatures": {
@@ -21,6 +21,7 @@
         "semi": 0,
         "quotes": [2, "double"],
         "indent": [2, 4],
-        "space-before-function-paren": 0
+        "space-before-function-paren": 0,
+        "linebreak-style": [2, "windows"]
     }
 }
