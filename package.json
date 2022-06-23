@@ -6,10 +6,8 @@
   "scripts": {
     "build": "webpack build --mode development",
     "buildprod": "webpack",
-    "watch": "webpack watch --mode development",
     "devserver": "webpack serve",
     "test": "node ./node_modules/jest/bin/jest",
-    "measure": "node ./node_modules/jest-measure/bin/index",
     "lint": "eslint . --ext .js --ext .jsx "
   },
   "author": "John Miller (Gokunymbus)",
