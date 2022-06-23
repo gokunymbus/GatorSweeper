@@ -1,6 +1,6 @@
 {
   "name": "gokunumbus-meowsweeper",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "description": "A game based on Minesweeper with my own twists",
   "main": "./src/index.js",
   "scripts": {
