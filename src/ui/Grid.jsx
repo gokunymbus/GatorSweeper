@@ -2,14 +2,14 @@
  * @Copyright John Miller
  * @Author John Miller
  * @License MIT GatorSweeper 2022
- * 
+ *
  */
 
 // React
 import React from "react";
 
 // CSS
-import './Grid.css';
+import "./Grid.css";
 
 export const testID = "grid";
 
@@ -23,7 +23,7 @@ export default class Grid extends React.Component {
 
     renderColumn(column, rowIndex, columnIndex) {
         const {
-            renderCell
+            renderCell,
         } = this.props;
 
         return (
@@ -45,18 +45,18 @@ export default class Grid extends React.Component {
                 data-testid={`${testID}-row`}
             >
                 {columns.map((column, columnIndex) =>
-                    this.renderColumn(column, rowIndex, columnIndex)
+                    this.renderColumn(column, rowIndex, columnIndex),
                 )}
             </div>
         )
     }
 
     render() {
-        const { gridData } = this.props;
+        const {gridData} = this.props;
         return (
             <div className="Grid">
                 {gridData.map((row, rowIndex) =>
-                    this.renderRow(row, rowIndex)
+                    this.renderRow(row, rowIndex),
                 )}
             </div>
         );

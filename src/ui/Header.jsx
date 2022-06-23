@@ -1,5 +1,5 @@
 import React from "react";
-import './Header.css';
+import "./Header.css";
 import Language from "../languages/Language";
 
 export const testID = "header";
@@ -15,14 +15,14 @@ export default class Header extends React.Component {
     }
 
     #onClickHandler = (e) => {
-        const { onReset } = this.props;
+        const {onReset} = this.props;
         onReset();
         e.target.blur();
     }
 
     componentDidUpdate(prevProps) {
-        const { statusName } = this.props;
-        const { current } = this.#statusRef;
+        const {statusName} = this.props;
+        const {current} = this.#statusRef;
         if (statusName != prevProps.statusName) {
             current.classList.remove(this.#statusActiveClassName);
             setTimeout(() => {
@@ -38,18 +38,18 @@ export default class Header extends React.Component {
             isGameWon,
             isGameOver,
             statusName,
-            statusAriaDescription
+            statusAriaDescription,
         } = this.props;
 
         const {
             controlsNumberOfFlags,
             controlsResetButton,
-            controlsSeconds
+            controlsSeconds,
         } = this.#language;
 
-        const gameStateClassName = isGameOver
-            ? "Header__action--gameover" : isGameWon
-                ? "Header__action--gamewon" : ""
+        const gameStateClassName = isGameOver ?
+            "Header__action--gameover" : isGameWon ?
+                "Header__action--gamewon" : ""
 
         return (
             <div className="Header">
@@ -97,4 +97,3 @@ export default class Header extends React.Component {
         )
     }
 }
-    

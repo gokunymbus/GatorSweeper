@@ -2,41 +2,41 @@
  * @Copyright John Miller
  * @Author John Miller
  * @License MIT GatorSweeper 2022
- * 
+ *
  */
 
 // React
-import React from 'react';
+import React from "react";
 
 // Styles
-import './Game.css';
+import "./Game.css";
 
 // Components
-import DifficultyButtons from './DifficultyButtons';
-import Grid from './Grid';
-import Header from './Header';
-import Tile from './Tile';
+import DifficultyButtons from "./DifficultyButtons";
+import Grid from "./Grid";
+import Header from "./Header";
+import Tile from "./Tile";
 
 // Library
 import {
     Difficulties,
     GameState,
-    setFlagKey
-} from '../library/Constants';
+    setFlagKey,
+} from "../library/Constants";
 import {
     createGridWithProximites,
     numberOfMines,
     numberOfRevealedTiles,
     reduceMines,
     updateGridFromTarget,
-    updateTargetTile
-} from '../library/Grid';
+    updateTargetTile,
+} from "../library/Grid";
 
 // Utilities
 import {FocusGrid, FocusGridCellDataAttribute} from "../utilities/FocusGrid";
-import RandomMinMax from '../utilities/RandomMinMax';
+import RandomMinMax from "../utilities/RandomMinMax";
 import ReplaceStringTokens from "../utilities/ReplaceStringTokens";
-import timer from '../utilities/Timer';
+import timer from "../utilities/Timer";
 
 // Language
 import Language from "../languages/Language";
@@ -52,8 +52,8 @@ export default class Game extends React.Component {
     }
 
     #addFlag(tileProps) {
-        const { row, column } = tileProps;
-        const { grid, flags } = this.state;
+        const {row, column} = tileProps;
+        const {grid, flags} = this.state;
         const tile = grid[row][column];
 
         // If there are no flags left or
@@ -70,12 +70,12 @@ export default class Game extends React.Component {
             grid,
             tileParams: {
                 isFlagged,
-            }
+            },
         });
 
         this.setState({
             grid: newGrid,
-            flags: isFlagged ?  flags - 1 : flags + 1
+            flags: isFlagged ? flags - 1 : flags + 1,
         });
     }
 
@@ -103,32 +103,32 @@ export default class Game extends React.Component {
         const {
             defaultDifficulty,
             difficultySettings,
-            defaultTheme
+            defaultTheme,
         } = this.props;
         const {
             difficulty = defaultDifficulty,
             activeSettings = difficultySettings[defaultDifficulty],
-            theme = defaultTheme
+            theme = defaultTheme,
         } = defaultOverrides;
-    
+
         return {
             grid: createGridWithProximites({
                 gridSize: activeSettings.size,
                 randomMin: activeSettings.minMines,
-                randomMax: activeSettings.maxMines
+                randomMax: activeSettings.maxMines,
             }),
             flags: activeSettings.flags,
             timer: 0,
             gameState: GameState.NEW,
             activeSettings,
             difficulty,
-            theme: theme
+            theme: theme,
         }
     }
 
     #onTimerUpdate = (seconds) => {
         this.setState({
-            timer: seconds
+            timer: seconds,
         });
     };
 
@@ -141,38 +141,38 @@ export default class Game extends React.Component {
     };
 
     #onDifficultySelected(difficulty) {
-        const { difficultySettings } = this.props;
+        const {difficultySettings} = this.props;
         this.#resetGame({
             activeSettings: difficultySettings[difficulty],
-            difficulty
+            difficulty,
         });
     }
 
     #onReset = () => {
-        const { difficulty, activeSettings } = this.state;
+        const {difficulty, activeSettings} = this.state;
         this.#resetGame({
             difficulty,
-            activeSettings
+            activeSettings,
         });
     };
 
     #selectTile(tileProps) {
-        const { row, column, isMine, isFlagged } = tileProps;
-        const { grid, gameState, activeSettings } = this.state;
-        const { size } = activeSettings;
+        const {row, column, isMine, isFlagged} = tileProps;
+        const {grid, gameState, activeSettings} = this.state;
+        const {size} = activeSettings;
         const minStateDelay = 300;
         const maxStateDelay = 1200;
 
-        if (gameState == GameState.ENDED
-            || gameState == GameState.WON
-            || isFlagged) {
+        if (gameState == GameState.ENDED ||
+            gameState == GameState.WON ||
+            isFlagged) {
             return;
         }
 
         if (isMine) {
             // This is to "stagger" updating
-            // each mine so they appear to 
-            // show up at different times. 
+            // each mine so they appear to
+            // show up at different times.
             const mines = reduceMines(grid);
             mines.forEach((mine) => {
                 const tid = setTimeout(() => {
@@ -182,10 +182,10 @@ export default class Game extends React.Component {
                             targetColumn: mine.column,
                             grid: previousState.grid,
                             tileParams: {
-                                isRevealed: true
-                            }
+                                isRevealed: true,
+                            },
                         });
-    
+
                         return {grid: newGrid}
                     });
                 }, RandomMinMax(minStateDelay, maxStateDelay));
@@ -196,7 +196,7 @@ export default class Game extends React.Component {
         const newGrid = updateGridFromTarget({
             targetRowIndex: row,
             targetColumnIndex: column,
-            grid
+            grid,
         });
 
         const totalMines = numberOfMines(newGrid);
@@ -205,23 +205,23 @@ export default class Game extends React.Component {
 
         let newGameState;
         switch (true) {
-            case isMine:
-                newGameState = GameState.ENDED;
-                break;
-            case remainingTiles == totalMines:
-                newGameState = GameState.WON;
-                break;
-            default:
-                newGameState = GameState.RUNNING;
-                break;
+        case isMine:
+            newGameState = GameState.ENDED;
+            break;
+        case remainingTiles == totalMines:
+            newGameState = GameState.WON;
+            break;
+        default:
+            newGameState = GameState.RUNNING;
+            break;
         }
 
-        const { gameOverTheme } = this.props;
-        
+        const {gameOverTheme} = this.props;
+
         this.setState({
             grid: newGrid,
             gameState: newGameState,
-            ...(newGameState == GameState.ENDED && { theme: gameOverTheme })
+            ...(newGameState == GameState.ENDED && {theme: gameOverTheme}),
         });
     }
 
@@ -232,16 +232,16 @@ export default class Game extends React.Component {
     }
 
     componentDidUpdate(previousProps, previousState) {
-        const { gameState } = this.state;
-        if (gameState == GameState.RUNNING
-            && previousState.gameState == GameState.NEW) {
-           this.#createTimer();
+        const {gameState} = this.state;
+        if (gameState == GameState.RUNNING &&
+            previousState.gameState == GameState.NEW) {
+            this.#createTimer();
         }
 
         if (
-            previousState.gameState == GameState.RUNNING
-            && gameState == GameState.ENDED
-            || gameState == GameState.WON
+            previousState.gameState == GameState.RUNNING &&
+            gameState == GameState.ENDED ||
+            gameState == GameState.WON
         ) {
             this.#clearTimer();
         }
@@ -260,53 +260,53 @@ export default class Game extends React.Component {
             gameState,
             activeSettings,
             difficulty,
-            theme
+            theme,
         } = this.state;
 
-        const buttons =  [
+        const buttons = [
             {
                 difficulty: Difficulties.EASY,
                 ariaLabel: this.#language.footerAEDEasy,
                 string: this.#language.modesEasy,
-                isActive: difficulty === Difficulties.EASY
+                isActive: difficulty === Difficulties.EASY,
             },
             {
                 difficulty: Difficulties.HARD,
                 ariaLabel: this.#language.footerAEDHard,
                 string: this.#language.modesHard,
-                isActive: difficulty === Difficulties.HARD
+                isActive: difficulty === Difficulties.HARD,
             },
             {
                 difficulty: Difficulties.EXTREME,
                 ariaLabel: this.#language.footerAEDExtreme,
                 string: this.#language.modesExtreme,
-                isActive: difficulty === Difficulties.EXTREME
-            }
+                isActive: difficulty === Difficulties.EXTREME,
+            },
         ];
 
         const headerStates = {
             [GameState.RUNNING]: {
                 statusName: this.#language.controlsGameStateStarted,
-                ariaDescription: this.#language.controlsAEDGameStateStarted
+                ariaDescription: this.#language.controlsAEDGameStateStarted,
             },
             [GameState.NEW]: {
                 statusName: this.#language.controlsGameStateNew,
-                ariaDescription: this.#language.controlsAEDGameStateNew
+                ariaDescription: this.#language.controlsAEDGameStateNew,
             },
             [GameState.ENDED]: {
                 statusName: this.#language.controlsGameStateFailed,
-                ariaDescription: this.#language.controlsAEDGameStateFailed
+                ariaDescription: this.#language.controlsAEDGameStateFailed,
             },
             [GameState.WON]: {
                 statusName: this.#language.controlsGameStateWinner,
-                ariaDescription: this.#language.controlsAEDGameStateWinner
-            }
+                ariaDescription: this.#language.controlsAEDGameStateWinner,
+            },
         };
 
         return (
             <main
                 className="Game"
-                style={theme} 
+                style={theme}
             >
                 <div className="Game__container">
                     <Header
@@ -322,7 +322,7 @@ export default class Game extends React.Component {
                         rowLength={grid.length}
                         columnLength={grid[0].length}
                         aria-label={ReplaceStringTokens(
-                            this.#language.gridAED, [setFlagKey]
+                            this.#language.gridAED, [setFlagKey],
                         )}
                         tabIndex={0}
                         role="application"
@@ -341,7 +341,7 @@ export default class Game extends React.Component {
                                         onSetFlag={this.#onSetFlag}
                                         difficulty={difficulty}
                                         htmlAttributes={{
-                                            ...FocusGridCellDataAttribute(rowIndex, columnIndex)
+                                            ...FocusGridCellDataAttribute(rowIndex, columnIndex),
                                         }}
                                     />
                                 )
@@ -356,5 +356,4 @@ export default class Game extends React.Component {
             </main>
         );
     }
-
 }

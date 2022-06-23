@@ -2,47 +2,47 @@
  * @Copyright John Miller
  * @Author John Miller
  * @License MIT GatorSweeper 2022
- * 
+ *
  */
 
- import React from "react";
- import DifficultyButtons from "./DifficultyButtons";
- import { Difficulties } from "../library/Constants";
- 
- import { render, cleanup, screen } from "@testing-library/react";
- import userEvent from "@testing-library/user-event";
- import '@testing-library/jest-dom';
+import React from "react";
+import DifficultyButtons from "./DifficultyButtons";
+import {Difficulties} from "../library/Constants";
 
- const testData = [
+import {render, cleanup, screen} from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import "@testing-library/jest-dom";
+
+const testData = [
     {
         string: "Test1",
         difficulty: Difficulties.EASY,
         ariaLabel: "TestARIA1",
-        isActive: false
+        isActive: false,
     },
     {
         string: "Test2",
         difficulty: Difficulties.HARD,
         ariaLabel: "TestARIA2",
-        isActive: true
+        isActive: true,
     },
     {
         string: "Test3",
         difficulty: Difficulties.EXTREME,
         ariaLabel: "TestARIA3",
-        isActive: false
-    }
+        isActive: false,
+    },
 ];
 
 const buttonClassName = "DifficultyButtons__button";
 const buttonClassNameSelector = "." + buttonClassName;
 
-describe('<DifficultyButtons />', () => {
+describe("<DifficultyButtons />", () => {
     afterEach(() => {
         cleanup();
     });
 
-    test('render the appropriate buttons provided', () => {
+    test("render the appropriate buttons provided", () => {
         render(<DifficultyButtons
             buttons={testData}
             onButtonSelected={() => {}}
@@ -54,10 +54,10 @@ describe('<DifficultyButtons />', () => {
     });
 
 
-    test('onButtonSelected is called when clicked and with difficulty level', async () => {
+    test("onButtonSelected is called when clicked and with difficulty level", async () => {
         const user = userEvent.setup()
         const onButtonSelected = jest.fn();
-        const { container } = render(<DifficultyButtons
+        const {container} = render(<DifficultyButtons
             buttons={testData}
             onButtonSelected={onButtonSelected}
         />);
@@ -73,10 +73,10 @@ describe('<DifficultyButtons />', () => {
         expect(onButtonSelected).toBeCalledWith(Difficulties.EXTREME);
     });
 
-    test('onButtonSelected is called when enter key is pressed', async () => {
+    test("onButtonSelected is called when enter key is pressed", async () => {
         const user = userEvent.setup()
         const onButtonSelected = jest.fn();
-        const { container } = render(<DifficultyButtons
+        const {container} = render(<DifficultyButtons
             buttons={testData}
             onButtonSelected={onButtonSelected}
         />);
@@ -95,8 +95,8 @@ describe('<DifficultyButtons />', () => {
         expect(onButtonSelected).toBeCalledWith(Difficulties.EXTREME);
     });
 
-    test('sets active button correctly', () => {
-        const { container, rerender } = render(<DifficultyButtons
+    test("sets active button correctly", () => {
+        const {container, rerender} = render(<DifficultyButtons
             buttons={testData}
             onButtonSelected={() => {}}
             activeDifficulty={Difficulties.HARD}
@@ -112,20 +112,20 @@ describe('<DifficultyButtons />', () => {
                 string: "Test1",
                 difficulty: Difficulties.EASY,
                 ariaLabel: "TestARIA1",
-                isActive: false
+                isActive: false,
             },
             {
                 string: "Test2",
                 difficulty: Difficulties.HARD,
                 ariaLabel: "TestARIA2",
-                isActive: false
+                isActive: false,
             },
             {
                 string: "Test3",
                 difficulty: Difficulties.EXTREME,
                 ariaLabel: "TestARIA3",
-                isActive: true
-            }
+                isActive: true,
+            },
         ];
 
         rerender(<DifficultyButtons

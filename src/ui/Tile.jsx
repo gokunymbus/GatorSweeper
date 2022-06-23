@@ -2,20 +2,20 @@
  * @Copyright John Miller
  * @Author John Miller
  * @License MIT GatorSweeper 2022
- * 
+ *
  */
 
 // React
 import React from "react";
 
-//CSS
+// CSS
 import "./Tile.css";
 
 // Language
 import Language from "../languages/Language";
 
 // Library
-import { setFlagKey, selectTileKey } from "../library/Constants";
+import {setFlagKey, selectTileKey} from "../library/Constants";
 
 // Utilities
 import ReplaceStringTokens from "../utilities/ReplaceStringTokens";
@@ -41,14 +41,14 @@ export default class Tile extends React.Component {
             isRevealed,
             proximities,
             isMine,
-            isFlagged
+            isFlagged,
         } = this.props
 
         const {
             tileAEDRevealed,
             tileAEDHidden,
             tileAEDRevealedMine,
-            tileAEDIsFlagged
+            tileAEDIsFlagged,
         } = this.#language;
 
         if (isRevealed && isMine) {
@@ -67,25 +67,25 @@ export default class Tile extends React.Component {
     }
 
     #onClickHandler = (e) => {
-        const { onTileSelected } = this.props;
-        onTileSelected({ ...this.props });
+        const {onTileSelected} = this.props;
+        onTileSelected({...this.props});
     }
 
     #onContextMenuHandler = (e) => {
-        const { onSetFlag } = this.props;
-        onSetFlag({ ...this.props });
+        const {onSetFlag} = this.props;
+        onSetFlag({...this.props});
         e.preventDefault();
     }
 
     #onKeyUpHandler = (e) => {
-        const { onSetFlag, onTileSelected } = this.props;
+        const {onSetFlag, onTileSelected} = this.props;
         if (e.key === selectTileKey) {
-            onTileSelected({ ...this.props });
+            onTileSelected({...this.props});
             return;
         }
 
         if (e.key === setFlagKey) {
-            onSetFlag({ ...this.props });
+            onSetFlag({...this.props});
             return;
         }
     }
@@ -95,14 +95,14 @@ export default class Tile extends React.Component {
             return;
         }
 
-        const { onTileSelected, onSetFlag } = this.props;
+        const {onTileSelected, onSetFlag} = this.props;
 
         if (this.#intervalsPassed === 0) {
-            onTileSelected({ ...this.props });
+            onTileSelected({...this.props});
         }
 
         if (this.#intervalsPassed > 0) {
-            onSetFlag({ ...this.props });
+            onSetFlag({...this.props});
         }
 
         this.#resetTimer();
@@ -113,7 +113,7 @@ export default class Tile extends React.Component {
             return;
         }
 
-        this.timer = timer(intervalsPassed => {
+        this.timer = timer((intervalsPassed) => {
             this.#intervalsPassed = intervalsPassed
         }, this.#timeUntilLongPress);
     }
@@ -128,7 +128,7 @@ export default class Tile extends React.Component {
     }
 
     #renderCovered() {
-        const { isFlagged } = this.props;
+        const {isFlagged} = this.props;
         return (
             <div className={ "Tile__covered" } data-testid={`${testID}-covered`}>
                 { isFlagged && this.#renderFlag() }
@@ -169,7 +169,7 @@ export default class Tile extends React.Component {
     }
 
     #renderRevealed() {
-        const { proximities, isMine } = this.props;
+        const {proximities, isMine} = this.props;
 
         if (isMine) {
             return this.#renderMine();
@@ -197,12 +197,12 @@ export default class Tile extends React.Component {
             difficulty,
             row,
             column,
-            htmlAttributes
+            htmlAttributes,
         } = this.props;
 
         const difficultyClassName = "Tile--" + difficulty.description;
         const aedTileDescription = this.#getARIADescription() + " " + ReplaceStringTokens(
-            this.#language.tileAED, [row, column]
+            this.#language.tileAED, [row, column],
         );
 
         return (
@@ -220,9 +220,9 @@ export default class Tile extends React.Component {
                 {...htmlAttributes}
             >
                 {
-                    isRevealed
-                        ? this.#renderRevealed()
-                        : this.#renderCovered()
+                    isRevealed ?
+                        this.#renderRevealed() :
+                        this.#renderCovered()
                 }
             </div>
         )
